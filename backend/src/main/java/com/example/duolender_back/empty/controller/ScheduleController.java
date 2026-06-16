@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/schedule")
 @RequiredArgsConstructor
-public class ScheduleContorller {
+public class ScheduleController {
 
 	@Autowired
 	private ScheduleService scheduleService;

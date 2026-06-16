@@ -18,10 +18,10 @@ public class ScheduleEntity {
 	@Column(nullable = false)
 	private String scheduleNm;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String scheduleGroupId;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String scheduleColor;
 
 	@Column(nullable = false)
@@ -39,10 +39,10 @@ public class ScheduleEntity {
 	@Column(nullable = false)
 	private String scheduleCrtnDtm;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String scheduleChngId;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String scheduleChngDtm;
 
 }
