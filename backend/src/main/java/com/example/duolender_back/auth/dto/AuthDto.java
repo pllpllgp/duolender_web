@@ -15,4 +15,6 @@ public class AuthDto {
 	private String userSnsLogin;
 	private String userCrtnDtm;
 	private String userChngDtm;
+	private String userToken;
+
 }

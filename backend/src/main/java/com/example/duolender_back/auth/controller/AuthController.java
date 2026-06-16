@@ -3,10 +3,12 @@ package com.example.duolender_back.auth.controller;
 import com.example.duolender_back.auth.dto.AuthDto;
 import com.example.duolender_back.auth.entity.AuthEntity;
 import com.example.duolender_back.auth.service.AuthService;
+import com.example.duolender_back.config.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,6 +22,9 @@ public class AuthController {
 	private AuthService authService;
 
 	private final JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	@GetMapping("/duoConnect")
 	public ResponseEntity<String> DuoConnect() {
@@ -47,12 +52,22 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public Map<String, Object> Login(@RequestBody AuthDto dto) {
-		AuthEntity result = authService.login(dto);
+	public AuthDto Login(@RequestBody AuthDto dto) {
+		AuthEntity authInfo = authService.login(dto);
 
-		Map<String, Object> res = new HashMap<>();
+		AuthDto authDto = new AuthDto();
 
-		return res;
+
+		if(StringUtils.hasText(authInfo.getUserId())) {
+			authDto.setUserId(authInfo.getUserId());
+			authDto.setUserNm(authInfo.getUserNm());
+			authDto.setUserEmail(authInfo.getUserEmail());
+			authDto.setUserPhone(authInfo.getUserPhone());
+			authDto.setUserToken(jwtUtil.generateToken(authInfo.getUserId()));
+
+		}
+
+		return authDto;
 
 	}
 
