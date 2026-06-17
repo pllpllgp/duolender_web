@@ -6,11 +6,32 @@ import com.example.duolender_back.empty.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ScheduleService {
 
 	@Autowired
 	private ScheduleRepository scheduleRepository;
+
+	public List<ScheduleDto> ScheduleList(ScheduleDto dto) {
+		List<ScheduleEntity> ScheduleEntity = scheduleRepository.findScheduleList(dto.getUserId(), dto.getSchScheduleDate());
+
+		List<ScheduleDto> scheduleDtoList = ScheduleEntity.stream()
+				.map(entity -> {
+					ScheduleDto scheduleDto = new ScheduleDto();
+					scheduleDto.setScheduleNm(entity.getScheduleNm());
+					scheduleDto.setScheduleStartDtm(entity.getScheduleStartDtm());
+					scheduleDto.setScheduleEndDtm(entity.getScheduleEndDtm());
+					scheduleDto.setScheduleMemo(entity.getScheduleMemo());
+
+					return scheduleDto;
+				})
+				.collect(Collectors.toList());
+
+		return scheduleDtoList;
+	}
 
 	public boolean scheduleRegister(ScheduleDto dto) {
 		ScheduleEntity entity = new ScheduleEntity();

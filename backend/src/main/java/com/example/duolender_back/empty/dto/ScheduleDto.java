@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleDto {
+	String userId;
 	String scheduleId;
 	String scheduleNm;
 	String scheduleGroupId;
@@ -18,4 +19,5 @@ public class ScheduleDto {
 	String scheduleCrtnDtm;
 	String scheduleChngId;
 	String scheduleChngDtm;
+	String schScheduleDate;
 }

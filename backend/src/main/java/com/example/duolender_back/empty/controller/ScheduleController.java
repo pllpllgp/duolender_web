@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +20,11 @@ public class ScheduleController {
 
 	@Autowired
 	private ScheduleService scheduleService;
+
+	@PostMapping("/list")
+	public List<ScheduleDto> ScheduleList(@RequestBody ScheduleDto dto) {
+		return scheduleService.ScheduleList(dto);
+	}
 
 	@PostMapping("/register")
 	public Map<String, Object> Singup(@RequestBody ScheduleDto dto) {
