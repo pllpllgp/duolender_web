@@ -12,8 +12,7 @@ public class ScheduleDto {
 	String scheduleNm;
 	String scheduleGroupId;
 	String scheduleColor;
-	String scheduleStartDtm;
-	String scheduleEndDtm;
+	String scheduleDtm;
 	String scheduleMemo;
 	String scheduleCrtnId;
 	String scheduleCrtnDtm;

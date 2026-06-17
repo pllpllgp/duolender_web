@@ -22,8 +22,7 @@ public class ScheduleService {
 				.map(entity -> {
 					ScheduleDto scheduleDto = new ScheduleDto();
 					scheduleDto.setScheduleNm(entity.getScheduleNm());
-					scheduleDto.setScheduleStartDtm(entity.getScheduleStartDtm());
-					scheduleDto.setScheduleEndDtm(entity.getScheduleEndDtm());
+					scheduleDto.setScheduleDtm(entity.getScheduleDtm());
 					scheduleDto.setScheduleMemo(entity.getScheduleMemo());
 
 					return scheduleDto;
@@ -37,8 +36,7 @@ public class ScheduleService {
 		ScheduleEntity entity = new ScheduleEntity();
 		entity.setScheduleNm(dto.getScheduleNm());
 		entity.setScheduleGroupId(dto.getScheduleGroupId());
-		entity.setScheduleStartDtm(dto.getScheduleStartDtm());
-		entity.setScheduleEndDtm(dto.getScheduleEndDtm());
+		entity.setScheduleDtm(dto.getScheduleDtm());
 		entity.setScheduleMemo(dto.getScheduleMemo());
 		entity.setScheduleCrtnId(dto.getScheduleCrtnId());
 		entity.setScheduleCrtnDtm(dto.getScheduleCrtnDtm());

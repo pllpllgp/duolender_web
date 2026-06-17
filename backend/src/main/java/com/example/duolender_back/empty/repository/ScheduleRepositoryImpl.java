@@ -22,7 +22,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 				.selectFrom(schedule)
 				.where(
 					schedule.scheduleCrtnId.eq(userId),
-					(schedule.scheduleStartDtm.startsWith(schDate).or(schedule.scheduleEndDtm.startsWith(schDate)))
+					schedule.scheduleDtm.startsWith(schDate)
 				)
 				.fetch();
 	}

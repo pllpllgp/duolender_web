@@ -24,10 +24,7 @@ public class ScheduleEntity {
 	private String scheduleColor;
 
 	@Column(nullable = false)
-	private String scheduleStartDtm;
-
-	@Column(nullable = false)
-	private String scheduleEndDtm;
+	private String scheduleDtm;
 
 	@Column(nullable = false)
 	private String scheduleMemo;
