@@ -17,7 +17,6 @@ public class ScheduleService {
 
 	public List<ScheduleDto> ScheduleList(ScheduleDto dto) {
 		List<ScheduleEntity> ScheduleEntity = scheduleRepository.findScheduleList(dto.getUserId(), dto.getSchScheduleDate());
-		System.out.println("ScheduleEntity:::::::"+ScheduleEntity.size());
 
 		List<ScheduleDto> scheduleDtoList = ScheduleEntity.stream()
 				.map(entity -> {
@@ -36,11 +35,13 @@ public class ScheduleService {
 
 	public boolean scheduleRegister(ScheduleDto dto) {
 		ScheduleEntity entity = new ScheduleEntity();
-		entity.setScheduleId(dto.getScheduleId());
 		entity.setScheduleNm(dto.getScheduleNm());
 		entity.setScheduleGroupId(dto.getScheduleGroupId());
+		entity.setScheduleStartDtm(dto.getScheduleStartDtm());
+		entity.setScheduleEndDtm(dto.getScheduleEndDtm());
 		entity.setScheduleMemo(dto.getScheduleMemo());
 		entity.setScheduleCrtnId(dto.getScheduleCrtnId());
+		entity.setScheduleCrtnDtm(dto.getScheduleCrtnDtm());
 
 		scheduleRepository.save(entity);
 

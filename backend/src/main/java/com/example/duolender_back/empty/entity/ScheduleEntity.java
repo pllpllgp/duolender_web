@@ -1,9 +1,6 @@
 package com.example.duolender_back.empty.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +10,9 @@ import lombok.Setter;
 @Table(name="dl_schedule", schema = "duolender")
 public class ScheduleEntity {
 	@Id
-	private String scheduleId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "schedule_id")
+	private int scheduleId;
 
 	@Column(nullable = false)
 	private String scheduleNm;

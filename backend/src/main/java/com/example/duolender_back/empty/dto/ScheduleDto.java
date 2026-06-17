@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class ScheduleDto {
 	String userId;
-	String scheduleId;
+	int scheduleId;
 	String scheduleNm;
 	String scheduleGroupId;
 	String scheduleColor;
