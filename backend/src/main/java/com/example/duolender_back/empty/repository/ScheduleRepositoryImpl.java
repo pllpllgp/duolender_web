@@ -12,16 +12,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
-    private final JPAQueryFactory queryFactory;
+	private final JPAQueryFactory queryFactory;
 
-    QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+	QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 
-    @Override
-    public List<ScheduleEntity> findScheduleList(String userId, String schDate) {
-        return queryFactory
-                .selectFrom(schedule)
-                .where(
-    schedule.scheduleCrtnId.eq(userId))
-                .fetch();
-    }
+	@Override
+	public List<ScheduleEntity> findScheduleList(String userId, String schDate) {
+		return queryFactory
+				.selectFrom(schedule)
+				.where(
+					schedule.scheduleCrtnId.eq(userId),
+					(schedule.scheduleStartDtm.startsWith(schDate).or(schedule.scheduleEndDtm.startsWith(schDate)))
+				)
+				.fetch();
+	}
 }

@@ -17,6 +17,7 @@ public class ScheduleService {
 
 	public List<ScheduleDto> ScheduleList(ScheduleDto dto) {
 		List<ScheduleEntity> ScheduleEntity = scheduleRepository.findScheduleList(dto.getUserId(), dto.getSchScheduleDate());
+		System.out.println("ScheduleEntity:::::::"+ScheduleEntity.size());
 
 		List<ScheduleDto> scheduleDtoList = ScheduleEntity.stream()
 				.map(entity -> {
