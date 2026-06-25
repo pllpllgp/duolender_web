@@ -1,4 +1,4 @@
-package com.example.duolender_back.empty.dto;
+package com.example.duolender_back.schedule.dto;
 
 import jakarta.persistence.Column;
 import lombok.Getter;

@@ -1,8 +1,8 @@
-package com.example.duolender_back.empty.service;
+package com.example.duolender_back.schedule.service;
 
-import com.example.duolender_back.empty.dto.ScheduleDto;
-import com.example.duolender_back.empty.entity.ScheduleEntity;
-import com.example.duolender_back.empty.repository.ScheduleRepository;
+import com.example.duolender_back.schedule.dto.ScheduleDto;
+import com.example.duolender_back.schedule.entity.ScheduleEntity;
+import com.example.duolender_back.schedule.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
-package com.example.duolender_back.empty.controller;
+package com.example.duolender_back.schedule.controller;
 
-import com.example.duolender_back.empty.dto.ScheduleDto;
-import com.example.duolender_back.empty.service.ScheduleService;
+import com.example.duolender_back.schedule.dto.ScheduleDto;
+import com.example.duolender_back.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +22,12 @@ public class ScheduleController {
 	private ScheduleService scheduleService;
 
 	@PostMapping("/list")
-	public List<ScheduleDto> ScheduleList(@RequestBody ScheduleDto dto) {
+	public List<ScheduleDto> scheduleList(@RequestBody ScheduleDto dto) {
 		return scheduleService.ScheduleList(dto);
 	}
 
 	@PostMapping("/register")
-	public Map<String, Object> Singup(@RequestBody ScheduleDto dto) {
+	public Map<String, Object> scheduleRegister(@RequestBody ScheduleDto dto) {
 		boolean result = scheduleService.scheduleRegister(dto);
 
 		Map<String, Object> res = new HashMap<>();

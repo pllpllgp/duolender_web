@@ -1,7 +1,7 @@
-package com.example.duolender_back.empty.repository;
+package com.example.duolender_back.schedule.repository;
 
-import com.example.duolender_back.empty.entity.QScheduleEntity;
-import com.example.duolender_back.empty.entity.ScheduleEntity;
+import com.example.duolender_back.schedule.entity.QScheduleEntity;
+import com.example.duolender_back.schedule.entity.ScheduleEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,15 +14,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+	QScheduleEntity qEntity = QScheduleEntity.scheduleEntity;
 
 	@Override
 	public List<ScheduleEntity> findScheduleList(String userId, String schDate) {
 		return queryFactory
-				.selectFrom(schedule)
+				.selectFrom(qEntity)
 				.where(
-					schedule.scheduleCrtnId.eq(userId),
-					schedule.scheduleDtm.startsWith(schDate)
+					qEntity.scheduleCrtnId.eq(userId),
+					qEntity.scheduleDtm.startsWith(schDate)
 				)
 				.fetch();
 	}

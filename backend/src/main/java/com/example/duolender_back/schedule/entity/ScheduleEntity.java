@@ -1,4 +1,4 @@
-package com.example.duolender_back.empty.entity;
+package com.example.duolender_back.schedule.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

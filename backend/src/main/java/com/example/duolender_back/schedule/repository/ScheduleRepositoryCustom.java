@@ -1,6 +1,6 @@
-package com.example.duolender_back.empty.repository;
+package com.example.duolender_back.schedule.repository;
 
-import com.example.duolender_back.empty.entity.ScheduleEntity;
+import com.example.duolender_back.schedule.entity.ScheduleEntity;
 
 import java.util.List;
 
