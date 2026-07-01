@@ -9,6 +9,8 @@ import com.example.duolender_back.schedule.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,17 +20,33 @@ public class GroupService {
 	@Autowired
 	private GroupRepository groupRepository;
 
-	public List<ScheduleDto> groupList(ScheduleDto dto) {
+	public List<GroupDto> groupList(GroupDto dto) {
+		List<GroupEntity> groupEntity = groupRepository.findGroupList(dto.getGroupNm());
 
-		return null;
+		List<GroupDto> groupDtoList = groupEntity.stream()
+				.map(entity -> {
+					GroupDto groupDto = new GroupDto();
+					groupDto.setGroupId(entity.getGroupId());
+					groupDto.setGroupNm(entity.getGroupNm());
+					groupDto.setGroupMemo(entity.getGroupMemo());
+
+					return groupDto;
+				})
+				.collect(Collectors.toList());;
+
+		return groupDtoList;
 	}
 
 	public boolean groupRegister(GroupDto dto) {
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+		String toDate = now.format(formatter);
+
 		GroupEntity entity = new GroupEntity();
 		entity.setGroupNm(dto.getGroupNm());
-		entity.setGroupCrtnId(dto.getUserId());
 		entity.setGroupMemo(dto.getGroupMemo());
-		entity.setGroupCrtnDtm(dto.getGroupCrtnDtm());
+		entity.setGroupCrtnId(dto.getUserId());
+		entity.setGroupCrtnDtm(toDate);
 
 		groupRepository.save(entity);
 

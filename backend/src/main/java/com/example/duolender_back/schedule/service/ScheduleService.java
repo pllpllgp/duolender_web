@@ -6,6 +6,8 @@ import com.example.duolender_back.schedule.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +35,17 @@ public class ScheduleService {
 	}
 
 	public boolean scheduleRegister(ScheduleDto dto) {
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+		String toDate = now.format(formatter);
+
 		ScheduleEntity entity = new ScheduleEntity();
 		entity.setScheduleNm(dto.getScheduleNm());
 		entity.setScheduleGroupId(dto.getScheduleGroupId());
 		entity.setScheduleDtm(dto.getScheduleDtm());
 		entity.setScheduleMemo(dto.getScheduleMemo());
 		entity.setScheduleCrtnId(dto.getScheduleCrtnId());
-		entity.setScheduleCrtnDtm(dto.getScheduleCrtnDtm());
+		entity.setScheduleCrtnDtm(toDate);
 
 		scheduleRepository.save(entity);
 
