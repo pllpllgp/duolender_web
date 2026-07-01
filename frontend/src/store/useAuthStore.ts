@@ -4,6 +4,8 @@ import {persist} from "zustand/middleware";
 interface User {
 	userId: string;
 	userNm: string;
+	userEmail: String;
+	userPhone: String;
 }
 
 interface AuthState {

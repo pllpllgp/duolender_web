@@ -43,6 +43,8 @@ const Login = () => {
 				login({
 					userId: res.data.userId,
 					userNm: res.data.userNm,
+					userEmail: res.data.userEmail,
+					userPhone: res.data.userPhone,
 				}, res.data.userToken);
 			}
 
