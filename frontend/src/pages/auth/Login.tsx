@@ -1,6 +1,8 @@
 import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from '../../api/axiosInstance';
+import * as React from "react";
+import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Auth.module.css";
 
@@ -14,7 +16,6 @@ const Login = () => {
 
 	});
 
-	const [isLoading, setIsLoading] = useState(false);
 	const [serverStatus, setServerStatus] = useState<'checking' | 'connected' | 'error'>('checking');
 
 	useEffect(() => {
@@ -23,22 +24,51 @@ const Login = () => {
 			.catch(() => setServerStatus('error'));
 	}, []);
 
-	const [userId, setUserId] = useState('');
-	const [userPw, setUserPw] = useState('');
+	const login = useAuthStore((state) => state.login);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setLoginData({
+			...loginData,
+			[e.target.name]: e.target.value
+		})
+	}
+
+	const handleSubmit = async (e: React.FormEvent)=> {
+		e.preventDefault();
+
+		try {
+			const res = await axios.post(`${SERVER_BASE_URL}/api/auth/login`, loginData);
+
+			if(res.data.userId) {
+				login({
+					userId: res.data.userId,
+					userNm: res.data.userNm,
+				}, res.data.userToken);
+			}
+
+			navigate('/scheduleMain');
+
+		} catch (error) {
+			console.log('로그인 중 에러 발생: ', error);
+			alert('통신 중 에러 발생');
+
+		}
+	}
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.card}>
 
-				{serverStatus === 'checking' && (
-					<span className={styles.statusError}>서버 연결 중.</span>
-				)}
-				{serverStatus === 'connected' && (
-					<span className={styles.statusError}>로그인하실 수 있습니다.</span>
-				)}
-				{serverStatus === 'error' && (
-					<span className={styles.statusError}>서버에 연결할 수 없습니다.</span>
-				)}
+			{serverStatus === 'checking' && (
+				<div className={styles.overlay}>
+					<div className={styles.loadingBox}>
+						서버 연결 중입니다...
+					</div>
+				</div>
+			)}
+			{serverStatus === 'error' && (
+				<span className={styles.statusError}>서버에 연결할 수 없습니다.</span>
+			)}
 
 				<h1 className={styles.title}>DuoLender</h1>
 				<p className={styles.subtitle}>우리들의 그룹 일정 관리</p>
@@ -48,19 +78,22 @@ const Login = () => {
 						type="text"
 						name="userId"
 						placeholder="아이디"
-						onChange={(e) => setUserId(e.target.value)}
+						onChange={handleChange}
 						className={styles.inputField}
 					/>
 					<input
 						type="password"
 						name="userPw"
 						placeholder="비밀번호"
-						onChange={(e) => setUserPw(e.target.value)}
+						onChange={handleChange}
 						className={styles.inputField}
 					/>
 				</div>
 
-				<button className={styles.submitButton}>
+				<button
+					className={styles.submitButton}
+					onClick={handleSubmit}
+				>
 					로그인
 				</button>
 

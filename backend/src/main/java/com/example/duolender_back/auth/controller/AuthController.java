@@ -57,7 +57,6 @@ public class AuthController {
 
 		AuthDto authDto = new AuthDto();
 
-
 		if(StringUtils.hasText(authInfo.getUserId())) {
 			authDto.setUserId(authInfo.getUserId());
 			authDto.setUserNm(authInfo.getUserNm());

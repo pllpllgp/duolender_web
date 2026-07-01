@@ -3,7 +3,6 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_SERVER_BASE_URL,
-
 });
 
 // 요청마다 자동으로 Authorization 헤더 추가
