@@ -23,9 +23,11 @@ public class ScheduleService {
 		List<ScheduleDto> scheduleDtoList = ScheduleEntity.stream()
 				.map(entity -> {
 					ScheduleDto scheduleDto = new ScheduleDto();
+					scheduleDto.setScheduleId(entity.getScheduleId());
 					scheduleDto.setScheduleNm(entity.getScheduleNm());
 					scheduleDto.setScheduleDtm(entity.getScheduleDtm());
 					scheduleDto.setScheduleMemo(entity.getScheduleMemo());
+
 
 					return scheduleDto;
 				})
