@@ -8,6 +8,12 @@ import {useAuthStore} from "../../store/useAuthStore.ts";
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 interface scheduleMonthDto {
+	scheduleDtm: String,
+	scheduleNm: String,
+	scheduleColor: String,
+}
+
+interface scheduleDateDto {
 	scheduleId: number,
 	scheduleDtm: String,
 	scheduleNm: String,
@@ -19,13 +25,21 @@ const ScheduleMain = () => {
 
 	const navigate = useNavigate();
 
-	const [scheduleMonthList, setScheduleMonthList] = useState<scheduleMonthDto[]>([]);
-
-	const [currentDate, setCurrentDate] = useState(new Date());
+	//선택한 일자 세팅
 	const [selectedDate, setSelectedDate] = useState<number | null>(null);
+
+	//팝업 오픈
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+	//팝업창 특정 스케쥴 세팅
 	const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
 
+
+	const [isAdding, setIsAdding] = useState(false);
+	const [formData, setFormData] = useState({ title: '', date: '', location: '', memo: '' });
+
+	//년월일 세팅
+	const [currentDate, setCurrentDate] = useState(new Date());
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth()+1;
 
@@ -34,8 +48,10 @@ const ScheduleMain = () => {
 
 	const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
+	//월별 스케쥴
+	const [scheduleMonthList, setScheduleMonthList] = useState<scheduleMonthDto[]>([]);
 	useEffect(() => {
-		const fetchScheduleList = async() => {
+		const fetchScheduleMonthList = async () => {
 			try {
 				let schMonth;
 				if(month < 10) {
@@ -50,41 +66,73 @@ const ScheduleMain = () => {
 				}
 
 				const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
-
-				res.data.forEach((item: scheduleMonthDto) => {
-					console.log(item.scheduleDtm, item.scheduleNm);
-				});
-
 				setScheduleMonthList(res.data);
 
 			} catch (error) {
-				console.error("게시글 로딩 실패:", error);
+				console.error("월별 스케쥴 로딩 실패:", error);
 			}
 		}
 
-		fetchScheduleList();
+		fetchScheduleMonthList();
 
 	}, [year, month]);
 
-	const handleMonthMove = (moveYear: number, moveMonth: number, moveDate: number) => {
-		setCurrentDate(new Date(moveYear, moveMonth, moveDate));
 
+	//일별 스케쥴
+	const [scheduleDateList, setScheduleDateList] = useState<scheduleDateDto[]>([]);
+
+	const fetchScheduleDateList = async (day: number) => {
+		try {
+			let schDay;
+			if(month < 10) {
+				schDay = year+'0'+month;
+			} else {
+				schDay = year+''+month;
+			}
+
+			if(day < 10) {
+				schDay = schDay+'0'+day;
+			} else {
+				schDay = schDay+''+day;
+			}
+
+			const postData = {
+				userId: user?.userId,
+				schScheduleDate: schDay,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData)
+			setScheduleDateList(res.data);
+
+			res.data.forEach((item: scheduleDateDto) => {
+				console.log(item.scheduleDtm, item.scheduleNm);
+			});
+
+		} catch (error) {
+			console.error("일별 스케쥴 로딩 실패:", error);
+		}
 	}
 
+
+	//특정 날짜 클릭 이벤트
 	const handleDateClick = (day: number) => {
+		setIsAdding(false);
 		setSelectedDate(day);
 		setSelectedSchedule(null);
 		setIsPopupOpen(true);
+		fetchScheduleDateList(day);
 	};
+
+
 
 	return (
 		<div className={styles.calendarContainer}>
 			<div className={styles.header}>
-				<button onClick={() => handleMonthMove(year, month-2, 1)}
+				<button onClick={() => setCurrentDate(new Date(year, month-2, 1))}
 						className={styles.navButton}>&lt;
 				</button>
 				<h2 className={styles.monthTitle}>{year}년 {month}월</h2>
-				<button onClick={() => handleMonthMove(year, month, 1)}
+				<button onClick={() => setCurrentDate(new Date(year, month, 1))}
 						className={styles.navButton}>&gt;
 				</button>
 			</div>
@@ -118,8 +166,7 @@ const ScheduleMain = () => {
 									{day}
 								</div>
 								{visibleSchedules.map(s => (
-									<div key={s.scheduleId}
-									     className={styles.scheduleItem}>
+									<div className={styles.scheduleItem}>
 										{s.scheduleNm}
 									</div>
 								))}
@@ -133,25 +180,42 @@ const ScheduleMain = () => {
 			</div>
 
 			{isPopupOpen && (
-				<div className={styles.popupOverlay} onClick={() => setIsPopupOpen(false)}>
-					<div className={styles.popupContent} onClick={(e) => e.stopPropagation()}>
+				<div className={styles.popupOverlay}
+				     onClick={() => setIsPopupOpen(false)}>
+					<div className={styles.popupContent}
+					     onClick={(e) => e.stopPropagation()}>
 						<div className={styles.leftPanel}>
-							<h3>{month + 1}월 {selectedDate}일</h3>
-							{scheduleMonthList.filter(s => s.scheduleDtm == selectedDate).map(s => (
-								<div key={s.scheduleId} className={styles.scheduleCard} onClick={() => setSelectedSchedule(s)}>
+							<h3>{month}월 {selectedDate}일</h3>
+							{scheduleDateList.filter(s => s.scheduleDtm.slice(-2) == selectedDate).map(s => (
+								<div key={s.scheduleId}
+								     className={styles.scheduleCard}
+								     onClick={() => setSelectedSchedule(s)}>
 									{s.scheduleNm}
 								</div>
 							))}
-							<div className={styles.addBtn}>{month + 1}월 {selectedDate}일에 추가 +</div>
+							<div className={styles.addBtn}
+							     onClick={() => setIsAdding(true)}>
+								일정 추가 +
+							</div>
 						</div>
 						<div className={styles.rightPanel}>
-							{selectedSchedule ? (
-								<div>
-									<h2>{selectedSchedule.title}</h2>
-									<p>{selectedSchedule.detail}</p>
+							{isAdding ? (
+								<div className={styles.inputForm} style={{ height: '100%' }}>
+									{/* 상단 입력 필드들 */}
+									<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+										<input className={styles.inputField} placeholder="제목" />
+										<input className={styles.inputField} type="date" />
+										<input className={styles.inputField} placeholder="장소" />
+										<textarea className={`${styles.inputField} ${styles.textArea}`} placeholder="메모" />
+									</div>
+
+									{/* 좌측 버튼과 동일한 스타일의 저장 버튼 */}
+									<button className={styles.saveButton}>저장</button>
 								</div>
 							) : (
-								<p>일정을 선택해 주세요</p>
+								<div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
+									<p>일정을 선택해 주세요</p>
+								</div>
 							)}
 						</div>
 					</div>
