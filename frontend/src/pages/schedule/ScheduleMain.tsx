@@ -49,9 +49,15 @@ const ScheduleMain = () => {
 	return (
 		<div className={styles.calendarContainer}>
 			<div className={styles.header}>
-				<button onClick={() => setCurrentDate(new Date(year, month - 1, 1))} className={styles.navButton}>&lt;</button>
+				<button
+					onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
+					className={styles.navButton}>&lt;
+				</button>
 				<h2 className={styles.monthTitle}>{month + 1}월</h2>
-				<button onClick={() => setCurrentDate(new Date(year, month + 1, 1))} className={styles.navButton}>&gt;</button>
+				<button
+					onClick={() => setCurrentDate(new Date(year, month + 1, 1))}
+					className={styles.navButton}>&gt;
+				</button>
 			</div>
 
 			<div className={styles.calendarGrid}>
@@ -75,7 +81,7 @@ const ScheduleMain = () => {
 						const hiddenCount = daySchedules.length - visibleSchedules.length;
 						return (
 							<div key={day} className={styles.cellWrapper} onClick={() => handleDateClick(day)} style={{ cursor: 'pointer' }}>
-								<div className={styles.dayCell}>{day}</div>
+								<div className={`${styles.dayCell} ${((firstDayOfMonth + i) % 7) === 0 ? styles.sunday : ((firstDayOfMonth + i) % 7) === 6 ? styles.saturday : ''}`}>{day}</div>
 								{visibleSchedules.map(s => (
 									<div key={s.id} className={styles.scheduleItem}>{s.title}</div>
 								))}
