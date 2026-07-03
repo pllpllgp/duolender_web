@@ -30,4 +30,13 @@ public class AuthEntity {
 	@Column(nullable = false)
 	private String userSnsLogin;
 
+	@Column(nullable = false)
+	private String userCrtnDtm;
+
+	@Column(nullable = false)
+	private String userChngDtm;
+
+	@Column(nullable = false)
+	private String scheduleColor;
+
 }

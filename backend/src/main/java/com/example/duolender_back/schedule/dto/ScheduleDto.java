@@ -1,17 +1,19 @@
 package com.example.duolender_back.schedule.dto;
 
-import jakarta.persistence.Column;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ScheduleDto {
-	String userId;
 	int scheduleId;
 	String scheduleNm;
 	String scheduleGroupId;
 	String scheduleColor;
+	String schedulePlace;
 	String scheduleDtm;
 	String scheduleMemo;
 	String scheduleCrtnId;
@@ -19,5 +21,15 @@ public class ScheduleDto {
 	String scheduleChngId;
 	String scheduleChngDtm;
 
-	String schScheduleDate;
+
+
+	@QueryProjection
+	public ScheduleDto(Integer scheduleId, String scheduleNm, String scheduleDtm, String scheduleMemo, String scheduleColor) {
+		this.scheduleId = scheduleId;
+		this.scheduleNm = scheduleNm;
+		this.scheduleDtm = scheduleDtm;
+		this.scheduleMemo = scheduleMemo;
+		this.scheduleColor = scheduleColor;
+	}
+
 }

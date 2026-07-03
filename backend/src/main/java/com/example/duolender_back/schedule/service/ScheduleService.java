@@ -1,5 +1,6 @@
 package com.example.duolender_back.schedule.service;
 
+import com.example.duolender_back.schedule.dto.SchScheduleDto;
 import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.entity.ScheduleEntity;
 import com.example.duolender_back.schedule.repository.ScheduleRepository;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -17,22 +17,8 @@ public class ScheduleService {
 	@Autowired
 	private ScheduleRepository scheduleRepository;
 
-	public List<ScheduleDto> ScheduleList(ScheduleDto dto) {
-		List<ScheduleEntity> ScheduleEntity = scheduleRepository.findScheduleList(dto.getUserId(), dto.getSchScheduleDate());
-
-		List<ScheduleDto> scheduleDtoList = ScheduleEntity.stream()
-				.map(entity -> {
-					ScheduleDto scheduleDto = new ScheduleDto();
-					scheduleDto.setScheduleId(entity.getScheduleId());
-					scheduleDto.setScheduleNm(entity.getScheduleNm());
-					scheduleDto.setScheduleDtm(entity.getScheduleDtm());
-					scheduleDto.setScheduleMemo(entity.getScheduleMemo());
-
-
-					return scheduleDto;
-				})
-				.collect(Collectors.toList());
-
+	public List<ScheduleDto> ScheduleList(SchScheduleDto dto) {
+		List<ScheduleDto> scheduleDtoList = scheduleRepository.findScheduleList(dto.getUserId(), dto.getSchScheduleDate());
 		return scheduleDtoList;
 	}
 

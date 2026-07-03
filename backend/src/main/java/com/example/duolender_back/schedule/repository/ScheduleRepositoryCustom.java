@@ -1,9 +1,10 @@
 package com.example.duolender_back.schedule.repository;
 
-import com.example.duolender_back.schedule.entity.ScheduleEntity;
+import com.example.duolender_back.schedule.dto.ScheduleDto;
+import com.querydsl.core.Tuple;
 
 import java.util.List;
 
 public interface ScheduleRepositoryCustom {
-	List<ScheduleEntity> findScheduleList(String userId, String schDate);
+	List<ScheduleDto> findScheduleList(String userId, String schDate);
 }

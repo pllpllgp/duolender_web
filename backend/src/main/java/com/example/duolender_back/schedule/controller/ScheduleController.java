@@ -1,5 +1,6 @@
 package com.example.duolender_back.schedule.controller;
 
+import com.example.duolender_back.schedule.dto.SchScheduleDto;
 import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ScheduleController {
 	private ScheduleService scheduleService;
 
 	@PostMapping("/list")
-	public List<ScheduleDto> scheduleList(@RequestBody ScheduleDto dto) {
+	public List<ScheduleDto> scheduleList(@RequestBody SchScheduleDto dto) {
 		return scheduleService.ScheduleList(dto);
 	}
 

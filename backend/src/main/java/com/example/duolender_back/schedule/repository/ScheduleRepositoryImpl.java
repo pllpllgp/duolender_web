@@ -1,7 +1,9 @@
 package com.example.duolender_back.schedule.repository;
 
+import com.example.duolender_back.auth.entity.QAuthEntity;
+import com.example.duolender_back.schedule.dto.QScheduleDto;
+import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.entity.QScheduleEntity;
-import com.example.duolender_back.schedule.entity.ScheduleEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,15 +16,24 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	QScheduleEntity qEntity = QScheduleEntity.scheduleEntity;
+	QScheduleEntity scheduleEntity = QScheduleEntity.scheduleEntity;
+	QAuthEntity authEntity = QAuthEntity.authEntity;
 
 	@Override
-	public List<ScheduleEntity> findScheduleList(String userId, String schDate) {
+	public List<ScheduleDto> findScheduleList(String userId, String schDate) {
 		return queryFactory
-				.selectFrom(qEntity)
+				.select(new QScheduleDto(
+						scheduleEntity.scheduleId,
+						scheduleEntity.scheduleNm,
+						scheduleEntity.scheduleDtm,
+						scheduleEntity.scheduleMemo,
+						authEntity.scheduleColor))
+				.from(scheduleEntity)
+				.innerJoin(authEntity)
+				.on(scheduleEntity.scheduleCrtnId.eq(authEntity.userId))
 				.where(
-					qEntity.scheduleCrtnId.eq(userId),
-					qEntity.scheduleDtm.startsWith(schDate)
+					scheduleEntity.scheduleCrtnId.eq(userId),
+					scheduleEntity.scheduleDtm.startsWith(schDate)
 				)
 				.fetch();
 	}

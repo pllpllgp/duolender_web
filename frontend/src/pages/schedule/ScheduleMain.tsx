@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 
 import styles from '../../css/Schedule.module.css';
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
 import axios from '../../api/axiosInstance';
-import {useAuthStore} from "../../store/useAuthStore.ts";
+import {useAuthStore} from '../../store/useAuthStore.ts';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -25,18 +25,17 @@ const ScheduleMain = () => {
 
 	const navigate = useNavigate();
 
+	//개인용 스케쥴인지 그룹용 스케쥴 확인
+	const [scheduleType, setScheduleType] = useState('personal');
+
 	//선택한 일자 세팅
 	const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
 	//팝업 오픈
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-	//팝업창 특정 스케쥴 세팅
-	const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
-
-
-	const [isAdding, setIsAdding] = useState(false);
-	const [formData, setFormData] = useState({ title: '', date: '', location: '', memo: '' });
+	//스케쥴 상태 값 세팅
+	const [scheduleStatus, setScheduleStatus] = useState('');
 
 	//년월일 세팅
 	const [currentDate, setCurrentDate] = useState(new Date());
@@ -69,7 +68,7 @@ const ScheduleMain = () => {
 				setScheduleMonthList(res.data);
 
 			} catch (error) {
-				console.error("월별 스케쥴 로딩 실패:", error);
+				console.error('월별 스케쥴 로딩 실패:', error);
 			}
 		}
 
@@ -109,21 +108,24 @@ const ScheduleMain = () => {
 			});
 
 		} catch (error) {
-			console.error("일별 스케쥴 로딩 실패:", error);
+			console.error('일별 스케쥴 로딩 실패:', error);
 		}
 	}
 
 
 	//특정 날짜 클릭 이벤트
 	const handleDateClick = (day: number) => {
-		setIsAdding(false);
+		setScheduleStatus('');
 		setSelectedDate(day);
-		setSelectedSchedule(null);
 		setIsPopupOpen(true);
 		fetchScheduleDateList(day);
 	};
 
 
+	//특정 스케쥴 클릭 이벤트
+	const handleScheduleClick = async (data: scheduleDateDto) => {
+		setScheduleStatus('view');
+	}
 
 	return (
 		<div className={styles.calendarContainer}>
@@ -160,8 +162,7 @@ const ScheduleMain = () => {
 						return (
 							<div key={day}
 							     className={styles.cellWrapper}
-							     onClick={() => handleDateClick(day)}
-							     style={{ cursor: 'pointer' }}>
+							     onClick={() => handleDateClick(day)}>
 								<div className={`${styles.dayCell} ${((firstDay + i) % 7) === 0 ? styles.sunday : ((firstDay + i) % 7) === 6 ? styles.saturday : ''}`}>
 									{day}
 								</div>
@@ -189,31 +190,67 @@ const ScheduleMain = () => {
 							{scheduleDateList.filter(s => s.scheduleDtm.slice(-2) == selectedDate).map(s => (
 								<div key={s.scheduleId}
 								     className={styles.scheduleCard}
-								     onClick={() => setSelectedSchedule(s)}>
+								     onClick={() => handleScheduleClick(s)}>
 									{s.scheduleNm}
 								</div>
 							))}
 							<div className={styles.addBtn}
-							     onClick={() => setIsAdding(true)}>
+							     onClick={() => setScheduleStatus('insert')}>
 								일정 추가 +
 							</div>
 						</div>
+
 						<div className={styles.rightPanel}>
-							{isAdding ? (
-								<div className={styles.inputForm} style={{ height: '100%' }}>
-									{/* 상단 입력 필드들 */}
-									<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-										<input className={styles.inputField} placeholder="제목" />
-										<input className={styles.inputField} type="date" />
-										<input className={styles.inputField} placeholder="장소" />
-										<textarea className={`${styles.inputField} ${styles.textArea}`} placeholder="메모" />
+							{scheduleStatus === 'insert' ? (
+								<div className={styles.inputForm}>
+									<div className={styles.inputFormGroup}>
+										<input className={styles.inputField}
+										       name='scheduleNm'
+										       placeholder='제목'/>
+										<div className={styles.radioContainer}>
+											<label className={styles.radioOption}>
+												<input type="radio" value="personal"
+												       checked={scheduleType === 'personal'}
+												       onChange={(e) => setScheduleType(e.target.value)}/> 개인
+											</label>
+											<label className={styles.radioOption}>
+												<input type="radio" value="group" checked={scheduleType === 'group'}
+												       onChange={(e) => setScheduleType(e.target.value)}/> 그룹
+											</label>
+										</div>
+										{scheduleType === 'group' && (
+											<select className={styles.inputField}>
+												<option value="">그룹을 선택하세요</option>
+												{/* 추후 그룹 목록 매핑 */}
+											</select>
+										)}
+										<input className={styles.inputField}
+										       name='scheduleDtm'
+										       type='date'/>
+										<input className={styles.inputField}
+										       name='schedulePlace'
+										       placeholder='장소'/>
+										<textarea className={`${styles.inputField} ${styles.textArea}`}
+										          name='scheduleMemo'
+										          placeholder='메모'/>
 									</div>
 
-									{/* 좌측 버튼과 동일한 스타일의 저장 버튼 */}
+									<button className={styles.saveButton}>저장</button>
+								</div>
+							) : scheduleStatus === 'view' ? (
+								<div className={styles.inputForm}>
+									<div className={styles.inputFormGroup}>
+										<input className={styles.inputField} placeholder='제목'/>
+										<input className={styles.inputField} type='date'/>
+										<input className={styles.inputField} placeholder='장소'/>
+										<textarea className={`${styles.inputField} ${styles.textArea}`}
+										          placeholder='메모'/>
+									</div>
+
 									<button className={styles.saveButton}>저장</button>
 								</div>
 							) : (
-								<div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>
+								<div className={styles.emptyState}>
 									<p>일정을 선택해 주세요</p>
 								</div>
 							)}
