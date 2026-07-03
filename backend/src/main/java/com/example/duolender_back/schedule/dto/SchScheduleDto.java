@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class SchScheduleDto {
 	String userId;
+	int schScheduleId;
 	String schScheduleDate;
 }

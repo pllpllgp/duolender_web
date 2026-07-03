@@ -41,4 +41,9 @@ public class ScheduleController {
 		return res;
 
 	}
+
+	@PostMapping("/view")
+	public ScheduleDto scheduleView(@RequestBody SchScheduleDto dto) {
+		return scheduleService.ScheduleView(dto);
+	}
 }

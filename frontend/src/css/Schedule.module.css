@@ -261,13 +261,19 @@
 
 select.inputField {
 	width: 100%;
-	padding: 16px;
+	padding: 14px 40px 14px 16px;
 	border: none;
 	border-radius: 16px;
-	background: #f5f5f5;
+	background: #f5f5f5 url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat;
+	background-position: right 16px center;
 	font-size: 15px;
 	color: #444;
 	cursor: pointer;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	box-sizing: border-box;
+	flex-shrink: 0;
 }
 
 .radioContainer {

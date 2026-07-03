@@ -8,16 +8,25 @@ import {useAuthStore} from '../../store/useAuthStore.ts';
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 interface scheduleMonthDto {
-	scheduleDtm: String,
-	scheduleNm: String,
-	scheduleColor: String,
+	scheduleDtm: string,
+	scheduleNm: string,
+	scheduleColor: string,
 }
 
 interface scheduleDateDto {
 	scheduleId: number,
-	scheduleDtm: String,
-	scheduleNm: String,
-	scheduleColor: String,
+	scheduleDtm: string,
+	scheduleNm: string,
+	scheduleColor: string,
+}
+
+interface scheduleDto {
+	scheduleId: number,
+	scheduleNm: string,
+	scheduleGroupId: string,
+	scheduleDtm: string,
+	scheduleMemo: string,
+	schedulePlace: string,
 }
 
 const ScheduleMain = () => {
@@ -36,6 +45,16 @@ const ScheduleMain = () => {
 
 	//스케쥴 상태 값 세팅
 	const [scheduleStatus, setScheduleStatus] = useState('');
+
+	//스케쥴 상세 값 세팅
+	const [scheduleForm, setScheduleForm] = useState<scheduleDto> ({
+		scheduleId: 0,
+		scheduleNm: "",
+		scheduleGroupId: "",
+		scheduleDtm: "",
+		scheduleMemo: "",
+		schedulePlace: "",
+	});
 
 	//년월일 세팅
 	const [currentDate, setCurrentDate] = useState(new Date());
@@ -103,10 +122,6 @@ const ScheduleMain = () => {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData)
 			setScheduleDateList(res.data);
 
-			res.data.forEach((item: scheduleDateDto) => {
-				console.log(item.scheduleDtm, item.scheduleNm);
-			});
-
 		} catch (error) {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
@@ -124,8 +139,42 @@ const ScheduleMain = () => {
 
 	//특정 스케쥴 클릭 이벤트
 	const handleScheduleClick = async (data: scheduleDateDto) => {
-		setScheduleStatus('view');
+		try {
+			setScheduleStatus('view');
+
+			const postData = {
+				schScheduleId: data.scheduleId
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/view`, postData)
+			setScheduleForm(res.data);
+
+		} catch (error) {
+			console.error('스케쥴 로딩 실패:', error);
+		}
+
 	}
+
+	const resetScheduleForm: scheduleDto = {
+		scheduleId: 0,
+		scheduleNm: "",
+		scheduleGroupId: "",
+		scheduleDtm: "",
+		scheduleMemo: "",
+		schedulePlace: "",
+	};
+
+	const handleRegiScheduleClick = () => {
+		setScheduleStatus('insert');
+		setScheduleForm(resetScheduleForm);
+	}
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+		setScheduleForm( {
+			...scheduleForm,
+			[e.target.name]: e.target.value
+		});
+	};
 
 	return (
 		<div className={styles.calendarContainer}>
@@ -166,8 +215,9 @@ const ScheduleMain = () => {
 								<div className={`${styles.dayCell} ${((firstDay + i) % 7) === 0 ? styles.sunday : ((firstDay + i) % 7) === 6 ? styles.saturday : ''}`}>
 									{day}
 								</div>
-								{visibleSchedules.map(s => (
-									<div className={styles.scheduleItem}>
+								{visibleSchedules.map((s, idx) => (
+									<div key={idx}
+										className={styles.scheduleItem}>
 										{s.scheduleNm}
 									</div>
 								))}
@@ -195,26 +245,31 @@ const ScheduleMain = () => {
 								</div>
 							))}
 							<div className={styles.addBtn}
-							     onClick={() => setScheduleStatus('insert')}>
+							     onClick={handleRegiScheduleClick}>
 								일정 추가 +
 							</div>
 						</div>
 
 						<div className={styles.rightPanel}>
-							{scheduleStatus === 'insert' ? (
+							{scheduleStatus === 'insert' || scheduleStatus === 'view' ? (
 								<div className={styles.inputForm}>
 									<div className={styles.inputFormGroup}>
 										<input className={styles.inputField}
 										       name='scheduleNm'
+										       value={scheduleForm?.scheduleNm ?? ''}
+										       onChange={handleChange}
 										       placeholder='제목'/>
 										<div className={styles.radioContainer}>
 											<label className={styles.radioOption}>
-												<input type="radio" value="personal"
+												<input type="radio"
+												       value="personal"
 												       checked={scheduleType === 'personal'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 개인
 											</label>
 											<label className={styles.radioOption}>
-												<input type="radio" value="group" checked={scheduleType === 'group'}
+												<input type="radio"
+												       value="group"
+												       checked={scheduleType === 'group'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 그룹
 											</label>
 										</div>
@@ -226,24 +281,21 @@ const ScheduleMain = () => {
 										)}
 										<input className={styles.inputField}
 										       name='scheduleDtm'
+										       value={ scheduleForm.scheduleDtm
+											       ? `${scheduleForm.scheduleDtm.slice(0,4)}-${scheduleForm.scheduleDtm.slice(4,6)}-${scheduleForm.scheduleDtm.slice(6,8)}`
+											       : ''
+										       }
+										       onChange={handleChange}
 										       type='date'/>
 										<input className={styles.inputField}
 										       name='schedulePlace'
+										       value={scheduleForm?.schedulePlace ?? ''}
+										       onChange={handleChange}
 										       placeholder='장소'/>
 										<textarea className={`${styles.inputField} ${styles.textArea}`}
 										          name='scheduleMemo'
-										          placeholder='메모'/>
-									</div>
-
-									<button className={styles.saveButton}>저장</button>
-								</div>
-							) : scheduleStatus === 'view' ? (
-								<div className={styles.inputForm}>
-									<div className={styles.inputFormGroup}>
-										<input className={styles.inputField} placeholder='제목'/>
-										<input className={styles.inputField} type='date'/>
-										<input className={styles.inputField} placeholder='장소'/>
-										<textarea className={`${styles.inputField} ${styles.textArea}`}
+										          value={scheduleForm?.scheduleMemo ?? ''}
+										          onChange={handleChange}
 										          placeholder='메모'/>
 									</div>
 

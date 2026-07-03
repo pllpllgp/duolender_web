@@ -40,4 +40,17 @@ public class ScheduleService {
 		return true;
 	}
 
+	public ScheduleDto ScheduleView(SchScheduleDto dto) {
+		ScheduleEntity scheduleEntity = scheduleRepository.findScheduleView(dto.getSchScheduleId());
+
+		ScheduleDto scheduleDto = new ScheduleDto();
+		scheduleDto.setScheduleId(scheduleEntity.getScheduleId());
+		scheduleDto.setScheduleNm(scheduleEntity.getScheduleNm());
+		scheduleDto.setScheduleMemo(scheduleEntity.getScheduleMemo());
+		scheduleDto.setScheduleDtm(scheduleEntity.getScheduleDtm());
+		scheduleDto.setScheduleGroupId(scheduleEntity.getScheduleGroupId());
+
+		return scheduleDto;
+	}
+
 }
