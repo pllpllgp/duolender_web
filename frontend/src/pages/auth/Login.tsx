@@ -111,9 +111,11 @@ const Login = () => {
 					<li>Backend: Java (Spring Boot)</li>
 					<li>Frontend: React + TypeScript</li>
 					<li>Database: PostgreSQL</li>
-					<li>ORM: JPA (Hibernate)</li>
-					<li>Routing: React Router v6 (Data API)</li>
-					<li>Security: Spring Security (BCrypt)</li>
+					<li>ORM: JPA (Hibernate) + QueryDSL</li>
+					<li>Routing: React Router v7 (Data API)</li>
+					<li>State Management: Zustand</li>
+					<li>Build Tool: Vite</li>
+					<li>Security: Spring Security (Argon2), JWT</li>
 					<li><strong>Infrastructure: Docker, Render (PaaS)</strong></li>
 					<li><strong>Database Hosting: Neon (Serverless PostgreSQL)</strong></li>
 				</ul>
