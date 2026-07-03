@@ -1,6 +1,6 @@
 package com.example.duolender_back.schedule.controller;
 
-import com.example.duolender_back.schedule.dto.SchScheduleDto;
+import com.example.duolender_back.schedule.dto.ReqScheduleDto;
 import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +23,20 @@ public class ScheduleController {
 	private ScheduleService scheduleService;
 
 	@PostMapping("/list")
-	public List<ScheduleDto> scheduleList(@RequestBody SchScheduleDto dto) {
+	public List<ScheduleDto> scheduleList(@RequestBody ReqScheduleDto dto) {
 		return scheduleService.ScheduleList(dto);
 	}
 
-	@PostMapping("/register")
-	public Map<String, Object> scheduleRegister(@RequestBody ScheduleDto dto) {
-		boolean result = scheduleService.scheduleRegister(dto);
+	@PostMapping("/save")
+	public Map<String, Object> scheduleSave(@RequestBody ReqScheduleDto dto) {
+		System.out.println("::::::::::"+dto.getReqScheduleStatus());
+
+		boolean result = false;
+		if(dto.getReqScheduleStatus().equals("insert")) {
+			result = scheduleService.scheduleRegister(dto);
+		} else {
+			result = scheduleService.scheduleModify(dto);
+		}
 
 		Map<String, Object> res = new HashMap<>();
 		if(result) {
@@ -43,7 +50,7 @@ public class ScheduleController {
 	}
 
 	@PostMapping("/view")
-	public ScheduleDto scheduleView(@RequestBody SchScheduleDto dto) {
+	public ScheduleDto scheduleView(@RequestBody ReqScheduleDto dto) {
 		return scheduleService.ScheduleView(dto);
 	}
 }

@@ -27,6 +27,7 @@ interface scheduleDto {
 	scheduleDtm: string,
 	scheduleMemo: string,
 	schedulePlace: string,
+	scheduleGroupType: string,
 }
 
 const ScheduleMain = () => {
@@ -35,7 +36,7 @@ const ScheduleMain = () => {
 	const navigate = useNavigate();
 
 	//개인용 스케쥴인지 그룹용 스케쥴 확인
-	const [scheduleType, setScheduleType] = useState('personal');
+	const [scheduleType, setScheduleType] = useState('PERSONAL');
 
 	//선택한 일자 세팅
 	const [selectedDate, setSelectedDate] = useState<number | null>(null);
@@ -54,6 +55,7 @@ const ScheduleMain = () => {
 		scheduleDtm: "",
 		scheduleMemo: "",
 		schedulePlace: "",
+		scheduleGroupType: "",
 	});
 
 	//년월일 세팅
@@ -68,37 +70,34 @@ const ScheduleMain = () => {
 
 	//월별 스케쥴
 	const [scheduleMonthList, setScheduleMonthList] = useState<scheduleMonthDto[]>([]);
-	useEffect(() => {
-		const fetchScheduleMonthList = async () => {
-			try {
-				let schMonth;
-				if(month < 10) {
-					schMonth = year+'0'+month;
-				} else {
-					schMonth = year+''+month;
-				}
 
-				const postData = {
-					userId: user?.userId,
-					schScheduleDate: schMonth,
-				}
-
-				const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
-				setScheduleMonthList(res.data);
-
-			} catch (error) {
-				console.error('월별 스케쥴 로딩 실패:', error);
+	//월별 스케쥴 API 통신
+	const fetchScheduleMonthList = async () => {
+		try {
+			let schMonth;
+			if(month < 10) {
+				schMonth = year+'0'+month;
+			} else {
+				schMonth = year+''+month;
 			}
+
+			const postData = {
+				userId: user?.userId,
+				reqScheduleDate: schMonth,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
+			setScheduleMonthList(res.data);
+
+		} catch (error) {
+			console.error('월별 스케쥴 로딩 실패:', error);
 		}
-
-		fetchScheduleMonthList();
-
-	}, [year, month]);
-
+	}
 
 	//일별 스케쥴
 	const [scheduleDateList, setScheduleDateList] = useState<scheduleDateDto[]>([]);
 
+	//일별 스케쥴 API 통신
 	const fetchScheduleDateList = async (day: number) => {
 		try {
 			let schDay;
@@ -116,7 +115,7 @@ const ScheduleMain = () => {
 
 			const postData = {
 				userId: user?.userId,
-				schScheduleDate: schDay,
+				reqScheduleDate: schDay,
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData)
@@ -126,6 +125,11 @@ const ScheduleMain = () => {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
 	}
+
+	useEffect(() => {
+		fetchScheduleMonthList();
+
+	}, [year, month]);
 
 
 	//특정 날짜 클릭 이벤트
@@ -141,9 +145,8 @@ const ScheduleMain = () => {
 	const handleScheduleClick = async (data: scheduleDateDto) => {
 		try {
 			setScheduleStatus('view');
-
 			const postData = {
-				schScheduleId: data.scheduleId
+				reqScheduleId: data.scheduleId
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/view`, postData)
@@ -162,11 +165,37 @@ const ScheduleMain = () => {
 		scheduleDtm: "",
 		scheduleMemo: "",
 		schedulePlace: "",
+		scheduleGroupType: "",
 	};
 
-	const handleRegiScheduleClick = () => {
+	//스케쥴 등록 버튼
+	const handleRegisterClick = () => {
 		setScheduleStatus('insert');
 		setScheduleForm(resetScheduleForm);
+	}
+
+	//스케쥴 저장 버튼
+	const handleSaveClick = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				reqScheduleStatus: scheduleStatus,
+				reqScheduleId: scheduleForm.scheduleId,
+				reqScheduleNm: scheduleForm.scheduleNm,
+				reqScheduleGroupId: scheduleForm.scheduleGroupId,
+				reqScheduleDtm: scheduleForm.scheduleDtm,
+				reqScheduleMemo: scheduleForm.scheduleMemo,
+				reqSchedulePlace: scheduleForm.schedulePlace,
+				reqScheduleGroupType: scheduleType,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/save`, postData);
+
+			fetchScheduleMonthList();
+
+		} catch (error) {
+			console.error('스케쥴 저장 실패:', error);
+		}
 	}
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
@@ -245,7 +274,7 @@ const ScheduleMain = () => {
 								</div>
 							))}
 							<div className={styles.addBtn}
-							     onClick={handleRegiScheduleClick}>
+							     onClick={handleRegisterClick}>
 								일정 추가 +
 							</div>
 						</div>
@@ -262,21 +291,20 @@ const ScheduleMain = () => {
 										<div className={styles.radioContainer}>
 											<label className={styles.radioOption}>
 												<input type="radio"
-												       value="personal"
-												       checked={scheduleType === 'personal'}
+												       value="PERSONAL"
+												       checked={scheduleType === 'PERSONAL'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 개인
 											</label>
 											<label className={styles.radioOption}>
 												<input type="radio"
-												       value="group"
-												       checked={scheduleType === 'group'}
+												       value="GROUP"
+												       checked={scheduleType === 'GROUP'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 그룹
 											</label>
 										</div>
-										{scheduleType === 'group' && (
+										{scheduleType === 'GROUP' && (
 											<select className={styles.inputField}>
 												<option value="">그룹을 선택하세요</option>
-												{/* 추후 그룹 목록 매핑 */}
 											</select>
 										)}
 										<input className={styles.inputField}
@@ -299,7 +327,8 @@ const ScheduleMain = () => {
 										          placeholder='메모'/>
 									</div>
 
-									<button className={styles.saveButton}>저장</button>
+									<button className={styles.saveButton}
+									        onClick={handleSaveClick}>저장</button>
 								</div>
 							) : (
 								<div className={styles.emptyState}>

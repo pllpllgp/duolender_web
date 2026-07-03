@@ -21,7 +21,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 	QAuthEntity authEntity = QAuthEntity.authEntity;
 
 	@Override
-	public List<ScheduleDto> findScheduleList(String userId, String schScheduleDate) {
+	public List<ScheduleDto> findScheduleList(String userId, String reqScheduleDate) {
 		return queryFactory
 				.select(new QScheduleDto(
 						scheduleEntity.scheduleId,
@@ -34,17 +34,17 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 				.on(scheduleEntity.scheduleCrtnId.eq(authEntity.userId))
 				.where(
 					scheduleEntity.scheduleCrtnId.eq(userId),
-					scheduleEntity.scheduleDtm.startsWith(schScheduleDate),
-					scheduleEntity.scheduleGroupYn.eq("N")
+					scheduleEntity.scheduleDtm.startsWith(reqScheduleDate),
+					scheduleEntity.scheduleGroupType.eq("PERSONAL")
 				)
 				.fetch();
 	}
 
 	@Override
-	public ScheduleEntity findScheduleView(int schScheduleId) {
+	public ScheduleEntity findScheduleView(int reqScheduleId) {
 		return queryFactory
 				.selectFrom(scheduleEntity)
-				.where(scheduleEntity.scheduleId.eq(schScheduleId))
+				.where(scheduleEntity.scheduleId.eq(reqScheduleId))
 				.fetchOne();
 	}
 }
