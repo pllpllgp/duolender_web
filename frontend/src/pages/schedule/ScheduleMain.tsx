@@ -171,7 +171,14 @@ const ScheduleMain = () => {
 	//스케쥴 등록 버튼
 	const handleRegisterClick = () => {
 		setScheduleStatus('insert');
-		setScheduleForm(resetScheduleForm);
+
+		const pad = (n: number) => String(n).padStart(2, '0');
+		const selectedDtm = selectedDate ? `${year}${pad(month)}${pad(selectedDate)}` : '';
+
+		setScheduleForm({
+			...resetScheduleForm,
+			scheduleDtm: selectedDtm,
+		});
 	}
 
 	//스케쥴 저장 버튼
@@ -192,6 +199,7 @@ const ScheduleMain = () => {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/save`, postData);
 
 			fetchScheduleMonthList();
+			setIsPopupOpen(false);
 
 		} catch (error) {
 			console.error('스케쥴 저장 실패:', error);
@@ -202,6 +210,14 @@ const ScheduleMain = () => {
 		setScheduleForm( {
 			...scheduleForm,
 			[e.target.name]: e.target.value
+		});
+	};
+
+	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value.replace(/-/g, ''); // "2026-07-03" -> "20260703"
+		setScheduleForm({
+			...scheduleForm,
+			scheduleDtm: raw,
 		});
 	};
 
@@ -313,7 +329,7 @@ const ScheduleMain = () => {
 											       ? `${scheduleForm.scheduleDtm.slice(0,4)}-${scheduleForm.scheduleDtm.slice(4,6)}-${scheduleForm.scheduleDtm.slice(6,8)}`
 											       : ''
 										       }
-										       onChange={handleChange}
+										       onChange={handleDateChange}
 										       type='date'/>
 										<input className={styles.inputField}
 										       name='schedulePlace'
