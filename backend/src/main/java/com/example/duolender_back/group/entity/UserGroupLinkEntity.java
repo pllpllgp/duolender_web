@@ -15,7 +15,7 @@ public class UserGroupLinkEntity {
 	private int userGroupLinkId;
 
 	@Column(nullable = false)
-	private String groupId;
+	private int groupId;
 
 	@Column(nullable = false)
 	private String userId;

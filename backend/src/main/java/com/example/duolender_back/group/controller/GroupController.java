@@ -33,7 +33,7 @@ public class GroupController {
 	}
 
 	@PostMapping("/register")
-	public Map<String, Object> groupRegister(@RequestBody GroupDto dto) {
+	public Map<String, Object> groupRegister(@RequestBody ReqGroupDto dto) {
 		boolean result = groupService.groupRegister(dto);
 
 		Map<String, Object> res = new HashMap<>();

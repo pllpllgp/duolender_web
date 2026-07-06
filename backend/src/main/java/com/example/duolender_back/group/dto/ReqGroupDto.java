@@ -10,4 +10,6 @@ public class ReqGroupDto {
 	int groupId;
 
 	String reqGroupNm;
+	String reqGroupMemo;
+	String reqActiveTab;
 }

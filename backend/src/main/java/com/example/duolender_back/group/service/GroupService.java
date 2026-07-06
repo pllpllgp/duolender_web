@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,34 +23,25 @@ public class GroupService {
 	private GroupRepository groupRepository;
 
 	public List<GroupDto> groupSearch(ReqGroupDto dto) {
-		List<GroupEntity> groupEntity = groupRepository.searchGroupList(dto.getReqGroupNm());
+		List<GroupDto> groupList = new ArrayList<GroupDto>();
 
-		List<GroupDto> groupDtoList = groupEntity.stream()
-				.map(entity -> {
-					GroupDto groupDto = new GroupDto();
-					groupDto.setGroupId(entity.getGroupId());
-					groupDto.setGroupNm(entity.getGroupNm());
-					groupDto.setGroupMemo(entity.getGroupMemo());
+		groupList = groupRepository.searchGroupList(dto);
 
-					return groupDto;
-				})
-				.collect(Collectors.toList());;
-
-		return groupDtoList;
+		return groupList;
 	}
 
 	public List<GroupDto> groupDetail(ReqGroupDto dto) {
 		return null;
 	}
 
-	public boolean groupRegister(GroupDto dto) {
+	public boolean groupRegister(ReqGroupDto dto) {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		String toDate = now.format(formatter);
 
 		GroupEntity entity = new GroupEntity();
-		entity.setGroupNm(dto.getGroupNm());
-		entity.setGroupMemo(dto.getGroupMemo());
+		entity.setGroupNm(dto.getReqGroupNm());
+		entity.setGroupMemo(dto.getReqGroupMemo());
 		entity.setGroupCrtnId(dto.getUserId());
 		entity.setGroupCrtnDtm(toDate);
 

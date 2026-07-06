@@ -39,4 +39,7 @@ public class AuthEntity {
 	@Column(nullable = false)
 	private String scheduleColor;
 
+	@Column(nullable = false)
+	private String userNick;
+
 }

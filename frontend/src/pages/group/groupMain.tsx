@@ -4,6 +4,7 @@ import * as React from "react";
 import axios from "../../api/axiosInstance";
 
 import styles from '../../css/Group.module.css'
+import {useAuthStore} from "../../store/useAuthStore.ts";
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -14,10 +15,22 @@ interface groupDto {
 }
 
 const GroupMain = () => {
-	const [activeTab, setActiveTab] = useState<'discover' | 'myGroups'>('discover');
+	const user = useAuthStore((state) => state.user);
+
+	const [activeTab, setActiveTab] = useState<'searchGroup' | 'myGroup'>('searchGroup');
 	const [groupPopup, setGroupPopup] = useState<'insert' | 'join' | ''>('');
 	const [reqGroupNm, setReqGroupNm] = useState("");
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
+
+	const handleTabChange = (tab) => {
+		setActiveTab(tab);
+
+		if(tab === 'searchGroup') {
+			setGroupList([]);
+		} else {
+			handleSearchGroup(tab);
+		}
+	}
 
 	const handleInsert = () => {
 		setGroupPopup('insert');
@@ -29,27 +42,29 @@ const GroupMain = () => {
 
 	const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
-			handleSearchGroup();
+			handleSearchGroup('searchGroup');
 		}
 	};
 
-	const handleSearchGroup = async () => {
+	const handleSearchGroup = async (tab) => {
 		try {
 			const postData = {
+				userId: user?.userId,
 				reqGroupNm: reqGroupNm,
+				reqActiveTab: tab,
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
 			setGroupList(res.data);
 
 		} catch (error) {
-			console.error('그룹 검색 실패:', error);
+			console.error('그룹 찾기 검색 실패:', error);
 		}
 
 	}
 
 	const handleJoinDis = () => {
-		if(activeTab === 'discover') {
+		if(activeTab === 'searchGroup') {
 			setGroupPopup('join');
 		}
 	}
@@ -62,14 +77,14 @@ const GroupMain = () => {
 					<h1 className={styles.title}></h1>
 					<div className={styles.tabs}>
 						<button
-							onClick={() => setActiveTab('discover')}
-							className={`${styles.tabBtn} ${activeTab === 'discover' ? styles.activeTab : ''}`}
+							onClick={() => handleTabChange('searchGroup')}
+							className={`${styles.tabBtn} ${activeTab === 'searchGroup' ? styles.activeTab : ''}`}
 						>
 							그룹 찾기
 						</button>
 						<button
-							onClick={() => setActiveTab('myGroups')}
-							className={`${styles.tabBtn} ${activeTab === 'myGroups' ? styles.activeTab : ''}`}
+							onClick={() => handleTabChange('myGroup')}
+							className={`${styles.tabBtn} ${activeTab === 'myGroup' ? styles.activeTab : ''}`}
 						>
 							내 그룹
 						</button>
@@ -83,10 +98,10 @@ const GroupMain = () => {
 				</button>
 			</div>
 
-			{activeTab === 'discover' && (
+			{activeTab === 'searchGroup' && (
 				<div className={styles.searchWrapper}>
 					<Search className={styles.searchIcon} size={20}
-					        onClick={handleSearchGroup}/>
+					        onClick={() => handleSearchGroup('searchGroup')}/>
 					<input type="text"
 					       className={styles.searchInput}
 					       placeholder="관심있는 그룹 이름이나 태그를 검색해보세요."
@@ -115,7 +130,7 @@ const GroupMain = () => {
 							</div>
 							<button className={styles.joinBtn}
 									onClick={handleJoinDis}>
-								{activeTab === 'discover' ? '가입하기' : '탈퇴하기'}
+								{activeTab === 'searchGroup' ? '가입하기' : '탈퇴하기'}
 							</button>
 						</div>
 					</div>

@@ -1,8 +1,14 @@
 package com.example.duolender_back.group.repository;
 
+import com.example.duolender_back.auth.entity.QAuthEntity;
+import com.example.duolender_back.group.dto.GroupDto;
+import com.example.duolender_back.group.dto.QGroupDto;
+import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.entity.QGroupEntity;
+import com.example.duolender_back.group.entity.QUserGroupLinkEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,23 +21,49 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	QGroupEntity qEntity = QGroupEntity.groupEntity;
+	QGroupEntity groupEntity = QGroupEntity.groupEntity;
 
-	private BooleanExpression groupNmCondition(String groupNm) {
-		// null이거나 isEmpty()가 true(공백)일 경우 null 반환
-		if (groupNm == null || groupNm.isEmpty()) {
-			return null;
-		}
-		return qEntity.groupNm.eq(groupNm);
-	}
+	QUserGroupLinkEntity userGroupLinkEntity = QUserGroupLinkEntity.userGroupLinkEntity;
+
+	QAuthEntity authEntity = QAuthEntity.authEntity;
 
 	@Override
-	public List<GroupEntity> searchGroupList(String reqGroupNm) {
-		return queryFactory
-				.selectFrom(qEntity)
-				.where(
-					qEntity.groupNm.contains(reqGroupNm)
-				)
-				.fetch();
+	public List<GroupDto> searchGroupList(ReqGroupDto dto) {
+		JPAQuery<GroupDto> query;
+
+		//그룹 검색
+		if(dto.getReqActiveTab().equals("searchGroup")) {
+			query = queryFactory
+					.select(new QGroupDto(
+						groupEntity.groupId,
+						groupEntity.groupNm,
+						groupEntity.groupMemo,
+						groupEntity.groupCrtnId,
+						authEntity.userNick))
+					.from(groupEntity)
+					.innerJoin(authEntity)
+					.on(groupEntity.groupCrtnId.eq(authEntity.userId));
+
+		//내 그룹 검색
+		} else {
+			query = queryFactory
+					.select(new QGroupDto(
+						groupEntity.groupId,
+						groupEntity.groupNm,
+						groupEntity.groupMemo,
+						groupEntity.groupCrtnId,
+						authEntity.userNick))
+					.from(groupEntity)
+					.innerJoin(userGroupLinkEntity)
+					.on(groupEntity.groupId.eq(userGroupLinkEntity.groupId))
+					.on(userGroupLinkEntity.userId.eq(dto.getUserId()))
+					.innerJoin(authEntity)
+					.on(userGroupLinkEntity.userId.eq(authEntity.userId));
+
+		}
+
+		List<GroupDto> result = query.fetch();
+
+		return result;
 	}
 }
