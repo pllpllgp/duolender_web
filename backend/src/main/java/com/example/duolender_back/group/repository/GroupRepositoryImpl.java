@@ -8,6 +8,7 @@ import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.entity.QGroupEntity;
 import com.example.duolender_back.group.entity.QUserGroupLinkEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,15 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 						authEntity.userNick))
 					.from(groupEntity)
 					.innerJoin(authEntity)
-					.on(groupEntity.groupCrtnId.eq(authEntity.userId));
+					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
+					.where(
+						groupEntity.groupId.notIn(
+								JPAExpressions
+								.select(userGroupLinkEntity.groupId)
+								.from(userGroupLinkEntity)
+								.where(userGroupLinkEntity.userId.eq(dto.getUserId()))),
+						groupEntity.groupNm.contains(dto.getReqGroupNm())
+					);
 
 		//내 그룹 검색
 		} else {

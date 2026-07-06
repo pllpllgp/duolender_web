@@ -12,6 +12,7 @@ interface groupDto {
 	groupId: number;
 	groupNm: string;
 	groupMemo: string;
+	userNick: string
 }
 
 const GroupMain = () => {
@@ -21,6 +22,12 @@ const GroupMain = () => {
 	const [groupPopup, setGroupPopup] = useState<'insert' | 'join' | ''>('');
 	const [reqGroupNm, setReqGroupNm] = useState("");
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
+	const [groupForm, setGroupForm] = useState<groupDto>({
+		groupId: 0,
+		groupNm: '',
+		groupMemo: '',
+		userNick: '',
+	});
 
 	const handleTabChange = (tab) => {
 		setActiveTab(tab);
@@ -172,7 +179,8 @@ const GroupMain = () => {
 					<div className={styles.modalContent}>
 						<div className={styles.modalHeader}>
 							<h2>그룹 정보</h2>
-							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
+							<button className={styles.closeBtn}
+							        onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
 						</div>
@@ -180,7 +188,12 @@ const GroupMain = () => {
 						<div className={styles.modalBody}>
 							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 이름</span>
-								<div className={styles.infoValue}>테스트</div>
+								<div className={styles.infoValue}>{groupForm?.groupNm}</div>
+							</div>
+
+							<div className={styles.infoGroup}>
+								<span className={styles.infoLabel}>그룹 장</span>
+								<div className={styles.infoValue}>{groupForm?.userNick}</div>
 							</div>
 
 							<div className={styles.infoGroup}>
@@ -192,7 +205,7 @@ const GroupMain = () => {
 
 							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 메모</span>
-								<div className={styles.infoBox}>내용적어주세요</div>
+								<div className={styles.infoBox}>{groupForm?.groupMemo}</div>
 							</div>
 						</div>
 
