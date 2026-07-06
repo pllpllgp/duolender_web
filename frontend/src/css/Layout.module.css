@@ -1,0 +1,105 @@
+.wrapper {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background-color: white;
+	border-right: 1px solid #e5e7eb;
+	transition: width 0.3s ease-in-out;
+	overflow: hidden;
+	z-index: 1000;
+	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+	white-space: nowrap;
+}
+
+.open {
+	width: 400px;
+}
+
+.closed {
+	width: 0;
+}
+
+.sidebarContent {
+	width: 400px;
+	height: 100%;
+	position: relative;
+}
+
+.menu {
+	padding: 60px 20px 20px 20px;
+}
+
+.menu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu li {
+	padding: 20px 10px;
+	font-size: 18px;
+	cursor: pointer;
+	border-bottom: 1px solid #f3f4f6;
+	font-weight: 500;
+}
+
+.menu li:hover {
+	background-color: #f9fafb;
+	color: #3b82f6;
+}
+
+.mainContent {
+	width: 100%;
+	height: 100%;
+}
+
+.toggleBtn {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 40px;
+	height: 40px;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	cursor: pointer;
+	z-index: 500;
+}
+
+.closeBtn {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+}
+
+.logoutWrapper {
+	margin-top: auto;
+	padding-top: 20px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.logoutBtn {
+	width: 100%;
+	padding: 15px;
+	background: none;
+	border: none;
+	color: #ef4444;
+	font-weight: 600;
+	cursor: pointer;
+	text-align: left;
+}
+
+.logoutBtn:hover {
+	background-color: #fee2e2;
+}

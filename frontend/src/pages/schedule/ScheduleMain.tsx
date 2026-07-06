@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
-
-import styles from '../../css/Schedule.module.css';
 import {useNavigate} from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import {useAuthStore} from '../../store/useAuthStore.ts';
+
+import styles from '../../css/Schedule.module.css';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
