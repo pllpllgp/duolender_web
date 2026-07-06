@@ -319,7 +319,8 @@ const ScheduleMain = () => {
 											</label>
 										</div>
 										{scheduleType === 'GROUP' && (
-											<select className={styles.inputField}>
+											<select name='groupId'
+													className={styles.inputField}>
 												<option value="">그룹을 선택하세요</option>
 											</select>
 										)}

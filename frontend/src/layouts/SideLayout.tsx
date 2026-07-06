@@ -8,6 +8,33 @@ const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 function SideLayout() {
 	const [isOpen, setIsOpen] = useState(false);
+	const logout = useAuthStore((state) => state.logout);
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		const isConfirm = confirm("로그아웃 하시겠습니까?");
+
+		if(isConfirm) {
+			logout();
+			navigate("/login");
+
+		}
+	}
+
+	const handleSchedule = () => {
+		setIsOpen(false);
+		navigate("/scheduleMain");
+	}
+
+	const handleGroup = () => {
+		setIsOpen(false);
+		navigate("/groupMain");
+	}
+
+	const handleMyPage = () => {
+		setIsOpen(false);
+		navigate("/scheduleMain");
+	}
 
 	return (
 		<div className={styles.wrapper}>
@@ -16,12 +43,13 @@ function SideLayout() {
 					<button className={styles.closeBtn} onClick={() => setIsOpen(false)}>✕</button>
 					<nav className={styles.menu}>
 						<ul>
-							<li>캘린더</li>
-							<li>그룹</li>
-							<li>마이페이지</li>
+							<li onClick={handleSchedule}>캘린더</li>
+							<li onClick={handleGroup}>그룹</li>
+							<li onClick={handleMyPage}>마이페이지</li>
 						</ul>
 
-						<div className={styles.logoutWrapper}>
+						<div className={styles.logoutWrapper}
+							 onClick={handleLogout}>
 							<button className={styles.logoutBtn}>로그아웃</button>
 						</div>
 					</nav>
