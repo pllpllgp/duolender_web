@@ -1,6 +1,7 @@
 package com.example.duolender_back.group.controller;
 
 import com.example.duolender_back.group.dto.GroupDto;
+import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,14 @@ public class GroupController {
 	@Autowired
 	private GroupService groupService;
 
-	@PostMapping("/list")
-	public List<GroupDto> groupList(@RequestBody GroupDto dto) {
-		return groupService.groupList(dto);
+	@PostMapping("/search")
+	public List<GroupDto> groupSearch(@RequestBody ReqGroupDto dto) {
+		return groupService.groupSearch(dto);
 	}
 
 	@PostMapping("/detail")
-	public List<GroupDto> groupDetail(@RequestBody GroupDto dto) {
-		return groupService.groupList(dto);
+	public List<GroupDto> groupDetail(@RequestBody ReqGroupDto dto) {
+		return groupService.groupDetail(dto);
 	}
 
 	@PostMapping("/register")

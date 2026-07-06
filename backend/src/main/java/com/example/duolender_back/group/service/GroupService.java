@@ -1,6 +1,7 @@
 package com.example.duolender_back.group.service;
 
 import com.example.duolender_back.group.dto.GroupDto;
+import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.repository.GroupRepository;
 import com.example.duolender_back.schedule.dto.ScheduleDto;
@@ -20,8 +21,8 @@ public class GroupService {
 	@Autowired
 	private GroupRepository groupRepository;
 
-	public List<GroupDto> groupList(GroupDto dto) {
-		List<GroupEntity> groupEntity = groupRepository.findGroupList(dto.getGroupNm());
+	public List<GroupDto> groupSearch(ReqGroupDto dto) {
+		List<GroupEntity> groupEntity = groupRepository.searchGroupList(dto.getReqGroupNm());
 
 		List<GroupDto> groupDtoList = groupEntity.stream()
 				.map(entity -> {
@@ -35,6 +36,10 @@ public class GroupService {
 				.collect(Collectors.toList());;
 
 		return groupDtoList;
+	}
+
+	public List<GroupDto> groupDetail(ReqGroupDto dto) {
+		return null;
 	}
 
 	public boolean groupRegister(GroupDto dto) {

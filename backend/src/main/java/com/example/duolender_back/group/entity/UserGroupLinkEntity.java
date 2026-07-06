@@ -11,8 +11,8 @@ import lombok.Setter;
 public class UserGroupLinkEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "link_id")
-	private int linkId;
+	@Column(name = "user_group_link_id")
+	private int userGroupLinkId;
 
 	@Column(nullable = false)
 	private String groupId;
@@ -30,6 +30,6 @@ public class UserGroupLinkEntity {
 	private String groupAdminGrade;
 
 	@Column(nullable = false)
-	private String groupColor;
+	private String scheduleColor;
 
 }

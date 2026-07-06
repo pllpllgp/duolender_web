@@ -26,11 +26,11 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	}
 
 	@Override
-	public List<GroupEntity> findGroupList(String groupNm) {
+	public List<GroupEntity> searchGroupList(String reqGroupNm) {
 		return queryFactory
 				.selectFrom(qEntity)
 				.where(
-					groupNmCondition(groupNm)
+					qEntity.groupNm.contains(reqGroupNm)
 				)
 				.fetch();
 	}

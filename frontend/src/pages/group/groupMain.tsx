@@ -1,18 +1,23 @@
 import {useEffect, useState} from 'react';
 import { Search, Plus, Users, Lock, Unlock, X } from 'lucide-react';
-import styles from '../../css/Group.module.css'
 import * as React from "react";
+import axios from "../../api/axiosInstance";
+
+import styles from '../../css/Group.module.css'
+
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
+
+interface groupDto {
+	groupId: number;
+	groupNm: string;
+	groupMemo: string;
+}
 
 const GroupMain = () => {
 	const [activeTab, setActiveTab] = useState<'discover' | 'myGroups'>('discover');
 	const [groupPopup, setGroupPopup] = useState<'insert' | 'join' | ''>('');
 	const [reqGroupNm, setReqGroupNm] = useState("");
-
-	const dummyGroups = [
-		{ id: 1, name: '프론트엔드 스터디', desc: '리액트와 테일윈드를 마스터합시다.', members: 12, isPrivate: false },
-		{ id: 2, name: '가족 일정 공유', desc: '우리 가족 행사 및 여행 일정', members: 4, isPrivate: true },
-		{ id: 3, name: '주말 런닝 클럽', desc: '매주 토요일 아침 한강 러닝', members: 25, isPrivate: false },
-	];
+	const [groupList, setGroupList] = useState<groupDto[]>([]);
 
 	const handleInsert = () => {
 		setGroupPopup('insert');
@@ -28,8 +33,25 @@ const GroupMain = () => {
 		}
 	};
 
-	const handleSearchGroup = () => {
-		setGroupPopup('join');
+	const handleSearchGroup = async () => {
+		try {
+			const postData = {
+				reqGroupNm: reqGroupNm,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
+			setGroupList(res.data);
+
+		} catch (error) {
+			console.error('그룹 검색 실패:', error);
+		}
+
+	}
+
+	const handleJoinDis = () => {
+		if(activeTab === 'discover') {
+			setGroupPopup('join');
+		}
 	}
 
 	return (
@@ -61,10 +83,10 @@ const GroupMain = () => {
 				</button>
 			</div>
 
-			{activeTab === 'discover' ? (
+			{activeTab === 'discover' && (
 				<div className={styles.searchWrapper}>
 					<Search className={styles.searchIcon} size={20}
-							onClick={handleSearchGroup}/>
+					        onClick={handleSearchGroup}/>
 					<input type="text"
 					       className={styles.searchInput}
 					       placeholder="관심있는 그룹 이름이나 태그를 검색해보세요."
@@ -72,36 +94,33 @@ const GroupMain = () => {
 					       onKeyDown={handleSearchKeyDown}
 					/>
 				</div>
-			) : activeTab === 'myGroups' ? (
-				<div className={styles.grid}>
-					{dummyGroups.map((group) => (
-						<div key={group.id} className={styles.card}>
-							<div className={styles.cardHeader}>
-								<h3 className={styles.cardTitle}>{group.name}</h3>
-								{group.isPrivate ? (
-									<Lock size={18} className={styles.iconLocked}/>
-								) : (
-									<Unlock size={18} className={styles.iconUnlocked}/>
-								)}
-							</div>
+			)}
 
-							<p className={styles.cardDesc}>
-								{group.desc}
-							</p>
-
-							<div className={styles.cardFooter}>
-								<div className={styles.members}>
-									<Users size={16}/>
-									<span>{group.members}명</span>
-								</div>
-								<button className={styles.joinBtn}>
-									탈퇴하기
-								</button>
-							</div>
+			<div className={styles.grid}>
+				{groupList.map((g) => (
+					<div className={styles.card}
+					     key={g.groupId}>
+						<div className={styles.cardHeader}>
+							<h3 className={styles.cardTitle}>{g.groupNm}</h3>
 						</div>
-					))}
-				</div>
-			) : null}
+
+						<p className={styles.cardDesc}>
+							{g.groupMemo}
+						</p>
+
+						<div className={styles.cardFooter}>
+							<div className={styles.members}>
+								<Users size={16}/>
+								<span>3명</span>
+							</div>
+							<button className={styles.joinBtn}
+									onClick={handleJoinDis}>
+								{activeTab === 'discover' ? '가입하기' : '탈퇴하기'}
+							</button>
+						</div>
+					</div>
+				))}
+			</div>
 
 			{groupPopup === 'insert' ? (
 				<div className={styles.modalOverlay}>
@@ -110,33 +129,19 @@ const GroupMain = () => {
 							<h2>새 그룹 만들기</h2>
 							<button className={styles.closeBtn}
 							        onClick={() => setGroupPopup('')}>
-								<X size={24} />
+								<X size={24}/>
 							</button>
 						</div>
 
 						<div className={styles.modalBody}>
 							<div className={styles.formGroup}>
 								<label>그룹 이름</label>
-								<input type="text" placeholder="그룹 이름을 입력하세요" />
+								<input type="text" placeholder="그룹 이름을 입력하세요"/>
 							</div>
 
 							<div className={styles.formGroup}>
 								<label>그룹 설명</label>
-								<textarea placeholder="어떤 그룹인지 설명해주세요" rows={4} />
-							</div>
-
-							<div className={styles.formGroup}>
-								<label>공개 여부</label>
-								<div className={styles.radioGroup}>
-									<label className={styles.radioLabel}>
-										<input type="radio" name="privacy" defaultChecked />
-										<span>공개 그룹</span>
-									</label>
-									<label className={styles.radioLabel}>
-										<input type="radio" name="privacy" />
-										<span>비공개 그룹</span>
-									</label>
-								</div>
+								<textarea placeholder="어떤 그룹인지 설명해주세요" rows={4}/>
 							</div>
 						</div>
 
@@ -146,6 +151,7 @@ const GroupMain = () => {
 						</div>
 					</div>
 				</div>
+
 			) : groupPopup === 'join' ? (
 				<div className={styles.modalOverlay}>
 					<div className={styles.modalContent}>
