@@ -39,11 +39,32 @@ const GroupMain = () => {
 		}
 	}
 
-	const handleInsert = () => {
-		setGroupPopup('insert');
+	const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		setGroupForm( {
+			...groupForm,
+			[e.target.name]: e.target.value
+		});
 	}
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleGroupRegister = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				reqGroupNm: groupForm.groupNm,
+				reqGroupMemo: groupForm.groupMemo,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/register`, postData);
+
+			setGroupPopup('');
+
+		} catch (error) {
+			console.error('그룹 등록 실패:', error);
+
+		}
+	}
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setReqGroupNm(e.target.value);
 	}
 
@@ -99,7 +120,7 @@ const GroupMain = () => {
 				</div>
 
 				<button className={styles.createBtn}
-				        onClick={handleInsert}>
+				        onClick={() => setGroupPopup('insert')}>
 					<Plus size={20}/>
 					그룹 만들기
 				</button>
@@ -112,7 +133,7 @@ const GroupMain = () => {
 					<input type="text"
 					       className={styles.searchInput}
 					       placeholder="관심있는 그룹 이름이나 태그를 검색해보세요."
-					       onChange={handleChange}
+					       onChange={handleSearchChange}
 					       onKeyDown={handleSearchKeyDown}
 					/>
 				</div>
@@ -158,18 +179,26 @@ const GroupMain = () => {
 						<div className={styles.modalBody}>
 							<div className={styles.formGroup}>
 								<label>그룹 이름</label>
-								<input type="text" placeholder="그룹 이름을 입력하세요"/>
+								<input type="text"
+								       name="groupNm"
+								       placeholder="그룹 이름을 입력하세요"
+								       onChange={handleRegisterChange}/>
 							</div>
 
 							<div className={styles.formGroup}>
 								<label>그룹 설명</label>
-								<textarea placeholder="어떤 그룹인지 설명해주세요" rows={4}/>
+								<textarea name="groupMemo"
+										  placeholder="어떤 그룹인지 설명해주세요"
+								          rows={4}
+								          onChange={handleRegisterChange}/>
 							</div>
 						</div>
 
 						<div className={styles.modalFooter}>
-							<button className={styles.cancelBtn} onClick={() => setGroupPopup('')}>취소</button>
-							<button className={styles.submitBtn}>생성하기</button>
+							<button className={styles.cancelBtn}
+							        onClick={() => setGroupPopup('')}>취소</button>
+							<button className={styles.submitBtn}
+									onClick={handleGroupRegister}>생성하기</button>
 						</div>
 					</div>
 				</div>
