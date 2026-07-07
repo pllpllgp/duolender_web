@@ -33,9 +33,7 @@ const Login = () => {
 		})
 	}
 
-	const handleSubmit = async (e: React.FormEvent)=> {
-		e.preventDefault();
-
+	const handleSubmit = async ()=> {
 		try {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/auth/login`, loginData);
 
@@ -56,6 +54,12 @@ const Login = () => {
 
 		}
 	}
+
+	const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			handleSubmit();
+		}
+	};
 
 	return (
 		<div className={styles.container}>
@@ -88,6 +92,7 @@ const Login = () => {
 						name="userPw"
 						placeholder="비밀번호"
 						onChange={handleChange}
+						onKeyDown={handleSearchKeyDown}
 						className={styles.inputField}
 					/>
 				</div>
