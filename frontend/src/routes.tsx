@@ -1,5 +1,6 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import Login from "./pages/auth/Login.tsx";
+import SighUp from "./pages/auth/Signup.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ScheduleMain from "./pages/schedule/ScheduleMain.tsx";
 import GroupMain from "./pages/group/groupMain.tsx";
@@ -11,8 +12,10 @@ export const router = createBrowserRouter([
 		element: <Navigate to="login" replace />,
 	},
 	{
-		path: "login",
-		element: <Login />,
+		path: "login", element: <Login />,
+	},
+	{
+		path: "signUp", element: <SighUp />,
 	},
 	{
 		element: <SideLayout />,

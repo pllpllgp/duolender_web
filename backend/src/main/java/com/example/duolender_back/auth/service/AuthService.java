@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -17,23 +18,46 @@ public class AuthService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	public boolean signup(AuthDto dto) {
+	private static final Pattern PASSWORD_PATTERN = Pattern.compile(
+			"^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,20}$"
+	);
+
+
+	public boolean dupleCheck(AuthDto dto) {
 		//중복 ID 체크
 		if(authRepository.findById(dto.getUserId()).isPresent()) {
 			return false;
 		};
 
-		AuthEntity entity = new AuthEntity();
-		entity.setUserId(dto.getUserId());
-		entity.setUserPw(passwordEncoder.encode(dto.getUserPw()));
-		entity.setUserNm(dto.getUserNm());
-		entity.setUserPhone(dto.getUserPhone());
-		entity.setUserEmail(dto.getUserEmail());
-		entity.setUserSnsLogin(dto.getUserSnsLogin());
-
-		authRepository.save(entity);
-
 		return true;
+
+	}
+
+	public String signup(AuthDto dto) {
+		String result = "";
+
+		boolean pwValid = PASSWORD_PATTERN.matcher(dto.getUserPw()).matches();
+
+		//비밀번호 유효성 검사
+		if(!pwValid) {
+			result = "notPwValid";
+
+		} else {
+			AuthEntity entity = new AuthEntity();
+			entity.setUserId(dto.getUserId());
+			entity.setUserPw(passwordEncoder.encode(dto.getUserPw()));
+			entity.setUserNm(dto.getUserNm());
+			entity.setUserNick(dto.getUserId());
+			entity.setUserPhone(dto.getUserPhone());
+			entity.setUserEmail(dto.getUserEmail());
+			entity.setUserSnsLogin(dto.getUserSnsLogin());
+
+			authRepository.save(entity);
+
+			result = "success";
+		}
+
+		return result;
 
 	}
 

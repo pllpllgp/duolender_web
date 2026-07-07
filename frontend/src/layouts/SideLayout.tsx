@@ -19,22 +19,22 @@ function SideLayout() {
 			navigate("/login");
 
 		}
-	}
+	};
 
 	const handleSchedule = () => {
 		setIsOpen(false);
 		navigate("/scheduleMain");
-	}
+	};
 
 	const handleGroup = () => {
 		setIsOpen(false);
 		navigate("/groupMain");
-	}
+	};
 
 	const handleMyPage = () => {
 		setIsOpen(false);
 		navigate("/scheduleMain");
-	}
+	};
 
 	return (
 		<div className={styles.wrapper}>
@@ -62,7 +62,7 @@ function SideLayout() {
 				<Outlet/>
 			</main>
 		</div>
-	)
-}
+	);
+};
 
 export default SideLayout;

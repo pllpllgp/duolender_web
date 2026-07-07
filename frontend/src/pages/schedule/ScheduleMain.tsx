@@ -92,7 +92,7 @@ const ScheduleMain = () => {
 		} catch (error) {
 			console.error('월별 스케쥴 로딩 실패:', error);
 		}
-	}
+	};
 
 	//일별 스케쥴
 	const [scheduleDateList, setScheduleDateList] = useState<scheduleDateDto[]>([]);
@@ -124,7 +124,7 @@ const ScheduleMain = () => {
 		} catch (error) {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
-	}
+	};
 
 	useEffect(() => {
 		fetchScheduleMonthList();
@@ -156,7 +156,7 @@ const ScheduleMain = () => {
 			console.error('스케쥴 로딩 실패:', error);
 		}
 
-	}
+	};
 
 	const resetScheduleForm: scheduleDto = {
 		scheduleId: 0,
@@ -179,7 +179,7 @@ const ScheduleMain = () => {
 			...resetScheduleForm,
 			scheduleDtm: selectedDtm,
 		});
-	}
+	};
 
 	//스케쥴 저장 버튼
 	const handleSaveClick = async () => {
@@ -204,7 +204,7 @@ const ScheduleMain = () => {
 		} catch (error) {
 			console.error('스케쥴 저장 실패:', error);
 		}
-	}
+	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
 		setScheduleForm( {
@@ -358,6 +358,6 @@ const ScheduleMain = () => {
 			)}
 		</div>
 	);
-}
+};
 
 export default ScheduleMain;

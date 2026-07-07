@@ -31,4 +31,4 @@ export const useAuthStore = create<AuthState>() (
 			name: 'userInfo'
 		}
 	)
-)
+);

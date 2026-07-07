@@ -27,9 +27,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.OPTIONS,
 								"/**").permitAll()
-						.requestMatchers("/api/auth/duoConnect",
-								"/api/auth/login",
-								"/api/auth/signup").permitAll()
+						.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers("/",
 								"/index.html",
 								"/static/**",

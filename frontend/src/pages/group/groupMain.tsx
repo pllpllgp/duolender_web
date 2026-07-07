@@ -13,7 +13,7 @@ interface groupDto {
 	groupNm: string;
 	groupMemo: string;
 	userNick: string
-}
+};
 
 const GroupMain = () => {
 	const user = useAuthStore((state) => state.user);
@@ -37,14 +37,14 @@ const GroupMain = () => {
 		} else {
 			handleSearchGroup(tab);
 		}
-	}
+	};
 
 	const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setGroupForm( {
 			...groupForm,
 			[e.target.name]: e.target.value
 		});
-	}
+	};
 
 	const handleGroupRegister = async () => {
 		try {
@@ -60,9 +60,8 @@ const GroupMain = () => {
 
 		} catch (error) {
 			console.error('그룹 등록 실패:', error);
-
 		}
-	}
+	};
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setReqGroupNm(e.target.value);
@@ -88,14 +87,13 @@ const GroupMain = () => {
 		} catch (error) {
 			console.error('그룹 찾기 검색 실패:', error);
 		}
-
-	}
+	};
 
 	const handleJoinDis = () => {
 		if(activeTab === 'searchGroup') {
 			setGroupPopup('join');
 		}
-	}
+	};
 
 	return (
 		<div className={styles.container}>

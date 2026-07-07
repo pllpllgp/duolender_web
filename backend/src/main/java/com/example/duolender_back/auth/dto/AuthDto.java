@@ -16,5 +16,7 @@ public class AuthDto {
 	private String userCrtnDtm;
 	private String userChngDtm;
 	private String userToken;
+	private String userIdDupleCheck;
+	private String dupleState;
 
 }

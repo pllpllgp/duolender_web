@@ -99,7 +99,8 @@ const Login = () => {
 					로그인
 				</button>
 
-				<button className={styles.signupLink}>
+				<button className={styles.signupLink}
+						onClick={() => navigate('/signup')}>
 					아직 회원이 아니신가요? 회원가입
 				</button>
 

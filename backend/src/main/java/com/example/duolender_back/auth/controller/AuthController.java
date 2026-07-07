@@ -36,9 +36,9 @@ public class AuthController {
 		}
 	}
 
-	@PostMapping("/signup")
-	public Map<String, Object> Singup(@RequestBody AuthDto dto) {
-		boolean result = authService.signup(dto);
+	@PostMapping("/dupleCheck")
+	public Map<String, Object> dupleCheck(@RequestBody AuthDto dto) {
+		boolean result = authService.dupleCheck(dto);
 
 		Map<String, Object> res = new HashMap<>();
 		if(result) {
@@ -46,6 +46,17 @@ public class AuthController {
 		} else {
 			res.put("result", false);
 		}
+
+		return res;
+
+	}
+
+	@PostMapping("/signup")
+	public Map<String, Object> signup(@RequestBody AuthDto dto) {
+		String result = authService.signup(dto);
+
+		Map<String, Object> res = new HashMap<>();
+		res.put("result", result);
 
 		return res;
 
