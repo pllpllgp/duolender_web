@@ -8,20 +8,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GroupDto {
+public class GroupDetailDto {
 	Integer groupId;
 	String groupNm;
 	String groupMemo;
-	Long groupMemCnt;
+	String userNick;
+	String groupJoinState;
 	String groupCrtnId;
-	String groupCrtnDtm;
 
 	@QueryProjection
-	public GroupDto(Integer groupId, String groupNm, String groupMemo, Long groupMemCnt, String groupCrtnId) {
+	public GroupDetailDto(Integer groupId, String groupNm, String groupMemo, String userNick, String groupJoinState, String groupCrtnId) {
 		this.groupId = groupId;
 		this.groupNm = groupNm;
 		this.groupMemo = groupMemo;
-		this.groupMemCnt = groupMemCnt;
+		this.userNick = userNick;
+		this.groupJoinState = groupJoinState;
 		this.groupCrtnId = groupCrtnId;
 	}
 }

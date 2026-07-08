@@ -1,10 +1,13 @@
 package com.example.duolender_back.group.controller;
 
+import com.example.duolender_back.group.dto.GroupDetailDto;
 import com.example.duolender_back.group.dto.GroupDto;
 import com.example.duolender_back.group.dto.ReqGroupDto;
+import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +31,7 @@ public class GroupController {
 	}
 
 	@PostMapping("/detail")
-	public List<GroupDto> groupDetail(@RequestBody ReqGroupDto dto) {
+	public GroupDetailDto groupDetail(@RequestBody ReqGroupDto dto) {
 		return groupService.groupDetail(dto);
 	}
 
@@ -44,6 +47,12 @@ public class GroupController {
 		}
 
 		return res;
+	}
 
+	@PostMapping("/groupReq")
+	public GroupDto groupReq(@RequestBody ReqGroupDto dto) {
+		groupService.groupReq(dto);
+
+		return null;
 	}
 }

@@ -12,14 +12,16 @@ interface groupDto {
 	groupId: number;
 	groupNm: string;
 	groupMemo: string;
-	userNick: string
-};
+	userNick: string;
+	groupMemCnt: number;
+	groupJoinState: string;
+}
 
 const GroupMain = () => {
 	const user = useAuthStore((state) => state.user);
 
 	const [activeTab, setActiveTab] = useState<'searchGroup' | 'myGroup'>('searchGroup');
-	const [groupPopup, setGroupPopup] = useState<'insert' | 'join' | ''>('');
+	const [groupPopup, setGroupPopup] = useState<'insert' | 'view' | ''>('');
 	const [reqGroupNm, setReqGroupNm] = useState("");
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
 	const [groupForm, setGroupForm] = useState<groupDto>({
@@ -27,6 +29,8 @@ const GroupMain = () => {
 		groupNm: '',
 		groupMemo: '',
 		userNick: '',
+		groupMemCnt: 0,
+		groupJoinState: '',
 	});
 
 	const handleTabChange = (tab) => {
@@ -89,9 +93,44 @@ const GroupMain = () => {
 		}
 	};
 
-	const handleJoinDis = () => {
-		if(activeTab === 'searchGroup') {
-			setGroupPopup('join');
+	const handleGroupDetail = async (groupId) => {
+		try {
+			setGroupPopup('view');
+
+			const postData = {
+				userId: user?.userId,
+				groupId: groupId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
+			setGroupForm(res.data);
+
+		} catch (error) {
+			console.error('그룹 상세 보기 실패:', error);
+		}
+
+	};
+
+	const handleGroupReq = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				groupId: groupForm.groupId,
+				reqActiveTab: activeTab,
+				reqGroupJoinState: groupForm?.groupJoinState,
+			}
+
+			const req = await axios.post(`${SERVER_BASE_URL}/api/group/groupReq`, postData);
+
+			setGroupPopup('');
+
+			if(activeTab === 'myGroup') {
+				handleTabChange('myGroup');
+			}
+
+
+		} catch (error) {
+			console.error('그룹 상세 보기 실패:', error);
 		}
 	};
 
@@ -152,11 +191,11 @@ const GroupMain = () => {
 						<div className={styles.cardFooter}>
 							<div className={styles.members}>
 								<Users size={16}/>
-								<span>3명</span>
+								<span>{g.groupMemCnt}</span>
 							</div>
 							<button className={styles.joinBtn}
-									onClick={handleJoinDis}>
-								{activeTab === 'searchGroup' ? '가입하기' : '탈퇴하기'}
+									onClick={() => handleGroupDetail(g.groupId)}>
+								상세보기
 							</button>
 						</div>
 					</div>
@@ -201,7 +240,7 @@ const GroupMain = () => {
 					</div>
 				</div>
 
-			) : groupPopup === 'join' ? (
+			) : groupPopup === 'view' ? (
 				<div className={styles.modalOverlay}>
 					<div className={styles.modalContent}>
 						<div className={styles.modalHeader}>
@@ -224,21 +263,20 @@ const GroupMain = () => {
 							</div>
 
 							<div className={styles.infoGroup}>
-								<span className={styles.infoLabel}>그룹원 수</span>
-								<div className={styles.infoValue}>
-									<Users size={18}/>3명
-								</div>
-							</div>
-
-							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 메모</span>
 								<div className={styles.infoBox}>{groupForm?.groupMemo}</div>
 							</div>
 						</div>
 
 						<div className={styles.modalFooter}>
-							<button className={styles.cancelBtn} onClick={() => setGroupPopup('')}>닫기</button>
-							<button className={styles.submitBtn}>가입하기</button>
+							<button className={styles.cancelBtn}
+							        onClick={() => setGroupPopup('')}>닫기</button>
+							<button className={styles.submitBtn}
+									onClick={handleGroupReq}>
+								{activeTab === 'searchGroup' ?
+								(groupForm?.groupJoinState === 'W' ? '가입신청취소' : '가입신청')
+								: '탈퇴하기'}
+							</button>
 						</div>
 					</div>
 				</div>

@@ -1,14 +1,11 @@
 package com.example.duolender_back.group.repository;
 
 import com.example.duolender_back.auth.entity.QAuthEntity;
-import com.example.duolender_back.group.dto.GroupDto;
-import com.example.duolender_back.group.dto.QGroupDto;
-import com.example.duolender_back.group.dto.ReqGroupDto;
-import com.example.duolender_back.group.entity.GroupEntity;
+import com.example.duolender_back.group.dto.*;
 import com.example.duolender_back.group.entity.QGroupEntity;
 import com.example.duolender_back.group.entity.QUserGroupLinkEntity;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +25,45 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 
 	QAuthEntity authEntity = QAuthEntity.authEntity;
 
+	//alias 테이블
+	QUserGroupLinkEntity innerUserGroupLink = new QUserGroupLinkEntity("innerUserGroupLink");
+	QUserGroupLinkEntity subUserGroupLink = new QUserGroupLinkEntity("subUserGroupLink");
+	QUserGroupLinkEntity leftUserGroupLink = new QUserGroupLinkEntity("leftUserGroupLink");
+
+	//그룹 멤버원 수 조회 서브쿼리
+	private JPQLQuery<Long> groupMemCntSubQuery() {
+		return JPAExpressions
+				.select(subUserGroupLink.count())
+				.from(subUserGroupLink)
+				.where(
+					groupEntity.groupId.eq(subUserGroupLink.groupId),
+					subUserGroupLink.groupJoinState.eq("Y")
+				);
+	}
+
+	//QGroupDto 공통부분
+	private QGroupDto groupDtoPro() {
+		return new QGroupDto(
+				groupEntity.groupId,
+				groupEntity.groupNm,
+				groupEntity.groupMemo,
+				groupMemCntSubQuery(),
+				groupEntity.groupCrtnId
+		);
+	}
+
+	private QGroupDetailDto groupDetailDtoPro() {
+		return new QGroupDetailDto(
+				groupEntity.groupId,
+				groupEntity.groupNm,
+				groupEntity.groupMemo,
+				authEntity.userNick,
+				leftUserGroupLink.groupJoinState,
+				groupEntity.groupCrtnId
+		);
+	}
+
+
 	@Override
 	public List<GroupDto> searchGroupList(ReqGroupDto dto) {
 		JPAQuery<GroupDto> query;
@@ -35,43 +71,56 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 		//그룹 검색
 		if(dto.getReqActiveTab().equals("searchGroup")) {
 			query = queryFactory
-					.select(new QGroupDto(
-						groupEntity.groupId,
-						groupEntity.groupNm,
-						groupEntity.groupMemo,
-						groupEntity.groupCrtnId,
-						authEntity.userNick))
+					.select(groupDtoPro())
 					.from(groupEntity)
 					.innerJoin(authEntity)
-					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
+						.on(groupEntity.groupCrtnId.eq(authEntity.userId))
 					.where(
 						groupEntity.groupId.notIn(
 								JPAExpressions
 								.select(userGroupLinkEntity.groupId)
 								.from(userGroupLinkEntity)
-								.where(userGroupLinkEntity.userId.eq(dto.getUserId()))),
+								.where(
+									userGroupLinkEntity.userId.eq(dto.getUserId()),
+									userGroupLinkEntity.groupJoinState.eq("Y"))),
 						groupEntity.groupNm.contains(dto.getReqGroupNm())
 					);
 
 		//내 그룹 검색
 		} else {
 			query = queryFactory
-					.select(new QGroupDto(
-						groupEntity.groupId,
-						groupEntity.groupNm,
-						groupEntity.groupMemo,
-						groupEntity.groupCrtnId,
-						authEntity.userNick))
+					.select(groupDtoPro())
 					.from(groupEntity)
-					.innerJoin(userGroupLinkEntity)
-					.on(groupEntity.groupId.eq(userGroupLinkEntity.groupId))
-					.on(userGroupLinkEntity.userId.eq(dto.getUserId()))
+					.innerJoin(innerUserGroupLink)
+						.on(groupEntity.groupId.eq(innerUserGroupLink.groupId))
+						.on(innerUserGroupLink.userId.eq(dto.getUserId()))
+						.on(innerUserGroupLink.groupJoinState.eq("Y"))
 					.innerJoin(authEntity)
-					.on(userGroupLinkEntity.userId.eq(authEntity.userId));
+						.on(groupEntity.groupCrtnId.eq(authEntity.userId));
 
 		}
 
 		List<GroupDto> result = query.fetch();
+
+		return result;
+	}
+
+
+	@Override
+	public GroupDetailDto groupDetail(ReqGroupDto dto) {
+		JPAQuery<GroupDetailDto> query;
+
+		query = queryFactory
+				.select(groupDetailDtoPro())
+				.from(groupEntity)
+				.innerJoin(authEntity)
+					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
+				.leftJoin(leftUserGroupLink)
+					.on(groupEntity.groupId.eq(leftUserGroupLink.groupId))
+					.on(leftUserGroupLink.userId.eq(dto.getUserId()))
+				.where(groupEntity.groupId.eq(dto.getGroupId()));
+
+		GroupDetailDto result = query.fetchOne();
 
 		return result;
 	}

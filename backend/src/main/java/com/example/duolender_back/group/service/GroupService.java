@@ -1,5 +1,7 @@
 package com.example.duolender_back.group.service;
 
+import com.example.duolender_back.auth.entity.AuthEntity;
+import com.example.duolender_back.group.dto.GroupDetailDto;
 import com.example.duolender_back.group.dto.GroupDto;
 import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.entity.GroupEntity;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GroupService {
@@ -24,48 +27,83 @@ public class GroupService {
 	private UserGroupLinkRepository userGroupLinkRepository;
 
 	public List<GroupDto> groupSearch(ReqGroupDto dto) {
-		List<GroupDto> groupList = new ArrayList<GroupDto>();
-
-		groupList = groupRepository.searchGroupList(dto);
-
-		return groupList;
+		return groupRepository.searchGroupList(dto);
 	}
 
-	public List<GroupDto> groupDetail(ReqGroupDto dto) {
-		return null;
+	public GroupDetailDto groupDetail(ReqGroupDto dto) {
+		return groupRepository.groupDetail(dto);
 	}
 
 	public boolean groupRegister(ReqGroupDto dto) {
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-		String toDate = now.format(formatter);
-
 		//그룹 생성
 		GroupEntity entity = new GroupEntity();
 		entity.setGroupNm(dto.getReqGroupNm());
 		entity.setGroupMemo(dto.getReqGroupMemo());
 		entity.setGroupCrtnId(dto.getUserId());
-		entity.setGroupCrtnDtm(toDate);
+		entity.setGroupCrtnDtm(toDate());
 
 		groupRepository.save(entity);
 
 		//유저 그룹 관계 생성자 데이터 입력
-		userGroupLinkInsert(dto, entity.getGroupId(), "A", toDate);
+		userGroupLinkInsert(dto, entity.getGroupId(), "A", toDate(), "Y");
 
 		return true;
 	}
 
-	public boolean userGroupLinkInsert(ReqGroupDto dto, int groupId, String grade, String date) {
+	public GroupDto groupReq(ReqGroupDto dto) {
+		//그룹 가입 신청 or 그룹 가입 신청 취소
+		if(dto.getReqActiveTab().equals("searchGroup")) {
+
+			//그룹 가입 신청
+			if(dto.getReqGroupJoinState() == null) {
+				userGroupLinkInsert(dto, dto.getGroupId(), "M", toDate(), "W");
+
+			//그룹 가입 신청 취소
+			} else {
+				userGroupLinkLeave(dto);
+			}
+
+		//그룹 탈퇴
+		} else {
+			userGroupLinkLeave(dto);
+		}
+
+		return null;
+	}
+
+	//오늘 날짜 구하기
+	public String toDate() {
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+		String toDate = now.format(formatter);
+
+		return toDate;
+	}
+
+	//그룹 가입 신청
+	public boolean userGroupLinkInsert(ReqGroupDto dto, int groupId, String grade, String date, String state) {
 		UserGroupLinkEntity entity = new UserGroupLinkEntity();
 		entity.setGroupId(groupId);
 		entity.setUserId(dto.getUserId());
 		entity.setGroupAdminGrade(grade);
 		entity.setGroupJoinCrtnDtm(date);
-		entity.setGroupJoinState("W");
+		entity.setGroupJoinState(state);
 
 		userGroupLinkRepository.save(entity);
 
 		return true;
+	}
+
+	//그룹 탈퇴 및 가입 신청 취소
+	public void userGroupLinkLeave(ReqGroupDto dto) {
+		Optional<UserGroupLinkEntity> linkEntity =  userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
+
+		if(linkEntity.isPresent()) {
+			UserGroupLinkEntity link = linkEntity.get();
+			userGroupLinkRepository.delete(link);
+
+		}
+
 	}
 
 }
