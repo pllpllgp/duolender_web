@@ -3,7 +3,8 @@ import Login from "./pages/auth/Login.tsx";
 import SighUp from "./pages/auth/Signup.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ScheduleMain from "./pages/schedule/ScheduleMain.tsx";
-import GroupMain from "./pages/group/groupMain.tsx";
+import GroupMain from "./pages/group/GroupMain.tsx";
+import MyMain from "./pages/my/MyMain.tsx";
 import SideLayout from "./layouts/SideLayout.tsx";
 
 export const router = createBrowserRouter([
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
 		children: [
 			{path: "scheduleMain", element: <ProtectedRoute><ScheduleMain /></ProtectedRoute>},
 			{path: "groupMain", element: <ProtectedRoute><GroupMain /></ProtectedRoute>},
+			{path: "myMain", element: <ProtectedRoute><MyMain /></ProtectedRoute>},
 		]
 	}
 ]);

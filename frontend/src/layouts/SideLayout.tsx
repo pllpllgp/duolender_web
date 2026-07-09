@@ -1,4 +1,4 @@
-import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAuthStore} from "../store/useAuthStore.ts";
 
@@ -33,7 +33,7 @@ function SideLayout() {
 
 	const handleMyPage = () => {
 		setIsOpen(false);
-		navigate("/scheduleMain");
+		navigate("/myMain");
 	};
 
 	return (
