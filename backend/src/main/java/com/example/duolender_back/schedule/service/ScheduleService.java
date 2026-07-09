@@ -34,9 +34,11 @@ public class ScheduleService {
 		entity.setScheduleGroupId(dto.getReqScheduleGroupId());
 		entity.setScheduleDtm(dto.getReqScheduleDtm());
 		entity.setScheduleMemo(dto.getReqScheduleMemo());
-		entity.setScheduleGroupType(dto.getReqScheduleGroupType());
+		entity.setScheduleType(dto.getReqScheduleType());
 		entity.setScheduleCrtnId(dto.getUserId());
 		entity.setScheduleCrtnDtm(toDate);
+		entity.setSchedulePlace(dto.getReqSchedulePlace());
+		entity.setScheduleType(dto.getReqScheduleType());
 
 		scheduleRepository.save(entity);
 
@@ -59,6 +61,8 @@ public class ScheduleService {
 		scheduleEntity.setScheduleDtm(dto.getReqScheduleDtm());
 		scheduleEntity.setScheduleChngId(dto.getUserId());
 		scheduleEntity.setScheduleChngDtm(toDate);
+		scheduleEntity.setSchedulePlace(dto.getReqSchedulePlace());
+		scheduleEntity.setScheduleType(dto.getReqScheduleType());
 
 		return true;
 	}
@@ -72,6 +76,8 @@ public class ScheduleService {
 		scheduleDto.setScheduleMemo(scheduleEntity.getScheduleMemo());
 		scheduleDto.setScheduleDtm(scheduleEntity.getScheduleDtm());
 		scheduleDto.setScheduleGroupId(scheduleEntity.getScheduleGroupId());
+		scheduleDto.setSchedulePlace(scheduleEntity.getSchedulePlace());
+		scheduleDto.setScheduleType(scheduleEntity.getScheduleType());
 
 		return scheduleDto;
 	}

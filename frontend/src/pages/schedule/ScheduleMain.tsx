@@ -27,7 +27,12 @@ interface scheduleDto {
 	scheduleDtm: string,
 	scheduleMemo: string,
 	schedulePlace: string,
-	scheduleGroupType: string,
+	scheduleType: string,
+}
+
+interface groupDto {
+	groupId: number;
+	groupNm: string;
 }
 
 const ScheduleMain = () => {
@@ -36,7 +41,7 @@ const ScheduleMain = () => {
 	const navigate = useNavigate();
 
 	//개인용 스케쥴인지 그룹용 스케쥴 확인
-	const [scheduleType, setScheduleType] = useState('PERSONAL');
+	const [scheduleType, setScheduleType] = useState('P');
 
 	//선택한 일자 세팅
 	const [selectedDate, setSelectedDate] = useState<number | null>(null);
@@ -47,6 +52,8 @@ const ScheduleMain = () => {
 	//스케쥴 상태 값 세팅
 	const [scheduleStatus, setScheduleStatus] = useState('');
 
+	const [myGroupList, setMyGroupList] = useState<groupDto[]>([]);
+
 	//스케쥴 상세 값 세팅
 	const [scheduleForm, setScheduleForm] = useState<scheduleDto> ({
 		scheduleId: 0,
@@ -55,7 +62,7 @@ const ScheduleMain = () => {
 		scheduleDtm: "",
 		scheduleMemo: "",
 		schedulePlace: "",
-		scheduleGroupType: "",
+		scheduleType: "",
 	});
 
 	//년월일 세팅
@@ -116,15 +123,20 @@ const ScheduleMain = () => {
 			const postData = {
 				userId: user?.userId,
 				reqScheduleDate: schDay,
+				reqActiveTab: 'myGroup',
 			}
 
-			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData)
-			setScheduleDateList(res.data);
+			const resSchedule = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
+			setScheduleDateList(resSchedule.data);
+
+			const resMyGroup = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
+			setMyGroupList(resMyGroup.data);
 
 		} catch (error) {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
 	};
+
 
 	useEffect(() => {
 		fetchScheduleMonthList();
@@ -151,6 +163,7 @@ const ScheduleMain = () => {
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/view`, postData)
 			setScheduleForm(res.data);
+			setScheduleType(res.data.scheduleType);
 
 		} catch (error) {
 			console.error('스케쥴 로딩 실패:', error);
@@ -165,7 +178,7 @@ const ScheduleMain = () => {
 		scheduleDtm: "",
 		scheduleMemo: "",
 		schedulePlace: "",
-		scheduleGroupType: "",
+		scheduleType: "",
 	};
 
 	//스케쥴 등록 버튼
@@ -193,7 +206,7 @@ const ScheduleMain = () => {
 				reqScheduleDtm: scheduleForm.scheduleDtm,
 				reqScheduleMemo: scheduleForm.scheduleMemo,
 				reqSchedulePlace: scheduleForm.schedulePlace,
-				reqScheduleGroupType: scheduleType,
+				reqScheduleType: scheduleType,
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/save`, postData);
@@ -206,7 +219,7 @@ const ScheduleMain = () => {
 		}
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => {
 		setScheduleForm( {
 			...scheduleForm,
 			[e.target.name]: e.target.value
@@ -307,21 +320,26 @@ const ScheduleMain = () => {
 										<div className={styles.radioContainer}>
 											<label className={styles.radioOption}>
 												<input type="radio"
-												       value="PERSONAL"
-												       checked={scheduleType === 'PERSONAL'}
+												       value="P"
+												       checked={scheduleType === 'P'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 개인
 											</label>
 											<label className={styles.radioOption}>
 												<input type="radio"
-												       value="GROUP"
-												       checked={scheduleType === 'GROUP'}
+												       value="G"
+												       checked={scheduleType === 'G'}
 												       onChange={(e) => setScheduleType(e.target.value)}/> 그룹
 											</label>
 										</div>
-										{scheduleType === 'GROUP' && (
-											<select name='groupId'
-													className={styles.inputField}>
+										{scheduleType === 'G' && (
+											<select name='scheduleGroupId'
+											        className={styles.inputField}
+													onChange={handleChange}
+													value={scheduleForm?.scheduleGroupId ?? ''}>
 												<option value="">그룹을 선택하세요</option>
+												{myGroupList.map((list) => (
+													<option key={list?.groupId} value={list?.groupId}>{list?.groupNm}</option>
+												))}
 											</select>
 										)}
 										<input className={styles.inputField}

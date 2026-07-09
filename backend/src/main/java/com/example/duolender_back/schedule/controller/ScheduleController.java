@@ -29,8 +29,6 @@ public class ScheduleController {
 
 	@PostMapping("/save")
 	public Map<String, Object> scheduleSave(@RequestBody ReqScheduleDto dto) {
-		System.out.println("::::::::::"+dto.getReqScheduleStatus());
-
 		boolean result = false;
 		if(dto.getReqScheduleStatus().equals("insert")) {
 			result = scheduleService.scheduleRegister(dto);

@@ -16,5 +16,5 @@ public class ReqScheduleDto {
 	String reqScheduleDtm;
 	String reqScheduleMemo;
 	String reqSchedulePlace;
-	String reqScheduleGroupType;
+	String reqScheduleType;
 }

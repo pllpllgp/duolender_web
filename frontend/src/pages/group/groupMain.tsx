@@ -177,24 +177,24 @@ const GroupMain = () => {
 			)}
 
 			<div className={styles.grid}>
-				{groupList.map((g) => (
+				{groupList.map((list) => (
 					<div className={styles.card}
-					     key={g.groupId}>
+					     key={list.groupId}>
 						<div className={styles.cardHeader}>
-							<h3 className={styles.cardTitle}>{g.groupNm}</h3>
+							<h3 className={styles.cardTitle}>{list.groupNm}</h3>
 						</div>
 
 						<p className={styles.cardDesc}>
-							{g.groupMemo}
+							{list.groupMemo}
 						</p>
 
 						<div className={styles.cardFooter}>
 							<div className={styles.members}>
 								<Users size={16}/>
-								<span>{g.groupMemCnt}</span>
+								<span>{list.groupMemCnt}</span>
 							</div>
 							<button className={styles.joinBtn}
-									onClick={() => handleGroupDetail(g.groupId)}>
+									onClick={() => handleGroupDetail(list.groupId)}>
 								상세보기
 							</button>
 						</div>
@@ -203,8 +203,10 @@ const GroupMain = () => {
 			</div>
 
 			{groupPopup === 'insert' ? (
-				<div className={styles.modalOverlay}>
-					<div className={styles.modalContent}>
+				<div className={styles.modalOverlay}
+				     onClick={() => setGroupPopup('')}>
+					<div className={styles.modalContent}
+					     onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
 							<h2>새 그룹 만들기</h2>
 							<button className={styles.closeBtn}
@@ -241,8 +243,10 @@ const GroupMain = () => {
 				</div>
 
 			) : groupPopup === 'view' ? (
-				<div className={styles.modalOverlay}>
-					<div className={styles.modalContent}>
+				<div className={styles.modalOverlay}
+				     onClick={() => setGroupPopup('')}>
+					<div className={styles.modalContent}
+					     onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
 							<h2>그룹 정보</h2>
 							<button className={styles.closeBtn}

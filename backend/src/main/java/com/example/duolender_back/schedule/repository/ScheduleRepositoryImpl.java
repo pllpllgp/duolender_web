@@ -34,8 +34,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 				.on(scheduleEntity.scheduleCrtnId.eq(authEntity.userId))
 				.where(
 					scheduleEntity.scheduleCrtnId.eq(userId),
-					scheduleEntity.scheduleDtm.startsWith(reqScheduleDate),
-					scheduleEntity.scheduleGroupType.eq("PERSONAL")
+					scheduleEntity.scheduleDtm.startsWith(reqScheduleDate)
 				)
 				.fetch();
 	}

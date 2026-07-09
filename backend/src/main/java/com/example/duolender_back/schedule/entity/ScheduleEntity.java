@@ -42,6 +42,6 @@ public class ScheduleEntity {
 	private String schedulePlace;
 
 	@Column(nullable = true)
-	private String scheduleGroupType;
+	private String scheduleType;
 
 }

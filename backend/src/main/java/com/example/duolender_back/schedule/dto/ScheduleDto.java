@@ -20,6 +20,7 @@ public class ScheduleDto {
 	String scheduleCrtnDtm;
 	String scheduleChngId;
 	String scheduleChngDtm;
+	String scheduleType;
 
 
 
