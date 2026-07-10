@@ -23,7 +23,7 @@ public class AuthService {
 	);
 
 
-	public boolean dupleCheck(AuthDto dto) {
+	public boolean idDupleCheck(AuthDto dto) {
 		//중복 ID 체크
 		if(authRepository.findById(dto.getUserId()).isPresent()) {
 			return false;
@@ -46,11 +46,7 @@ public class AuthService {
 			AuthEntity entity = new AuthEntity();
 			entity.setUserId(dto.getUserId());
 			entity.setUserPw(passwordEncoder.encode(dto.getUserPw()));
-			entity.setUserNm(dto.getUserNm());
 			entity.setUserNick(dto.getUserId());
-			entity.setUserPhone(dto.getUserPhone());
-			entity.setUserEmail(dto.getUserEmail());
-			entity.setUserSnsLogin(dto.getUserSnsLogin());
 
 			authRepository.save(entity);
 

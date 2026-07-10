@@ -13,9 +13,6 @@ const Signup = () => {
 		userId: '',
 		userPw: '',
 		userPwConfirm: '',
-		userNm: '',
-		userEmail: '',
-		userPhone: '',
 	});
 
 	const [idDupleCheck, setIdDupleCheck] = useState(false);
@@ -43,14 +40,14 @@ const Signup = () => {
 		}
 	}, [signupForm.userPw, signupForm.userPwConfirm]);
 
-	const handleDupleCheck = async (state: any) => {
+	const handleIdDupleCheck = async (state: any) => {
 		try {
 			const postData = {
 				userId: signupForm.userId,
 				dupleState: state,
 			}
 
-			const res = await axios.post(`${SERVER_BASE_URL}/api/auth/dupleCheck`, postData);
+			const res = await axios.post(`${SERVER_BASE_URL}/api/auth/idDupleCheck`, postData);
 
 			setIdDupleCheck(res.data.result);
 			if (res.data.result) {
@@ -113,7 +110,7 @@ const Signup = () => {
 						/>
 						<button
 							className={styles.inlineButton}
-							onClick={() => handleDupleCheck('id')}
+							onClick={() => handleIdDupleCheck('id')}
 						>
 							중복 확인
 						</button>
@@ -144,25 +141,6 @@ const Signup = () => {
 							{pwConfirmMessage}
 						</span>
 					)}
-
-					<input type="text"
-					       name="userNm"
-					       placeholder="이름"
-					       className={styles.inputField}
-					       onChange={handleChange}
-					/>
-					<input type="email"
-					       name="userEmail"
-					       placeholder="이메일"
-					       className={styles.inputField}
-					       onChange={handleChange}
-					/>
-					<input type="tel"
-					       name="userPhone"
-					       placeholder="전화번호"
-					       className={styles.inputField}
-					       onChange={handleChange}
-					/>
 				</div>
 
 				<button className={styles.submitButton}

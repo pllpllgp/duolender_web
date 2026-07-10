@@ -36,9 +36,9 @@ public class AuthController {
 		}
 	}
 
-	@PostMapping("/dupleCheck")
-	public Map<String, Object> dupleCheck(@RequestBody AuthDto dto) {
-		boolean result = authService.dupleCheck(dto);
+	@PostMapping("/idDupleCheck")
+	public Map<String, Object> idDupleCheck(@RequestBody AuthDto dto) {
+		boolean result = authService.idDupleCheck(dto);
 
 		Map<String, Object> res = new HashMap<>();
 		if(result) {
