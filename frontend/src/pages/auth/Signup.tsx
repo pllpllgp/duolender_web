@@ -73,9 +73,6 @@ const Signup = () => {
 				userId: signupForm.userId,
 				userPw: signupForm.userPw,
 				userPwConfirm: signupForm.userPwConfirm,
-				userNm: signupForm.userNm,
-				userEmail: signupForm.userEmail,
-				userPhone: signupForm.userPhone,
 				userIdDupleCheck: idDupleCheck,
 			}
 
