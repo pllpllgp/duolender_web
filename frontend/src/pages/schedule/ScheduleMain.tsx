@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import {useAuthStore} from '../../store/useAuthStore.ts';
 
@@ -37,8 +36,6 @@ interface groupDto {
 
 const ScheduleMain = () => {
 	const user = useAuthStore((state) => state.user);
-
-	const navigate = useNavigate();
 
 	//개인용 스케쥴인지 그룹용 스케쥴 확인
 	const [scheduleType, setScheduleType] = useState('P');
@@ -209,7 +206,7 @@ const ScheduleMain = () => {
 				reqScheduleType: scheduleType,
 			}
 
-			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/save`, postData);
+			await axios.post(`${SERVER_BASE_URL}/api/schedule/save`, postData);
 
 			fetchScheduleMonthList();
 			setIsPopupOpen(false);

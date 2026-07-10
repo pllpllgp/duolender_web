@@ -4,8 +4,6 @@ import {useAuthStore} from "../store/useAuthStore.ts";
 
 import styles from "../css/Layout.module.css";
 
-const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
-
 function SideLayout() {
 	const [isOpen, setIsOpen] = useState(false);
 	const logout = useAuthStore((state) => state.logout);

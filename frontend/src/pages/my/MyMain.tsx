@@ -1,9 +1,10 @@
 import {useEffect, useState} from 'react';
-import { Camera, UserCircle, Plus, Minus, Users, Settings } from 'lucide-react';
-import styles from '../../css/My.module.css';
-import { useAuthStore } from "../../store/useAuthStore.ts";
+import {Camera, UserCircle, Plus, Minus, Users} from 'lucide-react';
+import {useAuthStore} from "../../store/useAuthStore.ts";
 import * as React from "react";
 import axios from "../../api/axiosInstance.ts";
+
+import styles from '../../css/My.module.css';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 

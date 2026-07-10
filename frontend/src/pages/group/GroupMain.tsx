@@ -33,11 +33,6 @@ const GroupMain = () => {
 		groupJoinState: '',
 	});
 
-	const handleTabChange = (tab: 'searchGroup' | 'myGroup') => {
-		setActiveTab(tab);
-		setGroupList([]);
-	};
-
 	const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setGroupForm( {
 			...groupForm,

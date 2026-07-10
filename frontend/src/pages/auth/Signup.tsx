@@ -2,7 +2,6 @@ import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from '../../api/axiosInstance';
 import * as React from "react";
-import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Auth.module.css";
 
