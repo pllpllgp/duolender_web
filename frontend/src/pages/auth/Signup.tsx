@@ -77,7 +77,6 @@ const Signup = () => {
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/auth/signup`, postData);
-			console.log("res::::::::"+res.data.result);
 
 			if(res.data.result === 'notPwValid') {
 				alert('비밀번호는 영문, 숫자, 특수문자 포함 8~20자로 설정바랍니다.');

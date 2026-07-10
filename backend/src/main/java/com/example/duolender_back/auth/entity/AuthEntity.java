@@ -27,19 +27,19 @@ public class AuthEntity {
 	@Column(nullable = true)
 	private String userEmail;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String userSnsLogin;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String userCrtnDtm;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String userChngDtm;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String scheduleColor;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String userNick;
 
 }
