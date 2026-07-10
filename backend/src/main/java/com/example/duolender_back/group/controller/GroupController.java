@@ -30,6 +30,11 @@ public class GroupController {
 		return groupService.groupSearch(dto);
 	}
 
+	@PostMapping("/myGroupSearch")
+	public List<GroupDto> myGroupSearch(@RequestBody ReqGroupDto dto) {
+		return groupService.myGroupSearch(dto);
+	}
+
 	@PostMapping("/detail")
 	public GroupDetailDto groupDetail(@RequestBody ReqGroupDto dto) {
 		return groupService.groupDetail(dto);
@@ -49,9 +54,16 @@ public class GroupController {
 		return res;
 	}
 
-	@PostMapping("/groupReq")
-	public GroupDto groupReq(@RequestBody ReqGroupDto dto) {
-		groupService.groupReq(dto);
+	@PostMapping("/joinReq")
+	public GroupDto joinReq(@RequestBody ReqGroupDto dto) {
+		groupService.joinReq(dto);
+
+		return null;
+	}
+
+	@PostMapping("/leaveReq")
+	public GroupDto leaveReq(@RequestBody ReqGroupDto dto) {
+		groupService.leaveReq(dto);
 
 		return null;
 	}

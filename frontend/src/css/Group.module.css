@@ -54,12 +54,20 @@
 	cursor: pointer;
 }
 
+.subtitle {
+	color: #6b7280;
+	margin-top: 8px;
+	font-size: 15px;
+}
+
 .searchWrapper {
 	position: relative;
 	display: flex;
 	align-items: center;
 	width: 100%;
 	margin-bottom: 32px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+	border-radius: 12px;
 }
 
 .searchInput {

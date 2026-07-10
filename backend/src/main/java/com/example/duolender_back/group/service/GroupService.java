@@ -30,6 +30,10 @@ public class GroupService {
 		return groupRepository.searchGroupList(dto);
 	}
 
+	public List<GroupDto> myGroupSearch(ReqGroupDto dto) {
+		return groupRepository.searchMyGroupList(dto);
+	}
+
 	public GroupDetailDto groupDetail(ReqGroupDto dto) {
 		return groupRepository.groupDetail(dto);
 	}
@@ -50,25 +54,25 @@ public class GroupService {
 		return true;
 	}
 
-	public GroupDto groupReq(ReqGroupDto dto) {
-		//그룹 가입 신청 or 그룹 가입 신청 취소
-		if(dto.getReqActiveTab().equals("searchGroup")) {
 
-			//그룹 가입 신청
-			if(dto.getReqGroupJoinState() == null) {
-				userGroupLinkInsert(dto, dto.getGroupId(), "M", toDate(), "W");
+	//그룹 가입 신청 or 그룹 가입 신청 취소
+	public GroupDto joinReq(ReqGroupDto dto) {
+		//그룹 가입 신청
+		if(dto.getReqGroupJoinState() == null) {
+			userGroupLinkInsert(dto, dto.getGroupId(), "M", toDate(), "W");
 
-			//그룹 가입 신청 취소
-			} else {
-				userGroupLinkLeave(dto);
-			}
-
-		//그룹 탈퇴
+		//그룹 가입 신청 취소
 		} else {
 			userGroupLinkLeave(dto);
 		}
 
 		return null;
+	}
+
+
+	//그룹 탈퇴
+	public void leaveReq(ReqGroupDto dto) {
+		userGroupLinkLeave(dto);
 	}
 
 	//오늘 날짜 구하기

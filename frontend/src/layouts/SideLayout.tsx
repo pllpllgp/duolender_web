@@ -44,7 +44,7 @@ function SideLayout() {
 					<nav className={styles.menu}>
 						<ul>
 							<li onClick={handleSchedule}>캘린더</li>
-							<li onClick={handleGroup}>그룹</li>
+							<li onClick={handleGroup}>그룹찾기</li>
 							<li onClick={handleMyPage}>마이페이지</li>
 						</ul>
 

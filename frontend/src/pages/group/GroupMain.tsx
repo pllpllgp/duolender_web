@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import { Search, Plus, Users, Lock, Unlock, X } from 'lucide-react';
+import {useState} from 'react';
+import { Search, Plus, Users, X } from 'lucide-react';
 import * as React from "react";
 import axios from "../../api/axiosInstance";
 
@@ -33,14 +33,9 @@ const GroupMain = () => {
 		groupJoinState: '',
 	});
 
-	const handleTabChange = (tab) => {
+	const handleTabChange = (tab: 'searchGroup' | 'myGroup') => {
 		setActiveTab(tab);
-
-		if(tab === 'searchGroup') {
-			setGroupList([]);
-		} else {
-			handleSearchGroup(tab);
-		}
+		setGroupList([]);
 	};
 
 	const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -58,10 +53,8 @@ const GroupMain = () => {
 				reqGroupMemo: groupForm.groupMemo,
 			}
 
-			const res = await axios.post(`${SERVER_BASE_URL}/api/group/register`, postData);
-
+			await axios.post(`${SERVER_BASE_URL}/api/group/register`, postData);
 			setGroupPopup('');
-
 		} catch (error) {
 			console.error('그룹 등록 실패:', error);
 		}
@@ -73,42 +66,36 @@ const GroupMain = () => {
 
 	const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
-			handleSearchGroup('searchGroup');
+			handleSearchGroup();
 		}
 	};
 
-	const handleSearchGroup = async (tab) => {
+	const handleSearchGroup = async () => {
 		try {
 			const postData = {
 				userId: user?.userId,
 				reqGroupNm: reqGroupNm,
-				reqActiveTab: tab,
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
 			setGroupList(res.data);
-
 		} catch (error) {
 			console.error('그룹 찾기 검색 실패:', error);
 		}
 	};
 
-	const handleGroupDetail = async (groupId) => {
+	const handleGroupDetail = async (groupId: number) => {
 		try {
 			setGroupPopup('view');
-
 			const postData = {
 				userId: user?.userId,
 				groupId: groupId,
 			}
-
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
 			setGroupForm(res.data);
-
 		} catch (error) {
 			console.error('그룹 상세 보기 실패:', error);
 		}
-
 	};
 
 	const handleGroupReq = async () => {
@@ -116,19 +103,10 @@ const GroupMain = () => {
 			const postData = {
 				userId: user?.userId,
 				groupId: groupForm.groupId,
-				reqActiveTab: activeTab,
 				reqGroupJoinState: groupForm?.groupJoinState,
 			}
-
-			const req = await axios.post(`${SERVER_BASE_URL}/api/group/groupReq`, postData);
-
+			await axios.post(`${SERVER_BASE_URL}/api/group/joinReq`, postData);
 			setGroupPopup('');
-
-			if(activeTab === 'myGroup') {
-				handleTabChange('myGroup');
-			}
-
-
 		} catch (error) {
 			console.error('그룹 상세 보기 실패:', error);
 		}
@@ -136,40 +114,24 @@ const GroupMain = () => {
 
 	return (
 		<div className={styles.container}>
-
 			<div className={styles.header}>
 				<div>
-					<h1 className={styles.title}></h1>
-					<div className={styles.tabs}>
-						<button
-							onClick={() => handleTabChange('searchGroup')}
-							className={`${styles.tabBtn} ${activeTab === 'searchGroup' ? styles.activeTab : ''}`}
-						>
-							그룹 찾기
-						</button>
-						<button
-							onClick={() => handleTabChange('myGroup')}
-							className={`${styles.tabBtn} ${activeTab === 'myGroup' ? styles.activeTab : ''}`}
-						>
-							내 그룹
-						</button>
-					</div>
+					<h1 className={styles.title}>그룹 찾기</h1>
+					<p className={styles.subtitle}>새로운 사람들과 함께 일정을 공유하고 목표를 달성해보세요.</p>
 				</div>
 
-				<button className={styles.createBtn}
-				        onClick={() => setGroupPopup('insert')}>
-					<Plus size={20}/>
-					그룹 만들기
+				<button className={styles.createBtn} onClick={() => setGroupPopup('insert')}>
+					<Plus size={20}/> 그룹 만들기
 				</button>
 			</div>
 
 			{activeTab === 'searchGroup' && (
 				<div className={styles.searchWrapper}>
 					<Search className={styles.searchIcon} size={20}
-					        onClick={() => handleSearchGroup('searchGroup')}/>
+					        onClick={handleSearchGroup}/>
 					<input type="text"
 					       className={styles.searchInput}
-					       placeholder="관심있는 그룹 이름이나 태그를 검색해보세요."
+					       placeholder="관심있는 그룹을 검색해보세요."
 					       onChange={handleSearchChange}
 					       onKeyDown={handleSearchKeyDown}
 					/>
@@ -178,23 +140,18 @@ const GroupMain = () => {
 
 			<div className={styles.grid}>
 				{groupList.map((list) => (
-					<div className={styles.card}
-					     key={list.groupId}>
+					<div className={styles.card} key={list.groupId}>
 						<div className={styles.cardHeader}>
 							<h3 className={styles.cardTitle}>{list.groupNm}</h3>
 						</div>
-
-						<p className={styles.cardDesc}>
-							{list.groupMemo}
-						</p>
-
+						<p className={styles.cardDesc}>{list.groupMemo}</p>
 						<div className={styles.cardFooter}>
 							<div className={styles.members}>
 								<Users size={16}/>
 								<span>{list.groupMemCnt}</span>
 							</div>
 							<button className={styles.joinBtn}
-									onClick={() => handleGroupDetail(list.groupId)}>
+							        onClick={() => handleGroupDetail(list.groupId)}>
 								상세보기
 							</button>
 						</div>
@@ -203,83 +160,59 @@ const GroupMain = () => {
 			</div>
 
 			{groupPopup === 'insert' ? (
-				<div className={styles.modalOverlay}
-				     onClick={() => setGroupPopup('')}>
-					<div className={styles.modalContent}
-					     onClick={(e) => e.stopPropagation()}>
+				<div className={styles.modalOverlay} onClick={() => setGroupPopup('')}>
+					<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
 							<h2>새 그룹 만들기</h2>
-							<button className={styles.closeBtn}
-							        onClick={() => setGroupPopup('')}>
+							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
 						</div>
-
 						<div className={styles.modalBody}>
 							<div className={styles.formGroup}>
 								<label>그룹 이름</label>
-								<input type="text"
-								       name="groupNm"
-								       placeholder="그룹 이름을 입력하세요"
+								<input type="text" name="groupNm" placeholder="그룹 이름을 입력하세요"
 								       onChange={handleRegisterChange}/>
 							</div>
-
 							<div className={styles.formGroup}>
 								<label>그룹 설명</label>
-								<textarea name="groupMemo"
-										  placeholder="어떤 그룹인지 설명해주세요"
-								          rows={4}
+								<textarea name="groupMemo" placeholder="어떤 그룹인지 설명해주세요" rows={4}
 								          onChange={handleRegisterChange}/>
 							</div>
 						</div>
-
 						<div className={styles.modalFooter}>
-							<button className={styles.cancelBtn}
-							        onClick={() => setGroupPopup('')}>취소</button>
-							<button className={styles.submitBtn}
-									onClick={handleGroupRegister}>생성하기</button>
+							<button className={styles.cancelBtn} onClick={() => setGroupPopup('')}>취소</button>
+							<button className={styles.submitBtn} onClick={handleGroupRegister}>생성하기</button>
 						</div>
 					</div>
 				</div>
-
 			) : groupPopup === 'view' ? (
-				<div className={styles.modalOverlay}
-				     onClick={() => setGroupPopup('')}>
-					<div className={styles.modalContent}
-					     onClick={(e) => e.stopPropagation()}>
+				<div className={styles.modalOverlay} onClick={() => setGroupPopup('')}>
+					<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
 							<h2>그룹 정보</h2>
-							<button className={styles.closeBtn}
-							        onClick={() => setGroupPopup('')}>
+							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
 						</div>
-
 						<div className={styles.modalBody}>
 							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 이름</span>
 								<div className={styles.infoValue}>{groupForm?.groupNm}</div>
 							</div>
-
 							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 장</span>
 								<div className={styles.infoValue}>{groupForm?.userNick}</div>
 							</div>
-
 							<div className={styles.infoGroup}>
 								<span className={styles.infoLabel}>그룹 메모</span>
 								<div className={styles.infoBox}>{groupForm?.groupMemo}</div>
 							</div>
 						</div>
-
 						<div className={styles.modalFooter}>
-							<button className={styles.cancelBtn}
-							        onClick={() => setGroupPopup('')}>닫기</button>
-							<button className={styles.submitBtn}
-									onClick={handleGroupReq}>
-								{activeTab === 'searchGroup' ?
-								(groupForm?.groupJoinState === 'W' ? '가입신청취소' : '가입신청')
-								: '탈퇴하기'}
+							<button className={styles.cancelBtn} onClick={() => setGroupPopup('')}>닫기</button>
+							<button className={styles.submitBtn} onClick={handleGroupReq}>
+								{groupForm?.groupJoinState === 'W' ? '가입신청취소' : '가입신청'}
 							</button>
 						</div>
 					</div>

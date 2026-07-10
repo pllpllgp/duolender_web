@@ -11,5 +11,7 @@ import java.util.List;
 public interface GroupRepositoryCustom {
 	List<GroupDto> searchGroupList(ReqGroupDto dto);
 
+	List<GroupDto> searchMyGroupList(ReqGroupDto dto);
+
 	GroupDetailDto groupDetail(ReqGroupDto dto);
 }
