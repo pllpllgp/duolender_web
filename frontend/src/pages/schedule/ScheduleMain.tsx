@@ -260,7 +260,7 @@ const ScheduleMain = () => {
 
 					{Array.from({ length: lastDate }).map((_, i) => {
 						const day = i + 1;
-						const daySchedules = scheduleMonthList.filter(s => s.scheduleDtm.slice(-2) == day);
+						const daySchedules = scheduleMonthList.filter(s => Number(s.scheduleDtm.slice(-2)) === day);
 						const visibleSchedules = daySchedules.slice(0, 2);
 						const hiddenCount = daySchedules.length - visibleSchedules.length;
 						return (
@@ -292,7 +292,7 @@ const ScheduleMain = () => {
 					     onClick={(e) => e.stopPropagation()}>
 						<div className={styles.leftPanel}>
 							<h3>{month}월 {selectedDate}일</h3>
-							{scheduleDateList.filter(s => s.scheduleDtm.slice(-2) == selectedDate).map(s => (
+							{scheduleDateList.filter(s =>Number(s.scheduleDtm.slice(-2)) === selectedDate).map(s => (
 								<div key={s.scheduleId}
 								     className={styles.scheduleCard}
 								     onClick={() => handleScheduleClick(s)}>

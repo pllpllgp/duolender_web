@@ -43,7 +43,7 @@ const Signup = () => {
 		}
 	}, [signupForm.userPw, signupForm.userPwConfirm]);
 
-	const handleDupleCheck = async (state) => {
+	const handleDupleCheck = async (state: any) => {
 		try {
 			const postData = {
 				userId: signupForm.userId,

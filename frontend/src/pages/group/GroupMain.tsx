@@ -20,7 +20,6 @@ interface groupDto {
 const GroupMain = () => {
 	const user = useAuthStore((state) => state.user);
 
-	const [activeTab, setActiveTab] = useState<'searchGroup' | 'myGroup'>('searchGroup');
 	const [groupPopup, setGroupPopup] = useState<'insert' | 'view' | ''>('');
 	const [reqGroupNm, setReqGroupNm] = useState("");
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
@@ -120,18 +119,16 @@ const GroupMain = () => {
 				</button>
 			</div>
 
-			{activeTab === 'searchGroup' && (
-				<div className={styles.searchWrapper}>
-					<Search className={styles.searchIcon} size={20}
-					        onClick={handleSearchGroup}/>
-					<input type="text"
-					       className={styles.searchInput}
-					       placeholder="관심있는 그룹을 검색해보세요."
-					       onChange={handleSearchChange}
-					       onKeyDown={handleSearchKeyDown}
-					/>
-				</div>
-			)}
+			<div className={styles.searchWrapper}>
+				<Search className={styles.searchIcon} size={20}
+				        onClick={handleSearchGroup}/>
+				<input type="text"
+				       className={styles.searchInput}
+				       placeholder="관심있는 그룹을 검색해보세요."
+				       onChange={handleSearchChange}
+				       onKeyDown={handleSearchKeyDown}
+				/>
+			</div>
 
 			<div className={styles.grid}>
 				{groupList.map((list) => (
