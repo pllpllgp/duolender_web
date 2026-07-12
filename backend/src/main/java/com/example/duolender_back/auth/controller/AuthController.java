@@ -41,14 +41,19 @@ public class AuthController {
 		boolean result = authService.idDupleCheck(dto);
 
 		Map<String, Object> res = new HashMap<>();
-		if(result) {
-			res.put("result", true);
-		} else {
-			res.put("result", false);
-		}
+		res.put("result", result);
 
 		return res;
+	}
 
+	@PostMapping("/nickDupleCheck")
+	public Map<String, Object> nickDupleCheck(@RequestBody AuthDto dto) {
+		boolean result = authService.nickDupleCheck(dto);
+
+		Map<String, Object> res = new HashMap<>();
+		res.put("result", result);
+
+		return res;
 	}
 
 	@PostMapping("/signup")
@@ -70,6 +75,28 @@ public class AuthController {
 
 		if(StringUtils.hasText(authInfo.getUserId())) {
 			authDto.setUserId(authInfo.getUserId());
+			authDto.setUserNick(authInfo.getUserNick());
+			authDto.setUserNm(authInfo.getUserNm());
+			authDto.setUserEmail(authInfo.getUserEmail());
+			authDto.setUserPhone(authInfo.getUserPhone());
+			authDto.setUserToken(jwtUtil.generateToken(authInfo.getUserId()));
+
+		}
+
+		return authDto;
+
+	}
+
+
+	@PostMapping("/update")
+	public AuthDto update(@RequestBody AuthDto dto) {
+		AuthEntity authInfo = authService.login(dto);
+
+		AuthDto authDto = new AuthDto();
+
+		if(StringUtils.hasText(authInfo.getUserId())) {
+			authDto.setUserId(authInfo.getUserId());
+			authDto.setUserNick(authInfo.getUserNick());
 			authDto.setUserNm(authInfo.getUserNm());
 			authDto.setUserEmail(authInfo.getUserEmail());
 			authDto.setUserPhone(authInfo.getUserPhone());

@@ -24,13 +24,21 @@ public class AuthService {
 
 
 	public boolean idDupleCheck(AuthDto dto) {
-		//중복 ID 체크
+		//ID 중복 체크
 		if(authRepository.findById(dto.getUserId()).isPresent()) {
 			return false;
 		};
 
 		return true;
+	}
 
+	public boolean nickDupleCheck(AuthDto dto) {
+		//닉네임 중복 체크
+		if(authRepository.findByUserNick(dto.getUserNick()).isPresent()) {
+			return false;
+		};
+
+		return true;
 	}
 
 	public String signup(AuthDto dto) {

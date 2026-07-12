@@ -40,9 +40,7 @@ const Login = () => {
 			if(res.data.userId) {
 				login({
 					userId: res.data.userId,
-					userNm: res.data.userNm,
-					userEmail: res.data.userEmail,
-					userPhone: res.data.userPhone,
+					userNick: res.data.userNick,
 				}, res.data.userToken);
 
 				navigate('/scheduleMain');

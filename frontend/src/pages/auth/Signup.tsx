@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from '../../api/axiosInstance';
 import * as React from "react";
@@ -17,7 +17,12 @@ const Signup = () => {
 
 	const [idDupleCheck, setIdDupleCheck] = useState(false);
 	const [idDupleMessage, setIdDupleMessage] = useState('');
-	const [pwConfirmMessage, setPwConfirmMessage] = useState('');
+
+	const pwConfirmMessage = !signupForm.userPwConfirm
+		? ''
+		: signupForm.userPw === signupForm.userPwConfirm
+			? '비밀번호가 일치합니다.'
+			: '비밀번호가 일치하지 않습니다.';
 
 	const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
 		setSignupForm({
@@ -25,20 +30,11 @@ const Signup = () => {
 			[e.target.name]: e.target.value,
 		})
 
-
-	}
-
-	useEffect(() => {
-		if (signupForm.userPwConfirm) {
-			if (signupForm.userPw !== signupForm.userPwConfirm) {
-				setPwConfirmMessage('비밀번호가 일치하지 않습니다.');
-			} else {
-				setPwConfirmMessage('비밀번호가 일치합니다.');
-			}
-		} else {
-			setPwConfirmMessage('');
+		if (e.target.name === 'userId') {
+			setIdDupleCheck(false);
+			setIdDupleMessage('');
 		}
-	}, [signupForm.userPw, signupForm.userPwConfirm]);
+	}
 
 	const handleIdDupleCheck = async (state: any) => {
 		try {

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class AuthDto {
 	private String userId;
+	private String userNick;
 	private String userNm;
 	private String userPw;
 	private String userPhone;
