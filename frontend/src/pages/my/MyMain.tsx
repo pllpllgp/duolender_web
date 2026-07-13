@@ -30,6 +30,7 @@ const colorList = [
 
 const MyMain = () => {
 	const user = useAuthStore((state) => state.user);
+	const updateUser = useAuthStore((state) => state.updateUser);
 	const [profileSection, setProfileSection] = useState<boolean>(false);
 	const [groupSection, setGroupSection] = useState<boolean>(false);
 
@@ -45,6 +46,9 @@ const MyMain = () => {
 	const [modifyForm, setModifyForm] = useState({
 		userNick: user?.userNick,
 	});
+
+	const [priColor, setPriColor] = useState("");
+	const dropdownPriRef = useRef<HTMLDivElement | null>(null);
 
 	const [selectColorGroupId, setSelectColorGroupId] = useState<number | null>(null);
 	const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -99,13 +103,33 @@ const MyMain = () => {
 			const postData = {
 				userId: user?.userId,
 				userNick:modifyForm.userNick,
+				reqUpdate: 'NICK',
 			}
 
 			await axios.post(`${SERVER_BASE_URL}/api/auth/update`, postData);
+			updateUser({userNick: modifyForm.userNick});
 			setNickEditing(false);
 			setMsg("");
 		} catch (error) {
 			setMsg("수정에 실패했습니다.");
+		}
+	};
+
+	const handlePriColorChange = async (color: string) => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				scheduleColor: color,
+				reqUpdate: 'COLOR',
+			};
+
+			await axios.post(`${SERVER_BASE_URL}/api/auth/update`, postData);
+
+			updateUser({scheduleColor: color});
+			setPriColor("");
+
+		} catch (error) {
+			console.error('개인 색상 변경 실패:', error);
 		}
 	};
 
@@ -151,6 +175,11 @@ const MyMain = () => {
 			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
 				setSelectColorGroupId(null);
 			}
+
+			if (dropdownPriRef.current && !dropdownPriRef.current.contains(e.target as Node)) {
+				setPriColor("");
+			}
+
 		};
 		document.addEventListener('mousedown', handleOutsideClick);
 		return () => document.removeEventListener('mousedown', handleOutsideClick);
@@ -167,38 +196,40 @@ const MyMain = () => {
 			<div className={styles.contentWrapper}>
 				<div className={styles.section}>
 					<div className={styles.sectionHeader}
-					     onClick={() => toggleSection(setProfileSection)}>
+						  onClick={() => toggleSection(setProfileSection)}>
 						<h2>개인 정보</h2>
 						{profileSection ? <Minus size={20} /> : <Plus size={20} />}
 					</div>
 					{profileSection && (
 						<div className={styles.infoList}>
 							<div className={styles.infoRow}>
-								<div className={styles.iconBox}><Camera size={20} /></div>
+								<div className={styles.iconBox}><Camera size={20}/></div>
 								<div className={styles.infoLabel}>프로필 사진</div>
 								<div className={styles.avatar}>용근</div>
 							</div>
 							<div className={styles.infoRow}>
-								<div className={styles.iconBox}><UserCircle size={20} /></div>
+								<div className={styles.iconBox}><UserCircle size={20}/></div>
 								<div className={styles.infoLabel}>닉네임</div>
 								{nickEditing ? (
 									<div className={styles.editWrapper}>
 										<div className={styles.editArea}>
 											<input className={styles.input}
-											       name="userNick"
-											       value={modifyForm.userNick}
-											       onChange={handleChange} />
+													 name="userNick"
+													 value={modifyForm.userNick}
+													 onChange={handleChange}/>
 											{nickDupleCheck ? (
 												<button className={`${styles.btn} ${styles.btnPrimary}`}
-												        onClick={handleNickUpdate}>수정</button>
+														  onClick={handleNickUpdate}>수정</button>
 											) : (
 												<button className={styles.btn}
-												        onClick={handleNickDupleCheck}>중복확인</button>
+														  onClick={handleNickDupleCheck}>중복확인</button>
 											)}
 											<button className={`${styles.btn} ${styles.btnDanger}`}
-											        onClick={handleNickCancle}>취소</button>
+													  onClick={handleNickCancle}>취소
+											</button>
 										</div>
-										{msg && <p className={`${styles.msg} ${nickDupleCheck ? styles.success : styles.error}`}>{msg}</p>}
+										{msg &&
+											<p className={`${styles.msg} ${nickDupleCheck ? styles.success : styles.error}`}>{msg}</p>}
 									</div>
 								) : (
 									<>
@@ -207,6 +238,30 @@ const MyMain = () => {
 									</>
 								)}
 							</div>
+							<div className={styles.infoRow}>
+								<div className={styles.iconBox}
+								     style={{color: user.scheduleColor || '#6b7280'}}><Users size={20}/></div>
+								<div className={styles.infoLabel}>스케쥴 색상</div>
+								<div className={styles.colorContainer}
+								     ref={priColor === "SHOW" ? dropdownPriRef : null}>
+									<button className={styles.colorDropdownBtn}
+									        onClick={() => setPriColor(priColor === "SHOW" ? "" : "SHOW")}>
+										<span className={styles.selectedColorCircle}
+											  style={{backgroundColor: user.scheduleColor}}/>
+										<ChevronDown size={14}/>
+									</button>
+									{priColor === "SHOW" && (
+										<div className={styles.colorPalette}>
+											{colorList.map(color => (
+												<button key={color}
+												        className={`${styles.colorCircleBtn} ${user.scheduleColor === color ? styles.activeColor : ''}`}
+												        style={{backgroundColor: color}}
+												        onClick={() => handlePriColorChange(color)}/>
+											))}
+										</div>
+									)}
+								</div>
+							</div>
 						</div>
 					)}
 				</div>
@@ -214,37 +269,40 @@ const MyMain = () => {
 				<div className={styles.section}>
 					<div className={styles.sectionHeader} onClick={() => toggleSection(setGroupSection)}>
 						<h2>그룹 관리</h2>
-						{groupSection ? <Minus size={20} /> : <Plus size={20} />}
+						{groupSection ? <Minus size={20}/> : <Plus size={20}/>}
 					</div>
 					{groupSection && (
 						<div className={styles.subSectionWrapper}>
 							<div className={styles.subSection}>
-								<div className={styles.subSectionHeader} onClick={() => toggleSection(setManagedGroupSection)}>
+								<div className={styles.subSectionHeader}
+								     onClick={() => toggleSection(setManagedGroupSection)}>
 									<h3>관리 그룹</h3>
-									{managedGroupSection ? <Minus size={18} /> : <Plus size={18} />}
+									{managedGroupSection ? <Minus size={18}/> : <Plus size={18}/>}
 								</div>
 								{managedGroupSection && (
 									<div className={styles.infoList}>
 										{managerGroups.length > 0 ? managerGroups.map((list) => (
 											<div className={styles.infoRow} key={list.groupId}>
-												<div className={styles.iconBox} style={{color: list.scheduleColor || '#6b7280'}}><Users size={20}/></div>
+												<div className={styles.iconBox}
+												     style={{color: list.scheduleColor || '#6b7280'}}><Users size={20}/>
+												</div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>관리자</div>
 												<div className={styles.colorContainer}
-												     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+													 ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 													<button className={styles.colorDropdownBtn}
-													        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-                                           <span className={styles.selectedColorCircle}
-                                                 style={{backgroundColor: list.scheduleColor || '#6b7280'}} />
+															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+														<span className={styles.selectedColorCircle}
+															  style={{backgroundColor: list.scheduleColor || '#6b7280'}} />
 														<ChevronDown size={14} />
 													</button>
 													{selectColorGroupId === list.groupId && (
 														<div className={styles.colorPalette}>
 															{colorList.map(color => (
 																<button key={color}
-																        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
-																        style={{ backgroundColor: color }}
-																        onClick={() => handleColorChange(list.groupId, color)} />
+																		className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																		style={{ backgroundColor: color }}
+																		onClick={() => handleColorChange(list.groupId, color)} />
 															))}
 														</div>
 													)}
@@ -258,7 +316,8 @@ const MyMain = () => {
 							</div>
 
 							<div className={styles.subSection}>
-								<div className={styles.subSectionHeader} onClick={() => toggleSection(setJoinedGroupSection)}>
+								<div className={styles.subSectionHeader}
+								     onClick={() => toggleSection(setJoinedGroupSection)}>
 									<h3>참여 그룹</h3>
 									{joinedGroupSection ? <Minus size={18} /> : <Plus size={18} />}
 								</div>
@@ -270,19 +329,20 @@ const MyMain = () => {
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>참여중</div>
 												<div className={styles.colorContainer}
-												     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+													  ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 													<button className={styles.colorDropdownBtn}
-													        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-														<span className={styles.selectedColorCircle} style={{ backgroundColor: list.scheduleColor || '#6b7280' }} />
+															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+														<span className={styles.selectedColorCircle}
+														      style={{ backgroundColor: list.scheduleColor || '#6b7280' }} />
 														<ChevronDown size={14} />
 													</button>
 													{selectColorGroupId === list.groupId && (
 														<div className={styles.colorPalette}>
 															{colorList.map(color => (
 																<button key={color}
-																        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
-																        style={{ backgroundColor: color }}
-																        onClick={() => handleColorChange(list.groupId, color)} />
+																		className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																		style={{ backgroundColor: color }}
+																		onClick={() => handleColorChange(list.groupId, color)} />
 															))}
 														</div>
 													)}

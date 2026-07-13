@@ -79,6 +79,7 @@ public class AuthController {
 			authDto.setUserNm(authInfo.getUserNm());
 			authDto.setUserEmail(authInfo.getUserEmail());
 			authDto.setUserPhone(authInfo.getUserPhone());
+			authDto.setScheduleColor(authInfo.getScheduleColor());
 			authDto.setUserToken(jwtUtil.generateToken(authInfo.getUserId()));
 
 		}
@@ -89,22 +90,8 @@ public class AuthController {
 
 
 	@PostMapping("/update")
-	public AuthDto update(@RequestBody AuthDto dto) {
-		AuthEntity authInfo = authService.login(dto);
-
-		AuthDto authDto = new AuthDto();
-
-		if(StringUtils.hasText(authInfo.getUserId())) {
-			authDto.setUserId(authInfo.getUserId());
-			authDto.setUserNick(authInfo.getUserNick());
-			authDto.setUserNm(authInfo.getUserNm());
-			authDto.setUserEmail(authInfo.getUserEmail());
-			authDto.setUserPhone(authInfo.getUserPhone());
-			authDto.setUserToken(jwtUtil.generateToken(authInfo.getUserId()));
-
-		}
-
-		return authDto;
+	public void update(@RequestBody AuthDto dto) {
+		authService.update(dto);
 
 	}
 

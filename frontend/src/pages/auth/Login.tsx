@@ -13,7 +13,6 @@ const Login = () => {
 	const [loginData, setLoginData] = useState({
 		userId: '',
 		userPw: '',
-
 	});
 
 	const [serverStatus, setServerStatus] = useState<'checking' | 'connected' | 'error'>('checking');
@@ -41,6 +40,7 @@ const Login = () => {
 				login({
 					userId: res.data.userId,
 					userNick: res.data.userNick,
+					scheduleColor: res.data.scheduleColor,
 				}, res.data.userToken);
 
 				navigate('/scheduleMain');

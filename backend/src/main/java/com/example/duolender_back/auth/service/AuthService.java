@@ -6,6 +6,7 @@ import com.example.duolender_back.auth.repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -67,7 +68,7 @@ public class AuthService {
 	}
 
 	public AuthEntity login(AuthDto dto) {
-		Optional<AuthEntity> userOpt = authRepository.findById(dto.getUserId());
+		Optional<AuthEntity> userOpt = userInfo(dto);
 
 		if(userOpt.isPresent()) {
 			AuthEntity auth = userOpt.get();
@@ -78,5 +79,30 @@ public class AuthService {
 
 		return new AuthEntity();
 
+	}
+
+	@Transactional
+	public boolean update(AuthDto dto) {
+		Optional<AuthEntity> userOpt = userInfo(dto);
+
+		if(userOpt.isPresent()) {
+			AuthEntity authEntity = userOpt.get();
+
+			if(dto.getReqUpdate().equals("NICK")) {
+				authEntity.setUserNick(dto.getUserNick());
+
+			} else if(dto.getReqUpdate().equals("COLOR")) {
+				authEntity.setScheduleColor(dto.getScheduleColor());
+
+			}
+
+		}
+
+		return true;
+
+	}
+
+	public Optional<AuthEntity> userInfo(AuthDto dto) {
+		return authRepository.findById(dto.getUserId());
 	}
 }

@@ -19,5 +19,8 @@ public class AuthDto {
 	private String userToken;
 	private String userIdDupleCheck;
 	private String dupleState;
+	private String scheduleColor;
+
+	private String reqUpdate;
 
 }
