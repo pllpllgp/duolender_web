@@ -2,8 +2,10 @@ package com.example.duolender_back.group.controller;
 
 import com.example.duolender_back.group.dto.GroupDetailDto;
 import com.example.duolender_back.group.dto.GroupDto;
+import com.example.duolender_back.group.dto.GroupMemberDto;
 import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.entity.GroupEntity;
+import com.example.duolender_back.group.entity.UserGroupLinkEntity;
 import com.example.duolender_back.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,5 +79,16 @@ public class GroupController {
 	public void updateColor(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
 		dto.setUserId(userDetails.getUsername());
 		groupService.updateColor(dto);
+	}
+
+	@PostMapping("/memberList")
+	public List<GroupMemberDto> memberList(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
+		return groupService.memberList(dto);
+	}
+
+	@PostMapping("/approveMember")
+	public void approveMember(@RequestBody ReqGroupDto dto) {
+		groupService.approveMember(dto);
 	}
 }

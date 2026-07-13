@@ -3,6 +3,7 @@ package com.example.duolender_back.group.service;
 import com.example.duolender_back.auth.entity.AuthEntity;
 import com.example.duolender_back.group.dto.GroupDetailDto;
 import com.example.duolender_back.group.dto.GroupDto;
+import com.example.duolender_back.group.dto.GroupMemberDto;
 import com.example.duolender_back.group.dto.ReqGroupDto;
 import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.entity.UserGroupLinkEntity;
@@ -112,6 +113,29 @@ public class GroupService {
 		userGroupLinkRepository.save(entity);
 
 		return true;
+	}
+
+	//그룹원 조회
+	public List<GroupMemberDto> memberList(ReqGroupDto dto) {
+		return groupRepository.searchMemberList(dto);
+	}
+
+	//그룹 탈퇴 및 가입 신청 취소
+	@Transactional
+	public void approveMember(ReqGroupDto dto) {
+		//가입 승인
+		if(dto.getReqYn().equals("Y")) {
+			Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
+
+			if(linkOpt.isPresent()) {
+				UserGroupLinkEntity userGroupLinkEntity = linkOpt.get();
+				userGroupLinkEntity.setGroupJoinState("Y");
+			}
+		//가임 거절
+		} else {
+			userGroupLinkLeave(dto);
+
+		}
 	}
 
 	//그룹 탈퇴 및 가입 신청 취소

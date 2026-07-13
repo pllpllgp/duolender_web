@@ -139,4 +139,32 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 
 		return result;
 	}
+
+	//그룹원 조회
+	@Override
+	public List<GroupMemberDto> searchMemberList(ReqGroupDto dto) {
+		JPAQuery<GroupMemberDto> query;
+
+		query = queryFactory
+				.select(new QGroupMemberDto(
+						innerUserGroupLink.userId,
+						authEntity.userNick,
+						innerUserGroupLink.groupId,
+						innerUserGroupLink.groupAdminGrade,
+						innerUserGroupLink.groupJoinState))
+				.from(innerUserGroupLink)
+				.innerJoin(authEntity)
+					.on(innerUserGroupLink.userId.eq(authEntity.userId))
+				.innerJoin(groupEntity)
+					.on(innerUserGroupLink.groupId.eq(groupEntity.groupId))
+					.on(groupEntity.groupCrtnId.eq(dto.getUserId()))
+				.where(
+					innerUserGroupLink.groupId.eq(dto.getGroupId())
+				)
+				.orderBy(innerUserGroupLink.groupJoinCrtnDtm.asc());
+
+		List<GroupMemberDto> result = query.fetch();
+
+		return result;
+	}
 }

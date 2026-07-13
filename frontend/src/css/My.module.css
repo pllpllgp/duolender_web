@@ -116,6 +116,12 @@
 	flex: 1;
 }
 
+.actionWrapper {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
 .colorContainer {
 	position: relative;
 	display: flex;
@@ -255,6 +261,28 @@
 	border-color: #dc2626;
 }
 
+.btnManage {
+	background: #f3f4f6;
+	border-color: #d1d5db;
+	color: #1f2937;
+}
+
+.btnManage:hover {
+	background: #e5e7eb;
+	border-color: #9ca3af;
+}
+
+.btnLeave {
+	background: #fff5f5;
+	border-color: #fca5a5;
+	color: #dc2626;
+}
+
+.btnLeave:hover {
+	background: #fee2e2;
+	border-color: #ef4444;
+}
+
 .msg {
 	margin: 0;
 	font-size: 12px;
@@ -267,4 +295,136 @@
 
 .msg.success {
 	color: #10b981;
+}
+
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.4);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modalContainer {
+	background-color: #ffffff;
+	border-radius: 12px;
+	width: 100%;
+	max-width: 480px;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+	overflow: hidden;
+}
+
+.modalHeader {
+	padding: 16px 20px;
+	background-color: #ffffff;
+	border-bottom: 1px solid #e5e7eb;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.modalHeader h2 {
+	font-size: 16px;
+	margin: 0;
+	color: #111827;
+}
+
+.modalCloseBtn {
+	background: none;
+	border: none;
+	color: #9ca3af;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	padding: 4px;
+}
+
+.modalCloseBtn:hover {
+	color: #4b5563;
+}
+
+.modalBody {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.modalContentSection h3 {
+	font-size: 14px;
+	margin: 0 0 10px 0;
+	color: #374151;
+}
+
+.modalList {
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background-color: #f9fafb;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.modalRow {
+	padding: 12px 16px;
+	background-color: #ffffff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.modalRow:last-child {
+	border-bottom: none;
+}
+
+.modalItemLabel {
+	font-size: 13px;
+	color: #111827;
+}
+
+.modalActionGroup {
+	display: flex;
+	gap: 8px;
+}
+
+.modalEmptyRow {
+	padding: 16px;
+	text-align: center;
+	font-size: 13px;
+	color: #9ca3af;
+	background-color: #ffffff;
+}
+
+.btnModalPrimary {
+	padding: 4px 10px;
+	font-size: 11px;
+	background: #2563eb;
+	color: white;
+	border-color: #2563eb;
+}
+
+.btnModalPrimary:hover {
+	background: #1d4ed8;
+	border-color: #1d4ed8;
+}
+
+.btnModalDanger {
+	padding: 4px 10px;
+	font-size: 11px;
+	background: #ffffff;
+	color: #ef4444;
+	border-color: #fca5a5;
+}
+
+.btnModalDanger:hover {
+	background: #fff5f5;
+	border-color: #ef4444;
 }

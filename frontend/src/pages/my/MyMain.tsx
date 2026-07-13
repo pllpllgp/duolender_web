@@ -1,5 +1,5 @@
 import {useEffect, useState, useRef} from 'react';
-import {Camera, UserCircle, Plus, Minus, Users, ChevronDown} from 'lucide-react';
+import {Camera, UserCircle, Plus, Minus, Users, ChevronDown, X} from 'lucide-react';
 import {useAuthStore} from "../../store/useAuthStore.ts";
 import * as React from "react";
 import axios from "../../api/axiosInstance.ts";
@@ -15,6 +15,14 @@ interface groupDto {
 	groupJoinState: string;
 	groupAdminGrade: string;
 	scheduleColor: string;
+}
+
+interface groupMemberDto {
+	userId: string;
+	userNick: string;
+	groupId: number,
+	groupAdminGrade: string;
+	groupJoinState: string;
 }
 
 const colorList = [
@@ -52,6 +60,11 @@ const MyMain = () => {
 
 	const [selectColorGroupId, setSelectColorGroupId] = useState<number | null>(null);
 	const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+	const [popupOpen, setPopupOpen] = useState<boolean>(false);
+	const [modalGroupNm, setModalGroupNm] = useState<string>("");
+	const [joinMembers, setJoinMembers] = useState<groupMemberDto[]>([]);
+	const [reqMembers, setReqMembers] = useState<groupMemberDto[]>([]);
 
 	const toggleSection = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
 		setter((prev) => !prev);
@@ -166,6 +179,65 @@ const MyMain = () => {
 		}
 	};
 
+	const handleFetchMemberList = async (groupId: number) => {
+		try {
+			const postData = {
+				groupId: groupId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/memberList`, postData);
+
+			const members: groupMemberDto[] = res.data;
+			setJoinMembers(members.filter(m => m.groupJoinState === 'Y'));
+			setReqMembers(members.filter(m => m.groupJoinState === 'W'));
+
+		} catch (error) {
+			console.error('그룹원 목록 조회 실패:', error);
+		}
+	};
+
+	const handleManageMembers = (groupId: number, groupNm: string) => {
+		setModalGroupNm(groupNm);
+		handleFetchMemberList(groupId);
+		setPopupOpen(true);
+	};
+
+	const handleAcceptMember = async (groupId: number, userId: string, reqYn: string) => {
+		try {
+			const postData = {
+				groupId: groupId,
+				userId, userId,
+				reqYn, reqYn,
+			}
+
+			await axios.post(`${SERVER_BASE_URL}/api/group/approveMember`, postData);
+
+			handleFetchMemberList(groupId);
+			handleSearchGroup();
+
+		} catch (error) {
+			console.error('가입 승인 실패:', error);
+		}
+	};
+
+	const handleLeaveGroup = async (groupId: number) => {
+		if (window.confirm('그룹을 나가시겠습니까?')) {
+			try {
+				const postData = {
+					userId: user?.userId,
+					groupId: groupId,
+				};
+
+				await axios.post(`${SERVER_BASE_URL}/api/group/leaveReq`, postData);
+
+				handleSearchGroup();
+
+			} catch (error) {
+				console.error('그룹 나가기 실패:', error);
+			}
+		}
+	};
+
 	useEffect(() => {
 		handleSearchGroup();
 	}, []);
@@ -196,7 +268,7 @@ const MyMain = () => {
 			<div className={styles.contentWrapper}>
 				<div className={styles.section}>
 					<div className={styles.sectionHeader}
-						  onClick={() => toggleSection(setProfileSection)}>
+					     onClick={() => toggleSection(setProfileSection)}>
 						<h2>개인 정보</h2>
 						{profileSection ? <Minus size={20} /> : <Plus size={20} />}
 					</div>
@@ -214,18 +286,18 @@ const MyMain = () => {
 									<div className={styles.editWrapper}>
 										<div className={styles.editArea}>
 											<input className={styles.input}
-													 name="userNick"
-													 value={modifyForm.userNick}
-													 onChange={handleChange}/>
+											       name="userNick"
+											       value={modifyForm.userNick}
+											       onChange={handleChange}/>
 											{nickDupleCheck ? (
 												<button className={`${styles.btn} ${styles.btnPrimary}`}
-														  onClick={handleNickUpdate}>수정</button>
+												        onClick={handleNickUpdate}>수정</button>
 											) : (
 												<button className={styles.btn}
-														  onClick={handleNickDupleCheck}>중복확인</button>
+												        onClick={handleNickDupleCheck}>중복확인</button>
 											)}
 											<button className={`${styles.btn} ${styles.btnDanger}`}
-													  onClick={handleNickCancle}>취소
+											        onClick={handleNickCancle}>취소
 											</button>
 										</div>
 										{msg &&
@@ -246,8 +318,8 @@ const MyMain = () => {
 								     ref={priColor === "SHOW" ? dropdownPriRef : null}>
 									<button className={styles.colorDropdownBtn}
 									        onClick={() => setPriColor(priColor === "SHOW" ? "" : "SHOW")}>
-										<span className={styles.selectedColorCircle}
-											  style={{backgroundColor: user.scheduleColor}}/>
+                               <span className={styles.selectedColorCircle}
+                                     style={{backgroundColor: user.scheduleColor}}/>
 										<ChevronDown size={14}/>
 									</button>
 									{priColor === "SHOW" && (
@@ -288,24 +360,28 @@ const MyMain = () => {
 												</div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>관리자</div>
-												<div className={styles.colorContainer}
-													 ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
-													<button className={styles.colorDropdownBtn}
-															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-														<span className={styles.selectedColorCircle}
-															  style={{backgroundColor: list.scheduleColor}} />
-														<ChevronDown size={14} />
-													</button>
-													{selectColorGroupId === list.groupId && (
-														<div className={styles.colorPalette}>
-															{colorList.map(color => (
-																<button key={color}
-																		className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
-																		style={{ backgroundColor: color }}
-																		onClick={() => handleColorChange(list.groupId, color)} />
-															))}
-														</div>
-													)}
+												<div className={styles.actionWrapper}>
+													<button className={`${styles.btn} ${styles.btnManage}`}
+													        onClick={() => handleManageMembers(list.groupId, list.groupNm)}>그룹원 관리</button>
+													<div className={styles.colorContainer}
+													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+														<button className={styles.colorDropdownBtn}
+														        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+                                              <span className={styles.selectedColorCircle}
+                                                    style={{backgroundColor: list.scheduleColor}} />
+															<ChevronDown size={14} />
+														</button>
+														{selectColorGroupId === list.groupId && (
+															<div className={styles.colorPalette}>
+																{colorList.map(color => (
+																	<button key={color}
+																	        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																	        style={{ backgroundColor: color }}
+																	        onClick={() => handleColorChange(list.groupId, color)} />
+																))}
+															</div>
+														)}
+													</div>
 												</div>
 											</div>
 										)) : (
@@ -328,24 +404,28 @@ const MyMain = () => {
 												<div className={styles.iconBox} style={{color: list.scheduleColor}}><Users size={20}/></div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>참여중</div>
-												<div className={styles.colorContainer}
-													  ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
-													<button className={styles.colorDropdownBtn}
-															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-														<span className={styles.selectedColorCircle}
-														      style={{backgroundColor: list.scheduleColor}} />
-														<ChevronDown size={14} />
-													</button>
-													{selectColorGroupId === list.groupId && (
-														<div className={styles.colorPalette}>
-															{colorList.map(color => (
-																<button key={color}
-																		className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
-																		style={{ backgroundColor: color }}
-																		onClick={() => handleColorChange(list.groupId, color)} />
-															))}
-														</div>
-													)}
+												<div className={styles.actionWrapper}>
+													<button className={`${styles.btn} ${styles.btnLeave}`}
+													        onClick={() => handleLeaveGroup(list.groupId)}>그룹 나가기</button>
+													<div className={styles.colorContainer}
+													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+														<button className={styles.colorDropdownBtn}
+														        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+                                              <span className={styles.selectedColorCircle}
+                                                    style={{backgroundColor: list.scheduleColor}} />
+															<ChevronDown size={14} />
+														</button>
+														{selectColorGroupId === list.groupId && (
+															<div className={styles.colorPalette}>
+																{colorList.map(color => (
+																	<button key={color}
+																	        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																	        style={{ backgroundColor: color }}
+																	        onClick={() => handleColorChange(list.groupId, color)} />
+																))}
+															</div>
+														)}
+													</div>
 												</div>
 											</div>
 										)) : (
@@ -358,6 +438,58 @@ const MyMain = () => {
 					)}
 				</div>
 			</div>
+
+			{popupOpen && (
+				<div className={styles.modalOverlay}>
+					<div className={styles.modalContainer}>
+						<div className={styles.modalHeader}>
+							<h2>{modalGroupNm} 관리</h2>
+							<button className={styles.modalCloseBtn} onClick={() => setPopupOpen(false)}>
+								<X size={20} />
+							</button>
+						</div>
+						<div className={styles.modalBody}>
+							<div className={styles.modalContentSection}>
+								<h3>현재 그룹원 ({joinMembers.length})</h3>
+								<div className={styles.modalList}>
+									{joinMembers.length > 0 ? joinMembers.map(member => (
+										<div className={styles.modalRow} key={member.userId}>
+											<div className={styles.modalItemLabel}>{member.userNick}</div>
+											{member.groupAdminGrade === 'A' && (
+												<div className={styles.modalItemLabel}>관리자</div>
+											)}
+											{member.groupAdminGrade === 'M' && (
+												<button className={`${styles.btn} ${styles.btnModalDanger}`}
+												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'N')}>추방</button>
+											)}
+										</div>
+									)) : (
+										<div className={styles.modalEmptyRow}>그룹원이 없습니다.</div>
+									)}
+								</div>
+							</div>
+							<div className={styles.modalContentSection}>
+								<h3>가입 신청 내역 ({reqMembers.length})</h3>
+								<div className={styles.modalList}>
+									{reqMembers.length > 0 ? reqMembers.map(member => (
+										<div className={styles.modalRow} key={member.groupId}>
+											<div className={styles.modalItemLabel}>{member.userNick}</div>
+											<div className={styles.modalActionGroup}>
+												<button className={`${styles.btn} ${styles.btnModalPrimary}`}
+												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'Y')}>승인</button>
+												<button className={`${styles.btn} ${styles.btnModalDanger}`}
+												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'N')}>거절</button>
+											</div>
+										</div>
+									)) : (
+										<div className={styles.modalEmptyRow}>새로운 가입 신청이 없습니다.</div>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };
