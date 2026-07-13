@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface GroupRepository extends JpaRepository<GroupEntity, String>, GroupRepositoryCustom {
+public interface GroupRepository extends JpaRepository<GroupEntity, Integer>, GroupRepositoryCustom {
 	Optional<GroupEntity> findByGroupId(int groupId);
 }

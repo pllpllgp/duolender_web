@@ -56,9 +56,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 				.innerJoin(groupLinkEntity)
 					.on(scheduleEntity.scheduleGroupId.eq(groupLinkEntity.groupId))
 					.on(groupLinkEntity.userId.eq(userId))
+					.on(groupLinkEntity.groupJoinState.eq("Y"))
 				.where(
-						scheduleEntity.scheduleType.eq("G"),
-						scheduleEntity.scheduleDtm.startsWith(reqScheduleDate)
+					scheduleEntity.scheduleType.eq("G"),
+					scheduleEntity.scheduleDtm.startsWith(reqScheduleDate)
 				)
 				.fetch();
 	}

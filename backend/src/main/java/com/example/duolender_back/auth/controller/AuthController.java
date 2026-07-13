@@ -58,10 +58,17 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public Map<String, Object> signup(@RequestBody AuthDto dto) {
-		String result = authService.signup(dto);
-
+		boolean checkResult = authService.idDupleCheck(dto);
 		Map<String, Object> res = new HashMap<>();
-		res.put("result", result);
+
+		if(checkResult) {
+			String result = authService.signup(dto);
+			res.put("result", result);
+
+		} else {
+			res.put("result", "duplId");
+
+		}
 
 		return res;
 

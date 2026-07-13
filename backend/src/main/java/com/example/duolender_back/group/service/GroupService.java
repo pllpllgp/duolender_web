@@ -77,7 +77,7 @@ public class GroupService {
 		userGroupLinkLeave(dto);
 	}
 
-	//그룹 탈퇴
+	//그룹 색상 변경
 	@Transactional
 	public boolean updateColor(ReqGroupDto dto) {
 		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());

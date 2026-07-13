@@ -284,7 +284,7 @@ const MyMain = () => {
 										{managerGroups.length > 0 ? managerGroups.map((list) => (
 											<div className={styles.infoRow} key={list.groupId}>
 												<div className={styles.iconBox}
-												     style={{color: list.scheduleColor || '#6b7280'}}><Users size={20}/>
+												     style={{color: list.scheduleColor}}><Users size={20}/>
 												</div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>관리자</div>
@@ -293,7 +293,7 @@ const MyMain = () => {
 													<button className={styles.colorDropdownBtn}
 															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
 														<span className={styles.selectedColorCircle}
-															  style={{backgroundColor: list.scheduleColor || '#6b7280'}} />
+															  style={{backgroundColor: list.scheduleColor}} />
 														<ChevronDown size={14} />
 													</button>
 													{selectColorGroupId === list.groupId && (
@@ -325,7 +325,7 @@ const MyMain = () => {
 									<div className={styles.infoList}>
 										{joinedGroups.length > 0 ? joinedGroups.map((list) => (
 											<div className={styles.infoRow} key={list.groupId}>
-												<div className={styles.iconBox} style={{ color: list.scheduleColor || '#6b7280' }}><Users size={20}/></div>
+												<div className={styles.iconBox} style={{color: list.scheduleColor}}><Users size={20}/></div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
 												<div className={styles.infoValue}>참여중</div>
 												<div className={styles.colorContainer}
@@ -333,7 +333,7 @@ const MyMain = () => {
 													<button className={styles.colorDropdownBtn}
 															onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
 														<span className={styles.selectedColorCircle}
-														      style={{ backgroundColor: list.scheduleColor || '#6b7280' }} />
+														      style={{backgroundColor: list.scheduleColor}} />
 														<ChevronDown size={14} />
 													</button>
 													{selectColorGroupId === list.groupId && (

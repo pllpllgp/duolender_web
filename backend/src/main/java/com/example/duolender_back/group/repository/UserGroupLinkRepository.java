@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserGroupLinkRepository extends JpaRepository<UserGroupLinkEntity, String> {
+public interface UserGroupLinkRepository extends JpaRepository<UserGroupLinkEntity, Integer> {
 	Optional<UserGroupLinkEntity> findByGroupIdAndUserId(int groupId, String userId);
 }

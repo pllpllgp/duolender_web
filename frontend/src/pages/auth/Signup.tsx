@@ -63,7 +63,13 @@ const Signup = () => {
 			if (Object.values(signupForm).some((value) => value.trim() === '')) {
 				alert('모든 항목을 입력해주세요.');
 				return;
+
+			} else if(signupForm.userPw !== signupForm.userPwConfirm) {
+				alert('비밀번호가 일치하지 않습니다.');
+				return;
+
 			}
+
 
 			const postData= {
 				userId: signupForm.userId,
@@ -76,8 +82,13 @@ const Signup = () => {
 
 			if(res.data.result === 'notPwValid') {
 				alert('비밀번호는 영문, 숫자, 특수문자 포함 8~20자로 설정바랍니다.');
+
+			} else if(res.data.result === 'duplId'){
+				alert('중복된 ID 입니다. 다른 ID를 사용해주세요.');
+
 			} else {
 				navigate('/login');
+
 			}
 
 
