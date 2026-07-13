@@ -26,4 +26,6 @@ public class GroupEntity {
 	@Column(nullable = true)
 	private String groupMemo;
 
+	@Column(nullable = true)
+	private String groupSecretYn;
 }

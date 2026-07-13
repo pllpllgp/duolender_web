@@ -48,6 +48,7 @@ public class GroupService {
 		entity.setGroupMemo(dto.getReqGroupMemo());
 		entity.setGroupCrtnId(dto.getUserId());
 		entity.setGroupCrtnDtm(toDate());
+		entity.setGroupSecretYn(dto.getReqGroupSecretYn());
 
 		groupRepository.save(entity);
 

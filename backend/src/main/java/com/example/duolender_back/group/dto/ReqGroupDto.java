@@ -14,5 +14,6 @@ public class ReqGroupDto {
 	String reqActiveTab;
 	String reqGroupJoinState;
 	String reqScheduleColor;
+	String reqGroupSecretYn;
 	String reqYn;
 }

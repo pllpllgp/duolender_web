@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { Search, Plus, Users, X } from 'lucide-react';
 import * as React from "react";
 import axios from "../../api/axiosInstance";
@@ -15,6 +15,7 @@ interface groupDto {
 	userNick: string;
 	groupMemCnt: number;
 	groupJoinState: string;
+	groupSecretYn: string;
 }
 
 const GroupMain = () => {
@@ -30,6 +31,7 @@ const GroupMain = () => {
 		userNick: '',
 		groupMemCnt: 0,
 		groupJoinState: '',
+		groupSecretYn: 'N',
 	});
 
 	const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -45,12 +47,13 @@ const GroupMain = () => {
 				userId: user?.userId,
 				reqGroupNm: groupForm.groupNm,
 				reqGroupMemo: groupForm.groupMemo,
+				reqGroupSecretYn: groupForm.groupSecretYn,
 			}
 
 			await axios.post(`${SERVER_BASE_URL}/api/group/register`, postData);
 			setGroupPopup('');
 		} catch (error) {
-			console.error('그룹 등록 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -60,23 +63,35 @@ const GroupMain = () => {
 
 	const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
-			handleSearchGroup();
+			handleSearchGroup('N');
 		}
 	};
 
-	const handleSearchGroup = async () => {
+	const handleSearchGroup = async (secretYn: string) => {
 		try {
+			let searchGroupNm;
+
+			if(secretYn === 'N') {
+				searchGroupNm = reqGroupNm;
+			} else {
+				searchGroupNm= '';
+			}
+
 			const postData = {
 				userId: user?.userId,
-				reqGroupNm: reqGroupNm,
+				reqGroupNm: searchGroupNm,
 			}
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
 			setGroupList(res.data);
 		} catch (error) {
-			console.error('그룹 찾기 검색 실패:', error);
+			console.error(error);
 		}
 	};
+
+	useEffect(() => {
+		handleSearchGroup('Y');
+	}, []);
 
 	const handleGroupDetail = async (groupId: number) => {
 		try {
@@ -88,7 +103,7 @@ const GroupMain = () => {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
 			setGroupForm(res.data);
 		} catch (error) {
-			console.error('그룹 상세 보기 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -102,7 +117,7 @@ const GroupMain = () => {
 			await axios.post(`${SERVER_BASE_URL}/api/group/joinReq`, postData);
 			setGroupPopup('');
 		} catch (error) {
-			console.error('그룹 상세 보기 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -121,7 +136,7 @@ const GroupMain = () => {
 
 			<div className={styles.searchWrapper}>
 				<Search className={styles.searchIcon} size={20}
-				        onClick={handleSearchGroup}/>
+				        onClick={() => handleSearchGroup('N')}/>
 				<input type="text"
 				       className={styles.searchInput}
 				       placeholder="관심있는 그룹을 검색해보세요."
@@ -170,6 +185,23 @@ const GroupMain = () => {
 								<label>그룹 설명</label>
 								<textarea name="groupMemo" placeholder="어떤 그룹인지 설명해주세요" rows={4}
 								          onChange={handleRegisterChange}/>
+							</div>
+							<div className={styles.formGroup}>
+								<label>공개 설정</label>
+								<div className={styles.radioGroup}>
+									<label className={styles.radioLabel}>
+										<input type="radio" name="groupSecretYn" value="N"
+										       checked={groupForm.groupSecretYn === 'N'}
+										       onChange={handleRegisterChange}/>
+										공개
+									</label>
+									<label className={styles.radioLabel}>
+										<input type="radio" name="groupSecretYn" value="Y"
+										       checked={groupForm.groupSecretYn === 'Y'}
+										       onChange={handleRegisterChange}/>
+										비공개
+									</label>
+								</div>
 							</div>
 						</div>
 						<div className={styles.modalFooter}>

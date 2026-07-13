@@ -4,6 +4,7 @@ import com.example.duolender_back.auth.entity.QAuthEntity;
 import com.example.duolender_back.group.dto.*;
 import com.example.duolender_back.group.entity.QGroupEntity;
 import com.example.duolender_back.group.entity.QUserGroupLinkEntity;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -66,6 +67,11 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 		);
 	}
 
+	//검색 조건 유무
+	private BooleanExpression secretYn(boolean isSearch) {
+		return isSearch ? null : groupEntity.groupSecretYn.eq("Y");
+	}
+
 
 	//그룹 검색
 	@Override
@@ -73,6 +79,8 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 		if(dto.getReqGroupNm() == null) {
 			dto.setReqGroupNm("");
 		}
+
+		boolean isSearch = !dto.getReqGroupNm().isEmpty();
 
 		JPAQuery<GroupDto> query;
 
@@ -92,7 +100,8 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 										.where(
 											userGroupLinkEntity.userId.eq(dto.getUserId()),
 											userGroupLinkEntity.groupJoinState.eq("Y"))),
-						groupEntity.groupNm.contains(dto.getReqGroupNm())
+						groupEntity.groupNm.contains(dto.getReqGroupNm()),
+						secretYn(isSearch)
 				);
 
 		List<GroupDto> result = query.fetch();
