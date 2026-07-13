@@ -12,7 +12,7 @@ public class ReqScheduleDto {
 	int reqScheduleId;
 	String reqScheduleNm;
 	String reqScheduleDate;
-	String reqScheduleGroupId;
+	int reqScheduleGroupId;
 	String reqScheduleDtm;
 	String reqScheduleMemo;
 	String reqSchedulePlace;

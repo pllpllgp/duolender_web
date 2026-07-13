@@ -83,7 +83,6 @@ public class GroupService {
 		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
 
 		if(linkOpt.isPresent()) {
-			System.out.println("gro:::::::::"+dto.getReqScheduleColor());
 			UserGroupLinkEntity userGroupLinkEntity = linkOpt.get();
 			userGroupLinkEntity.setScheduleColor(dto.getReqScheduleColor());
 		}
@@ -108,6 +107,7 @@ public class GroupService {
 		entity.setGroupAdminGrade(grade);
 		entity.setGroupJoinCrtnDtm(date);
 		entity.setGroupJoinState(state);
+		entity.setScheduleColor("#6b7280");
 
 		userGroupLinkRepository.save(entity);
 

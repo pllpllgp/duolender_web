@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ScheduleDto {
 	int scheduleId;
 	String scheduleNm;
-	String scheduleGroupId;
+	int scheduleGroupId;
 	String scheduleColor;
 	String schedulePlace;
 	String scheduleDtm;

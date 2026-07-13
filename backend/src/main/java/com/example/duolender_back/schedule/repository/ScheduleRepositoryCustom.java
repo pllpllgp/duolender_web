@@ -7,7 +7,9 @@ import com.querydsl.core.Tuple;
 import java.util.List;
 
 public interface ScheduleRepositoryCustom {
-	List<ScheduleDto> findScheduleList(String userId, String reqScheduleDate);
+	List<ScheduleDto> findSchedulePri(String userId, String reqScheduleDate);
+
+	List<ScheduleDto> findScheduleGro(String userId, String reqScheduleDate);
 
 	ScheduleEntity findScheduleView(int reqScheduleId);
 }

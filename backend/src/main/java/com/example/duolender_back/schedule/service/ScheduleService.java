@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +21,14 @@ public class ScheduleService {
 	private ScheduleRepository scheduleRepository;
 
 	public List<ScheduleDto> ScheduleList(ReqScheduleDto dto) {
-		List<ScheduleDto> scheduleDtoList = scheduleRepository.findScheduleList(dto.getUserId(), dto.getReqScheduleDate());
-		return scheduleDtoList;
+		List<ScheduleDto> schedulePriList = scheduleRepository.findSchedulePri(dto.getUserId(), dto.getReqScheduleDate());
+		List<ScheduleDto> scheduleGroList = scheduleRepository.findScheduleGro(dto.getUserId(), dto.getReqScheduleDate());
+
+		List<ScheduleDto> scheduleTotList = new ArrayList<ScheduleDto>();
+		scheduleTotList.addAll(schedulePriList);
+		scheduleTotList.addAll(scheduleGroList);
+
+		return scheduleTotList;
 	}
 
 	public boolean scheduleRegister(ReqScheduleDto dto) {

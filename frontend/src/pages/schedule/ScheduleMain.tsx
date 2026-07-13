@@ -120,13 +120,12 @@ const ScheduleMain = () => {
 			const postData = {
 				userId: user?.userId,
 				reqScheduleDate: schDay,
-				reqActiveTab: 'myGroup',
 			}
 
 			const resSchedule = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
 			setScheduleDateList(resSchedule.data);
 
-			const resMyGroup = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
+			const resMyGroup = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setMyGroupList(resMyGroup.data);
 
 		} catch (error) {
@@ -181,6 +180,7 @@ const ScheduleMain = () => {
 	//스케쥴 등록 버튼
 	const handleRegisterClick = () => {
 		setScheduleStatus('insert');
+		setScheduleType('P');
 
 		const pad = (n: number) => String(n).padStart(2, '0');
 		const selectedDtm = selectedDate ? `${year}${pad(month)}${pad(selectedDate)}` : '';
@@ -272,7 +272,8 @@ const ScheduleMain = () => {
 								</div>
 								{visibleSchedules.map((s, idx) => (
 									<div key={idx}
-										className={styles.scheduleItem}>
+										className={styles.scheduleItem}
+										style={{backgroundColor: s.scheduleColor}}>
 										{s.scheduleNm}
 									</div>
 								))}

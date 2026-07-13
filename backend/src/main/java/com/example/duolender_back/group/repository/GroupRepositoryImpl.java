@@ -70,6 +70,10 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	//그룹 검색
 	@Override
 	public List<GroupDto> searchGroupList(ReqGroupDto dto) {
+		if(dto.getReqGroupNm() == null) {
+			dto.setReqGroupNm("");
+		}
+
 		JPAQuery<GroupDto> query;
 
 		query = queryFactory
@@ -77,6 +81,9 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 				.from(groupEntity)
 				.innerJoin(authEntity)
 					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
+				.leftJoin(innerUserGroupLink)
+					.on(groupEntity.groupId.eq(innerUserGroupLink.groupId))
+					.on(innerUserGroupLink.userId.eq(dto.getUserId()))
 				.where(
 						groupEntity.groupId.notIn(
 								JPAExpressions

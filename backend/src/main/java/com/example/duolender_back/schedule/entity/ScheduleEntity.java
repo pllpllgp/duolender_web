@@ -18,7 +18,7 @@ public class ScheduleEntity {
 	private String scheduleNm;
 
 	@Column(nullable = true)
-	private String scheduleGroupId;
+	private int scheduleGroupId;
 
 	@Column(nullable = true)
 	private String scheduleDtm;

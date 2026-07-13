@@ -55,6 +55,7 @@ public class AuthService {
 			entity.setUserId(dto.getUserId());
 			entity.setUserPw(passwordEncoder.encode(dto.getUserPw()));
 			entity.setUserNick(dto.getUserId());
+			entity.setScheduleColor("#6b7280");
 
 			authRepository.save(entity);
 

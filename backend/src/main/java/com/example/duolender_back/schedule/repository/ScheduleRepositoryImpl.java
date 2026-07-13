@@ -1,6 +1,8 @@
 package com.example.duolender_back.schedule.repository;
 
 import com.example.duolender_back.auth.entity.QAuthEntity;
+import com.example.duolender_back.group.entity.QGroupEntity;
+import com.example.duolender_back.group.entity.QUserGroupLinkEntity;
 import com.example.duolender_back.schedule.dto.QScheduleDto;
 import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.entity.QScheduleEntity;
@@ -19,9 +21,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
 	QScheduleEntity scheduleEntity = QScheduleEntity.scheduleEntity;
 	QAuthEntity authEntity = QAuthEntity.authEntity;
+	QUserGroupLinkEntity groupLinkEntity = QUserGroupLinkEntity.userGroupLinkEntity;
 
 	@Override
-	public List<ScheduleDto> findScheduleList(String userId, String reqScheduleDate) {
+	public List<ScheduleDto> findSchedulePri(String userId, String reqScheduleDate) {
 		return queryFactory
 				.select(new QScheduleDto(
 						scheduleEntity.scheduleId,
@@ -33,8 +36,29 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 				.innerJoin(authEntity)
 				.on(scheduleEntity.scheduleCrtnId.eq(authEntity.userId))
 				.where(
+					scheduleEntity.scheduleType.eq("P"),
 					scheduleEntity.scheduleCrtnId.eq(userId),
 					scheduleEntity.scheduleDtm.startsWith(reqScheduleDate)
+				)
+				.fetch();
+	}
+
+	@Override
+	public List<ScheduleDto> findScheduleGro(String userId, String reqScheduleDate) {
+		return queryFactory
+				.select(new QScheduleDto(
+						scheduleEntity.scheduleId,
+						scheduleEntity.scheduleNm,
+						scheduleEntity.scheduleDtm,
+						scheduleEntity.scheduleMemo,
+						groupLinkEntity.scheduleColor))
+				.from(scheduleEntity)
+				.innerJoin(groupLinkEntity)
+					.on(scheduleEntity.scheduleGroupId.eq(groupLinkEntity.groupId))
+					.on(groupLinkEntity.userId.eq(userId))
+				.where(
+						scheduleEntity.scheduleType.eq("G"),
+						scheduleEntity.scheduleDtm.startsWith(reqScheduleDate)
 				)
 				.fetch();
 	}
