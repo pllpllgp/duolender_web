@@ -8,8 +8,10 @@ import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.entity.UserGroupLinkEntity;
 import com.example.duolender_back.group.repository.GroupRepository;
 import com.example.duolender_back.group.repository.UserGroupLinkRepository;
+import com.example.duolender_back.schedule.entity.ScheduleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,6 +77,20 @@ public class GroupService {
 		userGroupLinkLeave(dto);
 	}
 
+	//그룹 탈퇴
+	@Transactional
+	public boolean updateColor(ReqGroupDto dto) {
+		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
+
+		if(linkOpt.isPresent()) {
+			System.out.println("gro:::::::::"+dto.getReqScheduleColor());
+			UserGroupLinkEntity userGroupLinkEntity = linkOpt.get();
+			userGroupLinkEntity.setScheduleColor(dto.getReqScheduleColor());
+		}
+
+		return true;
+	}
+
 	//오늘 날짜 구하기
 	public String toDate() {
 		LocalDateTime now = LocalDateTime.now();
@@ -100,10 +116,10 @@ public class GroupService {
 
 	//그룹 탈퇴 및 가입 신청 취소
 	public void userGroupLinkLeave(ReqGroupDto dto) {
-		Optional<UserGroupLinkEntity> linkEntity =  userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
+		Optional<UserGroupLinkEntity> linkOpt =  userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
 
-		if(linkEntity.isPresent()) {
-			UserGroupLinkEntity link = linkEntity.get();
+		if(linkOpt.isPresent()) {
+			UserGroupLinkEntity link = linkOpt.get();
 			userGroupLinkRepository.delete(link);
 
 		}

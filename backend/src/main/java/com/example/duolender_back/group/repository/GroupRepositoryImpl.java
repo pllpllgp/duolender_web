@@ -48,6 +48,9 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 				groupEntity.groupNm,
 				groupEntity.groupMemo,
 				groupMemCntSubQuery(),
+				innerUserGroupLink.groupJoinState,
+				innerUserGroupLink.groupAdminGrade,
+				innerUserGroupLink.scheduleColor,
 				groupEntity.groupCrtnId
 		);
 	}
@@ -102,9 +105,9 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 				.innerJoin(innerUserGroupLink)
 					.on(groupEntity.groupId.eq(innerUserGroupLink.groupId))
 					.on(innerUserGroupLink.userId.eq(dto.getUserId()))
-					.on(innerUserGroupLink.groupJoinState.eq("Y"))
 				.innerJoin(authEntity)
-					.on(groupEntity.groupCrtnId.eq(authEntity.userId));
+					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
+				.orderBy(innerUserGroupLink.groupJoinCrtnDtm.desc());
 
 		List<GroupDto> result = query.fetch();
 

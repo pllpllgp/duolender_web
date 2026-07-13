@@ -67,4 +67,11 @@ public class GroupController {
 
 		return null;
 	}
+
+	@PostMapping("/updateColor")
+	public GroupDto updateColor(@RequestBody ReqGroupDto dto) {
+		groupService.updateColor(dto);
+
+		return null;
+	}
 }

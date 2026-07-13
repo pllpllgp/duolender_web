@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {Camera, UserCircle, Plus, Minus, Users} from 'lucide-react';
+import {useEffect, useState, useRef} from 'react';
+import {Camera, UserCircle, Plus, Minus, Users, ChevronDown} from 'lucide-react';
 import {useAuthStore} from "../../store/useAuthStore.ts";
 import * as React from "react";
 import axios from "../../api/axiosInstance.ts";
@@ -11,15 +11,31 @@ interface groupDto {
 	groupId: number;
 	groupNm: string;
 	groupMemo: string;
-	userNick: string;
 	groupMemCnt: number;
 	groupJoinState: string;
+	groupAdminGrade: string;
+	scheduleColor: string;
 }
+
+const colorList = [
+	'#ef4444',
+	'#f97316',
+	'#eab308',
+	'#22c55e',
+	'#3b82f6',
+	'#6366f1',
+	'#a855f7',
+	'#6b7280'
+];
 
 const MyMain = () => {
 	const user = useAuthStore((state) => state.user);
 	const [profileSection, setProfileSection] = useState<boolean>(false);
 	const [groupSection, setGroupSection] = useState<boolean>(false);
+
+	const [managedGroupSection, setManagedGroupSection] = useState<boolean>(false);
+	const [joinedGroupSection, setJoinedGroupSection] = useState<boolean>(false);
+
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
 
 	const [nickEditing, setNickEditing] = useState(false);
@@ -29,6 +45,9 @@ const MyMain = () => {
 	const [modifyForm, setModifyForm] = useState({
 		userNick: user?.userNick,
 	});
+
+	const [selectColorGroupId, setSelectColorGroupId] = useState<number | null>(null);
+	const dropdownRef = useRef<HTMLDivElement | null>(null);
 
 	const toggleSection = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
 		setter((prev) => !prev);
@@ -102,9 +121,43 @@ const MyMain = () => {
 		}
 	}
 
+	const handleColorChange = async (groupId: number, color: string) => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				groupId: groupId,
+				reqScheduleColor: color
+			};
+
+			await axios.post(`${SERVER_BASE_URL}/api/group/updateColor`, postData);
+
+			setGroupList(prevList =>
+				prevList.map(g => g.groupId === groupId ? { ...g, scheduleColor: color } : g)
+			);
+
+			setSelectColorGroupId(null);
+
+		} catch (error) {
+			console.error('그룹 색상 변경 실패:', error);
+		}
+	};
+
 	useEffect(() => {
 		handleSearchGroup();
 	}, []);
+
+	useEffect(() => {
+		const handleOutsideClick = (e: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+				setSelectColorGroupId(null);
+			}
+		};
+		document.addEventListener('mousedown', handleOutsideClick);
+		return () => document.removeEventListener('mousedown', handleOutsideClick);
+	}, []);
+
+	const managerGroups = groupList.filter(g => g.groupAdminGrade === 'A');
+	const joinedGroups = groupList.filter(g => g.groupJoinState === 'M');
 
 	return (
 		<div className={styles.container}>
@@ -164,16 +217,83 @@ const MyMain = () => {
 						{groupSection ? <Minus size={20} /> : <Plus size={20} />}
 					</div>
 					{groupSection && (
-						<div className={styles.infoList}>
-							{groupList.length > 0 ? groupList.map((list) => (
-								<div className={styles.infoRow} key={list.groupId}>
-									<div className={styles.iconBox}><Users size={20}/></div>
-									<div className={styles.infoLabel}>{list.groupNm}</div>
-									<div className={styles.infoValue}>참여중</div>
+						<div className={styles.subSectionWrapper}>
+							<div className={styles.subSection}>
+								<div className={styles.subSectionHeader} onClick={() => toggleSection(setManagedGroupSection)}>
+									<h3>관리 그룹</h3>
+									{managedGroupSection ? <Minus size={18} /> : <Plus size={18} />}
 								</div>
-							)) : (
-								<div className={styles.infoRow}><div>참여 중인 그룹이 없습니다.</div></div>
-							)}
+								{managedGroupSection && (
+									<div className={styles.infoList}>
+										{managerGroups.length > 0 ? managerGroups.map((list) => (
+											<div className={styles.infoRow} key={list.groupId}>
+												<div className={styles.iconBox} style={{color: list.scheduleColor || '#6b7280'}}><Users size={20}/></div>
+												<div className={styles.infoLabel}>{list.groupNm}</div>
+												<div className={styles.infoValue}>관리자</div>
+												<div className={styles.colorContainer}
+												     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+													<button className={styles.colorDropdownBtn}
+													        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+                                           <span className={styles.selectedColorCircle}
+                                                 style={{backgroundColor: list.scheduleColor || '#6b7280'}} />
+														<ChevronDown size={14} />
+													</button>
+													{selectColorGroupId === list.groupId && (
+														<div className={styles.colorPalette}>
+															{colorList.map(color => (
+																<button key={color}
+																        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																        style={{ backgroundColor: color }}
+																        onClick={() => handleColorChange(list.groupId, color)} />
+															))}
+														</div>
+													)}
+												</div>
+											</div>
+										)) : (
+											<div className={styles.infoRow}><div>관리 중인 그룹이 없습니다.</div></div>
+										)}
+									</div>
+								)}
+							</div>
+
+							<div className={styles.subSection}>
+								<div className={styles.subSectionHeader} onClick={() => toggleSection(setJoinedGroupSection)}>
+									<h3>참여 그룹</h3>
+									{joinedGroupSection ? <Minus size={18} /> : <Plus size={18} />}
+								</div>
+								{joinedGroupSection && (
+									<div className={styles.infoList}>
+										{joinedGroups.length > 0 ? joinedGroups.map((list) => (
+											<div className={styles.infoRow} key={list.groupId}>
+												<div className={styles.iconBox} style={{ color: list.scheduleColor || '#6b7280' }}><Users size={20}/></div>
+												<div className={styles.infoLabel}>{list.groupNm}</div>
+												<div className={styles.infoValue}>참여중</div>
+												<div className={styles.colorContainer}
+												     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
+													<button className={styles.colorDropdownBtn}
+													        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
+														<span className={styles.selectedColorCircle} style={{ backgroundColor: list.scheduleColor || '#6b7280' }} />
+														<ChevronDown size={14} />
+													</button>
+													{selectColorGroupId === list.groupId && (
+														<div className={styles.colorPalette}>
+															{colorList.map(color => (
+																<button key={color}
+																        className={`${styles.colorCircleBtn} ${list.scheduleColor === color ? styles.activeColor : ''}`}
+																        style={{ backgroundColor: color }}
+																        onClick={() => handleColorChange(list.groupId, color)} />
+															))}
+														</div>
+													)}
+												</div>
+											</div>
+										)) : (
+											<div className={styles.infoRow}><div>참여 중인 그룹이 없습니다.</div></div>
+										)}
+									</div>
+								)}
+							</div>
 						</div>
 					)}
 				</div>

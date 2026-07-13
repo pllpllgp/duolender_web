@@ -53,16 +53,18 @@ public class ScheduleService {
 
 		Optional<ScheduleEntity> scheduleOpt = scheduleRepository.findByScheduleId(dto.getReqScheduleId());
 
-		ScheduleEntity scheduleEntity = scheduleOpt.get();
-		scheduleEntity.setScheduleNm(dto.getReqScheduleNm());
-		scheduleEntity.setScheduleGroupId(dto.getReqScheduleGroupId());
-		scheduleEntity.setScheduleDtm(dto.getReqScheduleDtm());
-		scheduleEntity.setScheduleMemo(dto.getReqScheduleMemo());
-		scheduleEntity.setScheduleDtm(dto.getReqScheduleDtm());
-		scheduleEntity.setScheduleChngId(dto.getUserId());
-		scheduleEntity.setScheduleChngDtm(toDate);
-		scheduleEntity.setSchedulePlace(dto.getReqSchedulePlace());
-		scheduleEntity.setScheduleType(dto.getReqScheduleType());
+		if(scheduleOpt.isPresent()) {
+			ScheduleEntity scheduleEntity = scheduleOpt.get();
+			scheduleEntity.setScheduleNm(dto.getReqScheduleNm());
+			scheduleEntity.setScheduleGroupId(dto.getReqScheduleGroupId());
+			scheduleEntity.setScheduleDtm(dto.getReqScheduleDtm());
+			scheduleEntity.setScheduleMemo(dto.getReqScheduleMemo());
+			scheduleEntity.setScheduleDtm(dto.getReqScheduleDtm());
+			scheduleEntity.setScheduleChngId(dto.getUserId());
+			scheduleEntity.setScheduleChngDtm(toDate);
+			scheduleEntity.setSchedulePlace(dto.getReqSchedulePlace());
+			scheduleEntity.setScheduleType(dto.getReqScheduleType());
+		}
 
 		return true;
 	}

@@ -26,7 +26,6 @@
 	background-color: white;
 	border: 1px solid #e5e7eb;
 	border-radius: 12px;
-	overflow: hidden;
 }
 
 .sectionHeader {
@@ -36,12 +35,48 @@
 	align-items: center;
 	cursor: pointer;
 	background-color: #ffffff;
+	border-radius: 12px;
 }
 
 .sectionHeader h2 {
 	font-size: 18px;
 	margin: 0;
 	color: #111827;
+}
+
+.subSectionWrapper {
+	padding: 0 24px 20px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.subSection {
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background-color: #f9fafb;
+}
+
+.subSectionHeader {
+	padding: 14px 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	cursor: pointer;
+	background-color: #f3f4f6;
+	border-radius: 8px 8px 0 0;
+}
+
+.subSectionHeader h3 {
+	font-size: 15px;
+	margin: 0;
+	color: #374151;
+}
+
+.subSection .infoList {
+	padding: 16px 20px;
+	background-color: #ffffff;
+	border-radius: 0 0 8px 8px;
 }
 
 .infoList {
@@ -58,12 +93,14 @@
 	display: flex;
 	align-items: center;
 	gap: 20px;
+	background-color: #ffffff;
 }
 
 .iconBox {
 	color: #6b7280;
 	display: flex;
 	align-items: center;
+	transition: color 0.2s ease;
 }
 
 .infoLabel {
@@ -77,6 +114,71 @@
 	font-size: 14px;
 	color: #111827;
 	flex: 1;
+}
+
+.colorContainer {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.colorDropdownBtn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	background-color: #ffffff;
+	cursor: pointer;
+	color: #6b7280;
+	transition: all 0.2s ease;
+}
+
+.colorDropdownBtn:hover {
+	border-color: #9ca3af;
+}
+
+.selectedColorCircle {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	display: inline-block;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.colorPalette {
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	background-color: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 8px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 8px;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	z-index: 100;
+}
+
+.colorCircleBtn {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	padding: 0;
+	transition: transform 0.15s ease;
+}
+
+.colorCircleBtn:hover {
+	transform: scale(1.15);
+}
+
+.activeColor {
+	outline: 2px solid #2563eb;
+	outline-offset: 1px;
 }
 
 .avatar {
