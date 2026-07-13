@@ -112,8 +112,6 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 				.innerJoin(innerUserGroupLink)
 					.on(groupEntity.groupId.eq(innerUserGroupLink.groupId))
 					.on(innerUserGroupLink.userId.eq(dto.getUserId()))
-				.innerJoin(authEntity)
-					.on(groupEntity.groupCrtnId.eq(authEntity.userId))
 				.orderBy(innerUserGroupLink.groupJoinCrtnDtm.desc());
 
 		List<GroupDto> result = query.fetch();

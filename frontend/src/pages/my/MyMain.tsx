@@ -186,7 +186,7 @@ const MyMain = () => {
 	}, []);
 
 	const managerGroups = groupList.filter(g => g.groupAdminGrade === 'A');
-	const joinedGroups = groupList.filter(g => g.groupJoinState === 'M');
+	const joinGroups = groupList.filter(g => g.groupAdminGrade === 'M');
 
 	return (
 		<div className={styles.container}>
@@ -323,7 +323,7 @@ const MyMain = () => {
 								</div>
 								{joinedGroupSection && (
 									<div className={styles.infoList}>
-										{joinedGroups.length > 0 ? joinedGroups.map((list) => (
+										{joinGroups.length > 0 ? joinGroups.map((list) => (
 											<div className={styles.infoRow} key={list.groupId}>
 												<div className={styles.iconBox} style={{color: list.scheduleColor}}><Users size={20}/></div>
 												<div className={styles.infoLabel}>{list.groupNm}</div>
