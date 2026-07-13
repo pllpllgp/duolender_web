@@ -199,7 +199,7 @@ const ScheduleMain = () => {
 				reqScheduleStatus: scheduleStatus,
 				reqScheduleId: scheduleForm.scheduleId,
 				reqScheduleNm: scheduleForm.scheduleNm,
-				reqScheduleGroupId: scheduleForm.scheduleGroupId,
+				reqScheduleGroupId: scheduleForm.scheduleGroupId || 0,
 				reqScheduleDtm: scheduleForm.scheduleDtm,
 				reqScheduleMemo: scheduleForm.scheduleMemo,
 				reqSchedulePlace: scheduleForm.schedulePlace,
