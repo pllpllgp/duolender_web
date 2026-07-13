@@ -206,8 +206,8 @@ const MyMain = () => {
 		try {
 			const postData = {
 				groupId: groupId,
-				userId, userId,
-				reqYn, reqYn,
+				userId: userId,
+				reqYn: reqYn,
 			}
 
 			await axios.post(`${SERVER_BASE_URL}/api/group/approveMember`, postData);
@@ -312,21 +312,21 @@ const MyMain = () => {
 							</div>
 							<div className={styles.infoRow}>
 								<div className={styles.iconBox}
-								     style={{color: user.scheduleColor || '#6b7280'}}><Users size={20}/></div>
+								     style={{color: user?.scheduleColor || '#6b7280'}}><Users size={20}/></div>
 								<div className={styles.infoLabel}>스케쥴 색상</div>
 								<div className={styles.colorContainer}
 								     ref={priColor === "SHOW" ? dropdownPriRef : null}>
 									<button className={styles.colorDropdownBtn}
 									        onClick={() => setPriColor(priColor === "SHOW" ? "" : "SHOW")}>
                                <span className={styles.selectedColorCircle}
-                                     style={{backgroundColor: user.scheduleColor}}/>
+                                     style={{backgroundColor: user?.scheduleColor}}/>
 										<ChevronDown size={14}/>
 									</button>
 									{priColor === "SHOW" && (
 										<div className={styles.colorPalette}>
 											{colorList.map(color => (
 												<button key={color}
-												        className={`${styles.colorCircleBtn} ${user.scheduleColor === color ? styles.activeColor : ''}`}
+												        className={`${styles.colorCircleBtn} ${user?.scheduleColor === color ? styles.activeColor : ''}`}
 												        style={{backgroundColor: color}}
 												        onClick={() => handlePriColorChange(color)}/>
 											))}
