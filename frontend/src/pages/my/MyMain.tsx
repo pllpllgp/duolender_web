@@ -1,5 +1,5 @@
 import {useEffect, useState, useRef} from 'react';
-import {Camera, UserCircle, Plus, Minus, Users, ChevronDown, X} from 'lucide-react';
+import {UserCircle, Plus, Minus, Users, ChevronDown, X} from 'lucide-react';
 import {useAuthStore} from "../../store/useAuthStore.ts";
 import * as React from "react";
 import axios from "../../api/axiosInstance.ts";
