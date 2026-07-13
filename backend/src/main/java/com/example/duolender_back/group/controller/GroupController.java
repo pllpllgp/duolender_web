@@ -7,6 +7,8 @@ import com.example.duolender_back.group.entity.GroupEntity;
 import com.example.duolender_back.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,22 +28,26 @@ public class GroupController {
 	private GroupService groupService;
 
 	@PostMapping("/search")
-	public List<GroupDto> groupSearch(@RequestBody ReqGroupDto dto) {
+	public List<GroupDto> groupSearch(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		return groupService.groupSearch(dto);
 	}
 
 	@PostMapping("/myGroupSearch")
-	public List<GroupDto> myGroupSearch(@RequestBody ReqGroupDto dto) {
+	public List<GroupDto> myGroupSearch(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		return groupService.myGroupSearch(dto);
 	}
 
 	@PostMapping("/detail")
-	public GroupDetailDto groupDetail(@RequestBody ReqGroupDto dto) {
+	public GroupDetailDto groupDetail(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		return groupService.groupDetail(dto);
 	}
 
 	@PostMapping("/register")
-	public Map<String, Object> groupRegister(@RequestBody ReqGroupDto dto) {
+	public Map<String, Object> groupRegister(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		boolean result = groupService.groupRegister(dto);
 
 		Map<String, Object> res = new HashMap<>();
@@ -55,23 +61,20 @@ public class GroupController {
 	}
 
 	@PostMapping("/joinReq")
-	public GroupDto joinReq(@RequestBody ReqGroupDto dto) {
+	public void joinReq(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		groupService.joinReq(dto);
-
-		return null;
 	}
 
 	@PostMapping("/leaveReq")
-	public GroupDto leaveReq(@RequestBody ReqGroupDto dto) {
+	public void leaveReq(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		groupService.leaveReq(dto);
-
-		return null;
 	}
 
 	@PostMapping("/updateColor")
-	public GroupDto updateColor(@RequestBody ReqGroupDto dto) {
+	public void updateColor(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		groupService.updateColor(dto);
-
-		return null;
 	}
 }

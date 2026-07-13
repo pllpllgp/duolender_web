@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,7 +99,8 @@ public class AuthController {
 
 
 	@PostMapping("/update")
-	public void update(@RequestBody AuthDto dto) {
+	public void update(@RequestBody AuthDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		authService.update(dto);
 
 	}

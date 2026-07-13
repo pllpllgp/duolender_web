@@ -5,6 +5,8 @@ import com.example.duolender_back.schedule.dto.ScheduleDto;
 import com.example.duolender_back.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +25,16 @@ public class ScheduleController {
 	private ScheduleService scheduleService;
 
 	@PostMapping("/list")
-	public List<ScheduleDto> scheduleList(@RequestBody ReqScheduleDto dto) {
+	public List<ScheduleDto> scheduleList(@RequestBody ReqScheduleDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		return scheduleService.ScheduleList(dto);
 	}
 
 	@PostMapping("/save")
-	public Map<String, Object> scheduleSave(@RequestBody ReqScheduleDto dto) {
+	public Map<String, Object> scheduleSave(@RequestBody ReqScheduleDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		boolean result = false;
+
 		if(dto.getReqScheduleStatus().equals("insert")) {
 			result = scheduleService.scheduleRegister(dto);
 		} else {
@@ -48,7 +53,8 @@ public class ScheduleController {
 	}
 
 	@PostMapping("/view")
-	public ScheduleDto scheduleView(@RequestBody ReqScheduleDto dto) {
+	public ScheduleDto scheduleView(@RequestBody ReqScheduleDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
 		return scheduleService.ScheduleView(dto);
 	}
 }
