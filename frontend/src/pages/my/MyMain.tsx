@@ -275,11 +275,6 @@ const MyMain = () => {
 					{profileSection && (
 						<div className={styles.infoList}>
 							<div className={styles.infoRow}>
-								<div className={styles.iconBox}><Camera size={20}/></div>
-								<div className={styles.infoLabel}>프로필 사진</div>
-								<div className={styles.avatar}>용근</div>
-							</div>
-							<div className={styles.infoRow}>
 								<div className={styles.iconBox}><UserCircle size={20}/></div>
 								<div className={styles.infoLabel}>닉네임</div>
 								{nickEditing ? (
