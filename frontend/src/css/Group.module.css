@@ -5,6 +5,7 @@
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	box-sizing: border-box;
 }
 
 .header {
@@ -99,6 +100,7 @@
 	border: 1px solid #e5e7eb;
 	border-radius: 12px;
 	padding: 20px;
+	box-sizing: border-box;
 }
 
 .cardHeader {
@@ -167,6 +169,7 @@
 	width: 100%;
 	max-width: 500px;
 	padding: 24px;
+	box-sizing: border-box;
 	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
@@ -222,6 +225,8 @@
 	outline: none;
 	font-family: inherit;
 	resize: none;
+	box-sizing: border-box;
+	width: 100%;
 }
 
 .formGroup input[type="text"]:focus,
@@ -279,6 +284,9 @@
 	font-size: 14px;
 	font-weight: 600;
 	color: #6b7280;
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
 .infoValue {
@@ -298,4 +306,84 @@
 	color: #4b5563;
 	line-height: 1.5;
 	border: 1px solid #e5e7eb;
+	box-sizing: border-box;
+	width: 100%;
+	white-space: pre-wrap;
+}
+
+.detailHeader {
+	background-color: #f8fafc;
+	border-radius: 12px;
+	padding: 20px;
+	margin-bottom: 8px;
+	border: 1px solid #f1f5f9;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.detailTitleWrapper {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 12px;
+	flex-wrap: wrap;
+}
+
+.detailTitle {
+	font-size: 20px;
+	font-weight: 700;
+	color: #0f172a;
+	margin: 0;
+}
+
+.badgePublic {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 10px;
+	background-color: #ecfdf5;
+	color: #059669;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.badgePrivate {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 10px;
+	background-color: #fef2f2;
+	color: #dc2626;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.detailMeta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: #64748b;
+	font-size: 14px;
+	flex-wrap: wrap;
+}
+
+.metaItem {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.metaItem strong {
+	color: #334155;
+	font-weight: 600;
+}
+
+.metaDivider {
+	color: #cbd5e1;
+}
+
+.detailContent {
+	padding: 0;
 }

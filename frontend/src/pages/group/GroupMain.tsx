@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { Search, Plus, Users, X } from 'lucide-react';
+import { Search, Plus, Users, X, Lock, Unlock, UserCircle, AlignLeft } from 'lucide-react';
 import * as React from "react";
 import axios from "../../api/axiosInstance";
 
@@ -12,8 +12,8 @@ interface groupDto {
 	groupId: number;
 	groupNm: string;
 	groupMemo: string;
-	userNick: string;
 	groupMemCnt: number;
+	userNick: string;
 	groupJoinState: string;
 	groupSecretYn: string;
 }
@@ -28,8 +28,8 @@ const GroupMain = () => {
 		groupId: 0,
 		groupNm: '',
 		groupMemo: '',
-		userNick: '',
 		groupMemCnt: 0,
+		userNick: '',
 		groupJoinState: '',
 		groupSecretYn: 'N',
 	});
@@ -136,12 +136,12 @@ const GroupMain = () => {
 
 			<div className={styles.searchWrapper}>
 				<Search className={styles.searchIcon} size={20}
-				        onClick={() => handleSearchGroup('N')}/>
+						onClick={() => handleSearchGroup('N')}/>
 				<input type="text"
-				       className={styles.searchInput}
-				       placeholder="관심있는 그룹을 검색해보세요."
-				       onChange={handleSearchChange}
-				       onKeyDown={handleSearchKeyDown}
+					   className={styles.searchInput}
+					   placeholder="관심있는 그룹을 검색해보세요."
+					   onChange={handleSearchChange}
+					   onKeyDown={handleSearchKeyDown}
 				/>
 			</div>
 
@@ -158,7 +158,7 @@ const GroupMain = () => {
 								<span>{list.groupMemCnt}</span>
 							</div>
 							<button className={styles.joinBtn}
-							        onClick={() => handleGroupDetail(list.groupId)}>
+									onClick={() => handleGroupDetail(list.groupId)}>
 								상세보기
 							</button>
 						</div>
@@ -179,26 +179,26 @@ const GroupMain = () => {
 							<div className={styles.formGroup}>
 								<label>그룹 이름</label>
 								<input type="text" name="groupNm" placeholder="그룹 이름을 입력하세요"
-								       onChange={handleRegisterChange}/>
+									   onChange={handleRegisterChange}/>
 							</div>
 							<div className={styles.formGroup}>
 								<label>그룹 설명</label>
 								<textarea name="groupMemo" placeholder="어떤 그룹인지 설명해주세요" rows={4}
-								          onChange={handleRegisterChange}/>
+										  onChange={handleRegisterChange}/>
 							</div>
 							<div className={styles.formGroup}>
 								<label>공개 설정</label>
 								<div className={styles.radioGroup}>
 									<label className={styles.radioLabel}>
 										<input type="radio" name="groupSecretYn" value="N"
-										       checked={groupForm.groupSecretYn === 'N'}
-										       onChange={handleRegisterChange}/>
+											   checked={groupForm.groupSecretYn === 'N'}
+											   onChange={handleRegisterChange}/>
 										공개
 									</label>
 									<label className={styles.radioLabel}>
 										<input type="radio" name="groupSecretYn" value="Y"
-										       checked={groupForm.groupSecretYn === 'Y'}
-										       onChange={handleRegisterChange}/>
+											   checked={groupForm.groupSecretYn === 'Y'}
+											   onChange={handleRegisterChange}/>
 										비공개
 									</label>
 								</div>
@@ -214,23 +214,43 @@ const GroupMain = () => {
 				<div className={styles.modalOverlay} onClick={() => setGroupPopup('')}>
 					<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
-							<h2>그룹 정보</h2>
+							<h2>그룹 상세 정보</h2>
 							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
 						</div>
 						<div className={styles.modalBody}>
-							<div className={styles.infoGroup}>
-								<span className={styles.infoLabel}>그룹 이름</span>
-								<div className={styles.infoValue}>{groupForm?.groupNm}</div>
+							<div className={styles.detailHeader}>
+								<div className={styles.detailTitleWrapper}>
+									<h3 className={styles.detailTitle}>{groupForm?.groupNm}</h3>
+									<span className={groupForm?.groupSecretYn === 'Y' ? styles.badgePrivate : styles.badgePublic}>
+										{groupForm?.groupSecretYn === 'Y' ? <Lock size={14} /> : <Unlock size={14} />}
+										{groupForm?.groupSecretYn === 'Y' ? '비공개' : '공개'}
+									</span>
+								</div>
+								<div className={styles.detailMeta}>
+									<span className={styles.metaItem}>
+									   <UserCircle size={16} />
+									   그룹장: <strong>{groupForm?.userNick}</strong>
+									</span>
+									<span className={styles.metaDivider}>|</span>
+									<span className={styles.metaItem}>
+									   <Users size={16} />
+									   멤버 수: <strong>{groupForm?.groupMemCnt}명</strong>
+									</span>
+								</div>
 							</div>
-							<div className={styles.infoGroup}>
-								<span className={styles.infoLabel}>그룹 장</span>
-								<div className={styles.infoValue}>{groupForm?.userNick}</div>
-							</div>
-							<div className={styles.infoGroup}>
-								<span className={styles.infoLabel}>그룹 메모</span>
-								<div className={styles.infoBox}>{groupForm?.groupMemo}</div>
+
+							<div className={styles.detailContent}>
+								<div className={styles.infoGroup}>
+									<span className={styles.infoLabel}>
+									   <AlignLeft size={16} />
+									   그룹 메모
+									</span>
+									<div className={styles.infoBox}>
+										{groupForm?.groupMemo ? groupForm.groupMemo : '등록된 메모가 없습니다.'}
+									</div>
+								</div>
 							</div>
 						</div>
 						<div className={styles.modalFooter}>

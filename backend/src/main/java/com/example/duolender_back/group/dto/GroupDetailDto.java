@@ -12,17 +12,19 @@ public class GroupDetailDto {
 	Integer groupId;
 	String groupNm;
 	String groupMemo;
+	Long groupMemCnt;
 	String userNick;
 	String groupJoinState;
-	String groupCrtnId;
+	String groupSecretYn;
 
 	@QueryProjection
-	public GroupDetailDto(Integer groupId, String groupNm, String groupMemo, String userNick, String groupJoinState, String groupCrtnId) {
+	public GroupDetailDto(Integer groupId, String groupNm, String groupMemo, Long groupMemCnt, String userNick, String groupJoinState, String groupSecretYn) {
 		this.groupId = groupId;
 		this.groupNm = groupNm;
 		this.groupMemo = groupMemo;
+		this.groupMemCnt = groupMemCnt;
 		this.userNick = userNick;
 		this.groupJoinState = groupJoinState;
-		this.groupCrtnId = groupCrtnId;
+		this.groupSecretYn = groupSecretYn;
 	}
 }

@@ -61,25 +61,22 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 				groupEntity.groupId,
 				groupEntity.groupNm,
 				groupEntity.groupMemo,
+				groupMemCntSubQuery(),
 				authEntity.userNick,
 				leftUserGroupLink.groupJoinState,
-				groupEntity.groupCrtnId
+				groupEntity.groupSecretYn
 		);
 	}
 
 	//검색 조건 유무
 	private BooleanExpression secretYn(boolean isSearch) {
-		return isSearch ? null : groupEntity.groupSecretYn.eq("Y");
+		return isSearch ? null : groupEntity.groupSecretYn.eq("N");
 	}
 
 
 	//그룹 검색
 	@Override
 	public List<GroupDto> searchGroupList(ReqGroupDto dto) {
-		if(dto.getReqGroupNm() == null) {
-			dto.setReqGroupNm("");
-		}
-
 		boolean isSearch = !dto.getReqGroupNm().isEmpty();
 
 		JPAQuery<GroupDto> query;
