@@ -1,9 +1,11 @@
 import {useEffect, useState, useRef} from 'react';
-import {UserCircle, Plus, Minus, Users, ChevronDown, X} from 'lucide-react';
+import {UserCircle, Plus, Minus, Users, ChevronDown} from 'lucide-react';
 import {useAuthStore} from "../../store/useAuthStore.ts";
 import * as React from "react";
 import axios from "../../api/axiosInstance.ts";
 import styles from '../../css/My.module.css';
+import MemberManageModal from './MemberManageModal';
+import GroupEditModal from './GroupEditModal';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -15,6 +17,7 @@ interface groupDto {
 	groupJoinState: string;
 	groupAdminGrade: string;
 	scheduleColor: string;
+	groupSecretYn?: string;
 }
 
 interface groupMemberDto {
@@ -66,6 +69,14 @@ const MyMain = () => {
 	const [joinMembers, setJoinMembers] = useState<groupMemberDto[]>([]);
 	const [reqMembers, setReqMembers] = useState<groupMemberDto[]>([]);
 
+	const [editPopupOpen, setEditPopupOpen] = useState<boolean>(false);
+	const [editGroupForm, setEditGroupForm] = useState({
+		groupId: 0,
+		groupNm: '',
+		groupMemo: '',
+		groupSecretYn: 'N'
+	});
+
 	const toggleSection = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
 		setter((prev) => !prev);
 	};
@@ -76,7 +87,7 @@ const MyMain = () => {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setGroupList(res.data);
 		} catch (error) {
-			console.error('그룹 찾기 검색 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -89,7 +100,6 @@ const MyMain = () => {
 			...modifyForm,
 			userNick: user?.userNick
 		})
-
 	}
 
 	const handleNickDupleCheck = async () => {
@@ -142,7 +152,7 @@ const MyMain = () => {
 			setPriColor("");
 
 		} catch (error) {
-			console.error('개인 색상 변경 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -175,7 +185,7 @@ const MyMain = () => {
 			setSelectColorGroupId(null);
 
 		} catch (error) {
-			console.error('그룹 색상 변경 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -192,7 +202,7 @@ const MyMain = () => {
 			setReqMembers(members.filter(m => m.groupJoinState === 'W'));
 
 		} catch (error) {
-			console.error('그룹원 목록 조회 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -216,7 +226,7 @@ const MyMain = () => {
 			handleSearchGroup();
 
 		} catch (error) {
-			console.error('가입 승인 실패:', error);
+			console.error(error);
 		}
 	};
 
@@ -233,8 +243,51 @@ const MyMain = () => {
 				handleSearchGroup();
 
 			} catch (error) {
-				console.error('그룹 나가기 실패:', error);
+				console.error(error);
 			}
+		}
+	};
+
+	const handleEditGroupOpen = async (groupId: number) => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				groupId: groupId,
+			}
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
+			setEditGroupForm({
+				groupId: res.data.groupId,
+				groupNm: res.data.groupNm,
+				groupMemo: res.data.groupMemo,
+				groupSecretYn: res.data.groupSecretYn || 'N'
+			});
+			setEditPopupOpen(true);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handleEditGroupChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		setEditGroupForm({
+			...editGroupForm,
+			[e.target.name]: e.target.value
+		});
+	};
+
+	const handleEditGroupSave = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+				groupId: editGroupForm.groupId,
+				reqGroupNm: editGroupForm.groupNm,
+				reqGroupMemo: editGroupForm.groupMemo,
+				reqGroupSecretYn: editGroupForm.groupSecretYn,
+			}
+			await axios.post(`${SERVER_BASE_URL}/api/group/update`, postData);
+			setEditPopupOpen(false);
+			handleSearchGroup();
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
@@ -358,6 +411,8 @@ const MyMain = () => {
 												<div className={styles.actionWrapper}>
 													<button className={`${styles.btn} ${styles.btnManage}`}
 													        onClick={() => handleManageMembers(list.groupId, list.groupNm)}>그룹원 관리</button>
+													<button className={`${styles.btn} ${styles.btnManage}`}
+													        onClick={() => handleEditGroupOpen(list.groupId)}>그룹 수정</button>
 													<div className={styles.colorContainer}
 													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 														<button className={styles.colorDropdownBtn}
@@ -434,57 +489,22 @@ const MyMain = () => {
 				</div>
 			</div>
 
-			{popupOpen && (
-				<div className={styles.modalOverlay}>
-					<div className={styles.modalContainer}>
-						<div className={styles.modalHeader}>
-							<h2>{modalGroupNm} 관리</h2>
-							<button className={styles.modalCloseBtn} onClick={() => setPopupOpen(false)}>
-								<X size={20} />
-							</button>
-						</div>
-						<div className={styles.modalBody}>
-							<div className={styles.modalContentSection}>
-								<h3>현재 그룹원 ({joinMembers.length})</h3>
-								<div className={styles.modalList}>
-									{joinMembers.length > 0 ? joinMembers.map(member => (
-										<div className={styles.modalRow} key={member.userId}>
-											<div className={styles.modalItemLabel}>{member.userNick}</div>
-											{member.groupAdminGrade === 'A' && (
-												<div className={styles.modalItemLabel}>관리자</div>
-											)}
-											{member.groupAdminGrade === 'M' && (
-												<button className={`${styles.btn} ${styles.btnModalDanger}`}
-												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'N')}>추방</button>
-											)}
-										</div>
-									)) : (
-										<div className={styles.modalEmptyRow}>그룹원이 없습니다.</div>
-									)}
-								</div>
-							</div>
-							<div className={styles.modalContentSection}>
-								<h3>가입 신청 내역 ({reqMembers.length})</h3>
-								<div className={styles.modalList}>
-									{reqMembers.length > 0 ? reqMembers.map(member => (
-										<div className={styles.modalRow} key={member.groupId}>
-											<div className={styles.modalItemLabel}>{member.userNick}</div>
-											<div className={styles.modalActionGroup}>
-												<button className={`${styles.btn} ${styles.btnModalPrimary}`}
-												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'Y')}>승인</button>
-												<button className={`${styles.btn} ${styles.btnModalDanger}`}
-												        onClick={() => handleAcceptMember(member.groupId, member.userId, 'N')}>거절</button>
-											</div>
-										</div>
-									)) : (
-										<div className={styles.modalEmptyRow}>새로운 가입 신청이 없습니다.</div>
-									)}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			)}
+			<MemberManageModal
+				open={popupOpen}
+				groupNm={modalGroupNm}
+				joinMembers={joinMembers}
+				reqMembers={reqMembers}
+				onClose={() => setPopupOpen(false)}
+				onAcceptMember={handleAcceptMember}
+			/>
+
+			<GroupEditModal
+				open={editPopupOpen}
+				form={editGroupForm}
+				onChange={handleEditGroupChange}
+				onClose={() => setEditPopupOpen(false)}
+				onSave={handleEditGroupSave}
+			/>
 		</div>
 	);
 };

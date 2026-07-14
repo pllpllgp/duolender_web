@@ -141,14 +141,29 @@ public class GroupService {
 
 	//그룹 탈퇴 및 가입 신청 취소
 	public void userGroupLinkLeave(ReqGroupDto dto) {
-		Optional<UserGroupLinkEntity> linkOpt =  userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
+		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
 
 		if(linkOpt.isPresent()) {
 			UserGroupLinkEntity link = linkOpt.get();
 			userGroupLinkRepository.delete(link);
 
 		}
+	}
 
+
+	//그룹 정보 수정
+	@Transactional
+	public boolean updateGroup(ReqGroupDto dto) {
+		Optional<GroupEntity> groupOpt = groupRepository.findByGroupId(dto.getGroupId());
+
+		if(groupOpt.isPresent()) {
+			GroupEntity groupEntity = groupOpt.get();
+			groupEntity.setGroupNm(dto.getReqGroupNm());
+			groupEntity.setGroupMemo(dto.getReqGroupMemo());
+			groupEntity.setGroupSecretYn(dto.getReqGroupSecretYn());
+		}
+
+		return true;
 	}
 
 }

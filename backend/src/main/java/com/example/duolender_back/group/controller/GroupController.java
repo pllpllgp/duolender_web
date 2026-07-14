@@ -91,4 +91,10 @@ public class GroupController {
 	public void approveMember(@RequestBody ReqGroupDto dto) {
 		groupService.approveMember(dto);
 	}
+
+	@PostMapping("/update")
+	public void updateGroup(@RequestBody ReqGroupDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setUserId(userDetails.getUsername());
+		groupService.updateGroup(dto);
+	}
 }
