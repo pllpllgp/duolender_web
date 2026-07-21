@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="dl_comment", schema = "duolender")
+@Table(name="dl_board_comment", schema = "duolender")
 public class CommentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
