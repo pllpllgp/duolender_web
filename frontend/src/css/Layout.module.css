@@ -55,6 +55,29 @@
 	color: #3b82f6;
 }
 
+.menuParent {
+	padding: 0;
+}
+
+.subMenu {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 10px 16px;
+}
+
+.subMenu li {
+	padding: 14px 10px;
+	font-size: 15px;
+	font-weight: 400;
+	color: #6b7280;
+	border-bottom: none;
+}
+
+.subMenu li:hover {
+	background-color: #f9fafb;
+	color: #3b82f6;
+}
+
 .mainContent {
 	width: 100%;
 	height: 100%;

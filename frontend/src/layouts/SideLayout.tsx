@@ -5,7 +5,8 @@ import {useAuthStore} from "../store/useAuthStore.ts";
 import styles from "../css/Layout.module.css";
 
 function SideLayout() {
-	const [isOpen, setIsOpen] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [dev] = useState(false);
 	const logout = useAuthStore((state) => state.logout);
 	const navigate = useNavigate();
 
@@ -20,35 +21,46 @@ function SideLayout() {
 	};
 
 	const handleSchedule = () => {
-		setIsOpen(false);
+		setOpen(false);
 		navigate("/scheduleMain");
 	};
 
 	const handleGroup = () => {
-		setIsOpen(false);
+		setOpen(false);
 		navigate("/groupMain");
 	};
 
-	const handleBoard = () => {
-		setIsOpen(false);
-		navigate("/boardList");
-	}
+	const handleBoard = (type: string) => {
+		setOpen(false);
+		navigate(`/boardList?type=${type}`);
+	};
 
 	const handleMyPage = () => {
-		setIsOpen(false);
+		setOpen(false);
 		navigate("/myMain");
 	};
 
 	return (
 		<div className={styles.wrapper}>
-			<aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
+			<aside className={`${styles.sidebar} ${open ? styles.open : styles.closed}`}>
 				<div className={styles.sidebarContent}>
-					<button className={styles.closeBtn} onClick={() => setIsOpen(false)}>✕</button>
+					<button className={styles.closeBtn} onClick={() => setOpen(false)}>✕</button>
 					<nav className={styles.menu}>
 						<ul>
 							<li onClick={handleSchedule}>캘린더</li>
 							<li onClick={handleGroup}>모임찾기</li>
-							<!--<li onClick={handleBoard}>게시판</li>-->
+							{dev &&
+							<li className={styles.menuParent}>
+								<div>
+									게시판
+								</div>
+									<ul className={styles.subMenu}>
+										<li onClick={() => handleBoard("group")}>모임 게시판</li>
+										<li onClick={() => handleBoard("free")}>자유 게시판</li>
+										<li onClick={() => handleBoard("suggest")}>건의 게시판</li>
+									</ul>
+							</li>
+							}
 							<li onClick={handleMyPage}>마이페이지</li>
 						</ul>
 
@@ -61,7 +73,7 @@ function SideLayout() {
 			</aside>
 
 			<main className={styles.mainContent}>
-				<button className={styles.toggleBtn} onClick={() => setIsOpen(true)}>☰</button>
+				<button className={styles.toggleBtn} onClick={() => setOpen(true)}>☰</button>
 
 				<Outlet/>
 			</main>
