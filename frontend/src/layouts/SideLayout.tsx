@@ -1,4 +1,4 @@
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAuthStore} from "../store/useAuthStore.ts";
 
@@ -9,6 +9,11 @@ function SideLayout() {
 	const [dev] = useState(false);
 	const logout = useAuthStore((state) => state.logout);
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	const menuActive = (path: string) => location.pathname === path;
+	const boardActive = (type: string) =>
+		location.pathname === "/boardList" && new URLSearchParams(location.search).get("type") === type;
 
 	const handleLogout = () => {
 		const isConfirm = confirm("로그아웃 하시겠습니까?");
@@ -16,7 +21,6 @@ function SideLayout() {
 		if(isConfirm) {
 			logout();
 			navigate("/login");
-
 		}
 	};
 
@@ -47,25 +51,31 @@ function SideLayout() {
 					<button className={styles.closeBtn} onClick={() => setOpen(false)}>✕</button>
 					<nav className={styles.menu}>
 						<ul>
-							<li onClick={handleSchedule}>캘린더</li>
-							<li onClick={handleGroup}>모임찾기</li>
+							<li className={menuActive("/scheduleMain") ? styles.activeMenuItem : undefined}
+							    onClick={handleSchedule}>캘린더</li>
+							<li className={menuActive("/groupMain") ? styles.activeMenuItem : undefined}
+							    onClick={handleGroup}>모임찾기</li>
 							{dev &&
-							<li className={styles.menuParent}>
-								<div>
-									게시판
-								</div>
+								<li className={styles.menuParent}>
+									<div className={`${styles.menuParentLabel} ${location.pathname === "/boardList" ? styles.activeMenu : ""}`}>
+										게시판
+									</div>
 									<ul className={styles.subMenu}>
-										<li onClick={() => handleBoard("group")}>모임 게시판</li>
-										<li onClick={() => handleBoard("free")}>자유 게시판</li>
-										<li onClick={() => handleBoard("suggest")}>건의 게시판</li>
+										<li className={boardActive("group") ? styles.activeMenuItem : undefined}
+											onClick={() => handleBoard("group")}>모임 게시판</li>
+										<li className={boardActive("free") ? styles.activeMenuItem : undefined}
+											onClick={() => handleBoard("free")}>자유 게시판</li>
+										<li className={boardActive("suggest") ? styles.activeMenuItem : undefined}
+											onClick={() => handleBoard("suggest")}>건의 게시판</li>
 									</ul>
-							</li>
+								</li>
 							}
-							<li onClick={handleMyPage}>마이페이지</li>
+							<li className={menuActive("/myMain") ? styles.activeMenuItem : undefined}
+							    onClick={handleMyPage}>마이페이지</li>
 						</ul>
 
 						<div className={styles.logoutWrapper}
-							 onClick={handleLogout}>
+						     onClick={handleLogout}>
 							<button className={styles.logoutBtn}>로그아웃</button>
 						</div>
 					</nav>

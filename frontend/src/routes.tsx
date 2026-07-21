@@ -5,6 +5,8 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ScheduleMain from "./pages/schedule/ScheduleMain.tsx";
 import GroupMain from "./pages/group/GroupMain.tsx";
 import BoardList from "./pages/board/BoardList.tsx";
+import BoardForm from "./pages/board/BoardForm.tsx";
+import BoardView from "./pages/board/BoardView.tsx";
 import MyMain from "./pages/my/MyMain.tsx";
 import SideLayout from "./layouts/SideLayout.tsx";
 
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
 			{path: "scheduleMain", element: <ProtectedRoute><ScheduleMain /></ProtectedRoute>},
 			{path: "groupMain", element: <ProtectedRoute><GroupMain /></ProtectedRoute>},
 			{path: "boardList", element: <ProtectedRoute><BoardList /></ProtectedRoute>},
+			{path: "boardForm", element: <ProtectedRoute><BoardForm /></ProtectedRoute>},
+			{path: "boardView", element: <ProtectedRoute><BoardView /></ProtectedRoute>},
 			{path: "myMain", element: <ProtectedRoute><MyMain /></ProtectedRoute>},
 		]
 	}
