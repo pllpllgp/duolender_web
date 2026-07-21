@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {ArrowLeft, MoreVertical} from "lucide-react";
+import {ArrowLeft} from "lucide-react";
 
 import styles from "../../css/Board.module.css";
 
