@@ -66,23 +66,19 @@ const Login = () => {
 		<div className={styles.container}>
 			<div className={styles.card}>
 
-				{serverStatus === 'checking' && (
-					<div className={styles.overlay}>
-						<div className={styles.loadingBox}>
-							서버 연결 중입니다...
-						</div>
+			{serverStatus === 'checking' && (
+				<div className={styles.overlay}>
+					<div className={styles.loadingBox}>
+						서버 연결 중입니다...
 					</div>
-				)}
-				{serverStatus === 'error' && (
-					<span className={styles.statusError}>서버에 연결할 수 없습니다.</span>
-				)}
+				</div>
+			)}
+			{serverStatus === 'error' && (
+				<span className={styles.statusError}>서버에 연결할 수 없습니다.</span>
+			)}
 
 				<h1 className={styles.title}>DuoLender</h1>
 				<p className={styles.subtitle}>우리들의 그룹 일정 관리</p>
-
-				<div className={styles.testAccountBox}>
-					<p>테스트 계정 ID: <span>guest</span> / PW: <span>guest!1234</span></p>
-				</div>
 
 				<div className={styles.inputGroup}>
 					<input
@@ -110,7 +106,7 @@ const Login = () => {
 				</button>
 
 				<button className={styles.signupLink}
-				        onClick={() => navigate('/signup')}>
+						onClick={() => navigate('/signup')}>
 					아직 회원이 아니신가요? 회원가입
 				</button>
 

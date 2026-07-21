@@ -195,23 +195,3 @@
 .techStack strong {
 	color: #4a6298;
 }
-
-.testAccountBox {
-	background-color: #f4f6f8;
-	border: 1px solid #e1e4e6;
-	border-radius: 6px;
-	padding: 8px 12px;
-	margin-bottom: 12px;
-	text-align: center;
-}
-
-.testAccountBox p {
-	margin: 0;
-	font-size: 13px;
-	color: #666;
-}
-
-.testAccountBox span {
-	font-weight: bold;
-	color: #333;
-}
