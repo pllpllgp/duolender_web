@@ -26,20 +26,20 @@ const GroupEditModal = ({open, form, onChange, onClose, onSave}: GroupEditModalP
 		<div className={styles.modalOverlay} onClick={onClose}>
 			<div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
 				<div className={styles.modalHeader}>
-					<h2>그룹 수정</h2>
+					<h2>모임 수정</h2>
 					<button className={styles.modalCloseBtn} onClick={onClose}>
 						<X size={24}/>
 					</button>
 				</div>
 				<div className={styles.modalBody}>
 					<div className={styles.formGroup}>
-						<label>그룹 이름</label>
-						<input type="text" name="groupNm" value={form.groupNm} placeholder="그룹 이름을 입력하세요"
+						<label>모임 이름</label>
+						<input type="text" name="groupNm" value={form.groupNm} placeholder="모임 이름을 입력하세요"
 						       onChange={onChange}/>
 					</div>
 					<div className={styles.formGroup}>
-						<label>그룹 설명</label>
-						<textarea name="groupMemo" value={form.groupMemo} placeholder="어떤 그룹인지 설명해주세요" rows={4}
+						<label>모임 설명</label>
+						<textarea name="groupMemo" value={form.groupMemo} placeholder="어떤 모임인지 설명해주세요" rows={4}
 						          onChange={onChange}/>
 					</div>
 					<div className={styles.formGroup}>

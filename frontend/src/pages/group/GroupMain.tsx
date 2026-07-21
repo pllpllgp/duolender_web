@@ -125,12 +125,12 @@ const GroupMain = () => {
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<div>
-					<h1 className={styles.title}>그룹 찾기</h1>
+					<h1 className={styles.title}>모임 찾기</h1>
 					<p className={styles.subtitle}>새로운 사람들과 함께 일정을 공유하고 목표를 달성해보세요.</p>
 				</div>
 
 				<button className={styles.createBtn} onClick={() => setGroupPopup('insert')}>
-					<Plus size={20}/> 그룹 만들기
+					<Plus size={20}/> 모임 만들기
 				</button>
 			</div>
 
@@ -139,7 +139,7 @@ const GroupMain = () => {
 						onClick={() => handleSearchGroup('N')}/>
 				<input type="text"
 					   className={styles.searchInput}
-					   placeholder="관심있는 그룹을 검색해보세요."
+					   placeholder="관심있는 모임을 검색해보세요."
 					   onChange={handleSearchChange}
 					   onKeyDown={handleSearchKeyDown}
 				/>
@@ -170,20 +170,20 @@ const GroupMain = () => {
 				<div className={styles.modalOverlay} onClick={() => setGroupPopup('')}>
 					<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
-							<h2>새 그룹 만들기</h2>
+							<h2>새 모임 만들기</h2>
 							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
 						</div>
 						<div className={styles.modalBody}>
 							<div className={styles.formGroup}>
-								<label>그룹 이름</label>
-								<input type="text" name="groupNm" placeholder="그룹 이름을 입력하세요"
+								<label>모임 이름</label>
+								<input type="text" name="groupNm" placeholder="모임 이름을 입력하세요"
 									   onChange={handleRegisterChange}/>
 							</div>
 							<div className={styles.formGroup}>
-								<label>그룹 설명</label>
-								<textarea name="groupMemo" placeholder="어떤 그룹인지 설명해주세요" rows={4}
+								<label>모임 설명</label>
+								<textarea name="groupMemo" placeholder="어떤 모임인지 설명해주세요" rows={4}
 										  onChange={handleRegisterChange}/>
 							</div>
 							<div className={styles.formGroup}>
@@ -214,7 +214,7 @@ const GroupMain = () => {
 				<div className={styles.modalOverlay} onClick={() => setGroupPopup('')}>
 					<div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 						<div className={styles.modalHeader}>
-							<h2>그룹 상세 정보</h2>
+							<h2>모임 상세 정보</h2>
 							<button className={styles.closeBtn} onClick={() => setGroupPopup('')}>
 								<X size={24}/>
 							</button>
@@ -231,7 +231,7 @@ const GroupMain = () => {
 								<div className={styles.detailMeta}>
 									<span className={styles.metaItem}>
 									   <UserCircle size={16} />
-									   그룹장: <strong>{groupForm?.userNick}</strong>
+									   모임장: <strong>{groupForm?.userNick}</strong>
 									</span>
 									<span className={styles.metaDivider}>|</span>
 									<span className={styles.metaItem}>
@@ -245,7 +245,7 @@ const GroupMain = () => {
 								<div className={styles.infoGroup}>
 									<span className={styles.infoLabel}>
 									   <AlignLeft size={16} />
-									   그룹 메모
+									   모임 메모
 									</span>
 									<div className={styles.infoBox}>
 										{groupForm?.groupMemo ? groupForm.groupMemo : '등록된 메모가 없습니다.'}

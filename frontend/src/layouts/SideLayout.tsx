@@ -29,6 +29,11 @@ function SideLayout() {
 		navigate("/groupMain");
 	};
 
+	const handleBoard = () => {
+		setIsOpen(false);
+		navigate("/boardList");
+	}
+
 	const handleMyPage = () => {
 		setIsOpen(false);
 		navigate("/myMain");
@@ -42,7 +47,8 @@ function SideLayout() {
 					<nav className={styles.menu}>
 						<ul>
 							<li onClick={handleSchedule}>캘린더</li>
-							<li onClick={handleGroup}>그룹찾기</li>
+							<li onClick={handleGroup}>모임찾기</li>
+							<!--<li onClick={handleBoard}>게시판</li>-->
 							<li onClick={handleMyPage}>마이페이지</li>
 						</ul>
 

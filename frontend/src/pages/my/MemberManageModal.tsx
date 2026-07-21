@@ -32,7 +32,7 @@ const MemberManageModal = ({open, groupNm, joinMembers, reqMembers, onClose, onA
 				</div>
 				<div className={styles.modalBody}>
 					<div className={styles.modalContentSection}>
-						<h3>현재 그룹원 ({joinMembers.length})</h3>
+						<h3>현재 모임원 ({joinMembers.length})</h3>
 						<div className={styles.modalList}>
 							{joinMembers.length > 0 ? joinMembers.map(member => (
 								<div className={styles.modalRow} key={member.userId}>
@@ -46,7 +46,7 @@ const MemberManageModal = ({open, groupNm, joinMembers, reqMembers, onClose, onA
 									)}
 								</div>
 							)) : (
-								<div className={styles.modalEmptyRow}>그룹원이 없습니다.</div>
+								<div className={styles.modalEmptyRow}>모임원이 없습니다.</div>
 							)}
 						</div>
 					</div>

@@ -31,7 +31,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	QUserGroupLinkEntity subUserGroupLink = new QUserGroupLinkEntity("subUserGroupLink");
 	QUserGroupLinkEntity leftUserGroupLink = new QUserGroupLinkEntity("leftUserGroupLink");
 
-	//그룹 멤버원 수 조회 서브쿼리
+	//모임 멤버원 수 조회 서브쿼리
 	private JPQLQuery<Long> groupMemCntSubQuery() {
 		return JPAExpressions
 				.select(subUserGroupLink.count())
@@ -74,7 +74,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	}
 
 
-	//그룹 검색
+	//모임 검색
 	@Override
 	public List<GroupDto> searchGroupList(ReqGroupDto dto) {
 		boolean isSearch = !dto.getReqGroupNm().isEmpty();
@@ -107,7 +107,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	}
 
 
-	//내 그룹 검색
+	//내 모임 검색
 	@Override
 	public List<GroupDto> searchMyGroupList(ReqGroupDto dto) {
 		JPAQuery<GroupDto> query;
@@ -126,7 +126,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 	}
 
 
-	//그룹 상세보기
+	//모임 상세보기
 	@Override
 	public GroupDetailDto groupDetail(ReqGroupDto dto) {
 		JPAQuery<GroupDetailDto> query;
@@ -146,7 +146,7 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom {
 		return result;
 	}
 
-	//그룹원 조회
+	//모임원 조회
 	@Override
 	public List<GroupMemberDto> searchMemberList(ReqGroupDto dto) {
 		JPAQuery<GroupMemberDto> query;

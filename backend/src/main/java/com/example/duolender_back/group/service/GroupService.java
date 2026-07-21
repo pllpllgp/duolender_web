@@ -42,7 +42,7 @@ public class GroupService {
 	}
 
 	public boolean groupRegister(ReqGroupDto dto) {
-		//그룹 생성
+		//모임 생성
 		GroupEntity entity = new GroupEntity();
 		entity.setGroupNm(dto.getReqGroupNm());
 		entity.setGroupMemo(dto.getReqGroupMemo());
@@ -52,20 +52,20 @@ public class GroupService {
 
 		groupRepository.save(entity);
 
-		//유저 그룹 관계 생성자 데이터 입력
+		//유저 모임 관계 생성자 데이터 입력
 		userGroupLinkInsert(dto, entity.getGroupId(), "A", toDate(), "Y");
 
 		return true;
 	}
 
 
-	//그룹 가입 신청 or 그룹 가입 신청 취소
+	//모임 가입 신청 or 모임 가입 신청 취소
 	public GroupDto joinReq(ReqGroupDto dto) {
-		//그룹 가입 신청
+		//모임 가입 신청
 		if(dto.getReqGroupJoinState() == null) {
 			userGroupLinkInsert(dto, dto.getGroupId(), "M", toDate(), "W");
 
-		//그룹 가입 신청 취소
+		//모임 가입 신청 취소
 		} else {
 			userGroupLinkLeave(dto);
 		}
@@ -74,12 +74,12 @@ public class GroupService {
 	}
 
 
-	//그룹 탈퇴
+	//모임 탈퇴
 	public void leaveReq(ReqGroupDto dto) {
 		userGroupLinkLeave(dto);
 	}
 
-	//그룹 색상 변경
+	//모임 색상 변경
 	@Transactional
 	public boolean updateColor(ReqGroupDto dto) {
 		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
@@ -101,7 +101,7 @@ public class GroupService {
 		return toDate;
 	}
 
-	//그룹 가입 신청
+	//모임 가입 신청
 	public boolean userGroupLinkInsert(ReqGroupDto dto, int groupId, String grade, String date, String state) {
 		UserGroupLinkEntity entity = new UserGroupLinkEntity();
 		entity.setGroupId(groupId);
@@ -116,12 +116,12 @@ public class GroupService {
 		return true;
 	}
 
-	//그룹원 조회
+	//모임원 조회
 	public List<GroupMemberDto> memberList(ReqGroupDto dto) {
 		return groupRepository.searchMemberList(dto);
 	}
 
-	//그룹 탈퇴 및 가입 신청 취소
+	//모임 탈퇴 및 가입 신청 취소
 	@Transactional
 	public void approveMember(ReqGroupDto dto) {
 		//가입 승인
@@ -132,14 +132,14 @@ public class GroupService {
 				UserGroupLinkEntity userGroupLinkEntity = linkOpt.get();
 				userGroupLinkEntity.setGroupJoinState("Y");
 			}
-		//가임 거절
+		//가입 거절
 		} else {
 			userGroupLinkLeave(dto);
 
 		}
 	}
 
-	//그룹 탈퇴 및 가입 신청 취소
+	//모임 탈퇴 및 가입 신청 취소
 	public void userGroupLinkLeave(ReqGroupDto dto) {
 		Optional<UserGroupLinkEntity> linkOpt = userGroupLinkRepository.findByGroupIdAndUserId(dto.getGroupId(), dto.getUserId());
 
@@ -151,7 +151,7 @@ public class GroupService {
 	}
 
 
-	//그룹 정보 수정
+	//모임 정보 수정
 	@Transactional
 	public boolean updateGroup(ReqGroupDto dto) {
 		Optional<GroupEntity> groupOpt = groupRepository.findByGroupId(dto.getGroupId());

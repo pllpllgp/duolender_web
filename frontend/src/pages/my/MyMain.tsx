@@ -231,7 +231,7 @@ const MyMain = () => {
 	};
 
 	const handleLeaveGroup = async (groupId: number) => {
-		if (window.confirm('그룹을 나가시겠습니까?')) {
+		if (window.confirm('모임을 나가시겠습니까?')) {
 			try {
 				const postData = {
 					userId: user?.userId,
@@ -388,7 +388,7 @@ const MyMain = () => {
 
 				<div className={styles.section}>
 					<div className={styles.sectionHeader} onClick={() => toggleSection(setGroupSection)}>
-						<h2>그룹 관리</h2>
+						<h2>모임 관리</h2>
 						{groupSection ? <Minus size={20}/> : <Plus size={20}/>}
 					</div>
 					{groupSection && (
@@ -396,7 +396,7 @@ const MyMain = () => {
 							<div className={styles.subSection}>
 								<div className={styles.subSectionHeader}
 								     onClick={() => toggleSection(setManagedGroupSection)}>
-									<h3>관리 그룹</h3>
+									<h3>관리 모임</h3>
 									{managedGroupSection ? <Minus size={18}/> : <Plus size={18}/>}
 								</div>
 								{managedGroupSection && (
@@ -410,9 +410,9 @@ const MyMain = () => {
 												<div className={styles.infoValue}>관리자</div>
 												<div className={styles.actionWrapper}>
 													<button className={`${styles.btn} ${styles.btnManage}`}
-													        onClick={() => handleManageMembers(list.groupId, list.groupNm)}>그룹원 관리</button>
+													        onClick={() => handleManageMembers(list.groupId, list.groupNm)}>모임원 관리</button>
 													<button className={`${styles.btn} ${styles.btnManage}`}
-													        onClick={() => handleEditGroupOpen(list.groupId)}>그룹 수정</button>
+													        onClick={() => handleEditGroupOpen(list.groupId)}>모임 수정</button>
 													<div className={styles.colorContainer}
 													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 														<button className={styles.colorDropdownBtn}
@@ -435,7 +435,7 @@ const MyMain = () => {
 												</div>
 											</div>
 										)) : (
-											<div className={styles.infoRow}><div>관리 중인 그룹이 없습니다.</div></div>
+											<div className={styles.infoRow}><div>관리 중인 모임이 없습니다.</div></div>
 										)}
 									</div>
 								)}
@@ -444,7 +444,7 @@ const MyMain = () => {
 							<div className={styles.subSection}>
 								<div className={styles.subSectionHeader}
 								     onClick={() => toggleSection(setJoinedGroupSection)}>
-									<h3>참여 그룹</h3>
+									<h3>참여 모임</h3>
 									{joinedGroupSection ? <Minus size={18} /> : <Plus size={18} />}
 								</div>
 								{joinedGroupSection && (
@@ -456,7 +456,7 @@ const MyMain = () => {
 												<div className={styles.infoValue}>참여중</div>
 												<div className={styles.actionWrapper}>
 													<button className={`${styles.btn} ${styles.btnLeave}`}
-													        onClick={() => handleLeaveGroup(list.groupId)}>그룹 나가기</button>
+													        onClick={() => handleLeaveGroup(list.groupId)}>모임 나가기</button>
 													<div className={styles.colorContainer}
 													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 														<button className={styles.colorDropdownBtn}
@@ -479,7 +479,7 @@ const MyMain = () => {
 												</div>
 											</div>
 										)) : (
-											<div className={styles.infoRow}><div>참여 중인 그룹이 없습니다.</div></div>
+											<div className={styles.infoRow}><div>참여 중인 모임이 없습니다.</div></div>
 										)}
 									</div>
 								)}

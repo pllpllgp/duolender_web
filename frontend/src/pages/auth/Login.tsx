@@ -78,7 +78,7 @@ const Login = () => {
 			)}
 
 				<h1 className={styles.title}>DuoLender</h1>
-				<p className={styles.subtitle}>우리들의 그룹 일정 관리</p>
+				<p className={styles.subtitle}>우리들의 일정 관리</p>
 
 				<div className={styles.inputGroup}>
 					<input

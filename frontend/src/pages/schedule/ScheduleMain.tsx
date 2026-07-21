@@ -37,7 +37,7 @@ interface groupDto {
 const ScheduleMain = () => {
 	const user = useAuthStore((state) => state.user);
 
-	//개인용 스케쥴인지 그룹용 스케쥴 확인
+	//개인용 스케쥴인지 모임용 스케쥴 확인
 	const [scheduleType, setScheduleType] = useState('P');
 
 	//선택한 일자 세팅
@@ -326,7 +326,7 @@ const ScheduleMain = () => {
 												<input type="radio"
 												       value="G"
 												       checked={scheduleType === 'G'}
-												       onChange={(e) => setScheduleType(e.target.value)}/> 그룹
+												       onChange={(e) => setScheduleType(e.target.value)}/> 모임
 											</label>
 										</div>
 										{scheduleType === 'G' && (
@@ -334,7 +334,7 @@ const ScheduleMain = () => {
 											        className={styles.inputField}
 													onChange={handleChange}
 													value={scheduleForm?.scheduleGroupId ?? ''}>
-												<option value="">그룹을 선택하세요</option>
+												<option value="">모임을 선택하세요</option>
 												{myGroupList.map((list) => (
 													<option key={list?.groupId} value={list?.groupId}>{list?.groupNm}</option>
 												))}

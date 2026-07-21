@@ -4,6 +4,7 @@ import SighUp from "./pages/auth/Signup.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ScheduleMain from "./pages/schedule/ScheduleMain.tsx";
 import GroupMain from "./pages/group/GroupMain.tsx";
+import BoardList from "./pages/board/BoardList.tsx";
 import MyMain from "./pages/my/MyMain.tsx";
 import SideLayout from "./layouts/SideLayout.tsx";
 
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
 		children: [
 			{path: "scheduleMain", element: <ProtectedRoute><ScheduleMain /></ProtectedRoute>},
 			{path: "groupMain", element: <ProtectedRoute><GroupMain /></ProtectedRoute>},
+			{path: "boardList", element: <ProtectedRoute><BoardList /></ProtectedRoute>},
 			{path: "myMain", element: <ProtectedRoute><MyMain /></ProtectedRoute>},
 		]
 	}
