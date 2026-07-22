@@ -16,6 +16,7 @@ public class BoardDto {
 	String boardCrtnDtm;
 	String boardWriteNm;
 	int groupId;
+	int page;
 
 	@QueryProjection
 	public BoardDto(Integer boardId, String boardNm, String boardCntn, String boarType, String boardCrtnDtm, String boardWriteNm, Integer groupId) {

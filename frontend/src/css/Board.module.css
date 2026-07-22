@@ -1,5 +1,5 @@
 .container {
-	padding: 56px 40px;
+	padding: 30px 20px;
 	max-width: 1200px;
 	margin: 0 auto;
 	min-height: 100vh;
@@ -452,4 +452,50 @@
 .textBtnDanger:hover {
 	background-color: #fef2f2;
 	color: #dc2626;
+}
+
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin-top: 40px;
+}
+
+.pageNumbers {
+	display: flex;
+	gap: 4px;
+}
+
+.pageIconBtn, .pageBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 8px;
+	border: none;
+	background-color: transparent;
+	color: #64748b;
+	font-size: 15px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.pageIconBtn:hover:not(:disabled), .pageBtn:hover:not(.pageBtnActive) {
+	background-color: #f1f5f9;
+	color: #0f172a;
+}
+
+.pageIconBtn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.pageBtnActive {
+	background-color: #3b82f6;
+	color: white;
+	font-weight: 600;
+	box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }

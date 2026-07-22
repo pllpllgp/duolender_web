@@ -2,6 +2,7 @@ package com.example.duolender_back.board.repository;
 
 import com.example.duolender_back.auth.entity.QAuthEntity;
 import com.example.duolender_back.board.dto.BoardDto;
+import com.example.duolender_back.board.dto.BoardListDto;
 import com.example.duolender_back.board.dto.QBoardDto;
 import com.example.duolender_back.board.dto.ReqBoardDto;
 import com.example.duolender_back.board.entity.QBoardEntity;
@@ -24,10 +25,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 	QAuthEntity authEntity = QAuthEntity.authEntity;
 
 	@Override
-	public List<BoardDto> boardList(ReqBoardDto dto) {
-		JPAQuery<BoardDto> query;
-
-		query = queryFactory
+	public BoardListDto boardList(ReqBoardDto dto) {
+		List<BoardDto> list = queryFactory
 				.select(new QBoardDto(
 						boardEntity.boardId,
 						boardEntity.boardNm,
@@ -44,11 +43,22 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 						boardEntity.boardType.eq(dto.getReqBoardType()),
 						dto.getReqBoardType().equals("group") ? boardEntity.groupId.eq(dto.getReqGroupId()) : null
 				)
-				.orderBy(boardEntity.boardChng_dtm.desc());
+				.orderBy(boardEntity.boardChng_dtm.desc())
+				.offset((dto.getReqPage()-1)*10L)
+				.limit(10)
+				.fetch();
 
-		List<BoardDto> result = query.fetch();
+		long totalPage = queryFactory
+				.select(
+					boardEntity.boardId.count()
+				)
+				.from(boardEntity)
+				.where(
+					boardEntity.boardType.eq(dto.getReqBoardType()),
+					dto.getReqBoardType().equals("group") ? boardEntity.groupId.eq(dto.getReqGroupId()) : null
+				)
+				.fetchOne();
 
-
-		return result;
+		return new BoardListDto(list, totalPage);
 	}
 }

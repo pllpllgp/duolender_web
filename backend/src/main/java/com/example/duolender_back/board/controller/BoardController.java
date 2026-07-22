@@ -1,6 +1,7 @@
 package com.example.duolender_back.board.controller;
 
 import com.example.duolender_back.board.dto.BoardDto;
+import com.example.duolender_back.board.dto.BoardListDto;
 import com.example.duolender_back.board.dto.ReqBoardDto;
 import com.example.duolender_back.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,14 @@ public class BoardController {
 	private BoardService boardService;
 
 	@PostMapping("/boardList")
-	public List<BoardDto> boardList(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+	public BoardListDto boardList(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
 		dto.setReqUserId(userDetails.getUsername());
+
 		return boardService.boardList(dto);
+	}
+
+	@PostMapping("/save")
+	public void boardSave(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setReqUserId(userDetails.getUsername());
 	}
 }

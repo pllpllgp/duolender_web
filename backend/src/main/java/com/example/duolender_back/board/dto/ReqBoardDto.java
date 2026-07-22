@@ -13,5 +13,6 @@ public class ReqBoardDto {
 	private String reqBoardType;
 	private String reqWriteId;
 	private int reqGroupId;
+	private int reqPage;
 
 }

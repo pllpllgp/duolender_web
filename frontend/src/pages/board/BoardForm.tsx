@@ -1,31 +1,84 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {ArrowLeft, Check, ChevronDown} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Board.module.css";
+import axios from "../../api/axiosInstance.ts";
+import * as React from "react";
 
-const boardOptions = [
-	{value: "group", label: "모임 게시판"},
-	{value: "free", label: "자유 게시판"},
-	{value: "suggest", label: "건의 게시판"},
-];
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
-const groupOptions = [
-	{value: "1", label: "주말 등산 모임"},
-	{value: "2", label: "리액트 스터디"},
-	{value: "3", label: "직장인 배드민턴"},
-];
+interface groupDto {
+	groupId: number;
+	groupNm: string;
+	groupMemo: string;
+	groupMemCnt: number;
+	groupJoinState: string;
+	groupAdminGrade: string;
+	scheduleColor: string;
+	groupSecretYn?: string;
+}
+
+interface boardDto {
+	boardId: number;
+	boardNm: string;
+	boardCntn: string;
+	goardWriteId: string;
+	groupId: number;
+}
 
 const BoardForm = () => {
+	const user = useAuthStore((state) => state.user);
+	const [groupList, setGroupList] = useState<groupDto[]>([])
+	const [boardForm, setBoardForm] = useState<boardDto>()
+
+	const [searchParam] = useSearchParams();
+	const type = searchParam.get("type") ?? "free";
 	const navigate = useNavigate();
-	const [boardType, setBoardType] = useState("free");
 	const [groupId, setGroupId] = useState("");
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		navigate(-1);
+	useEffect(() => {
+		if(type === 'group') {
+			handleSearchGroup();
+		}
+	}, []);
+
+	const handleSearchGroup = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+			}
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
+			setGroupList(res.data);
+
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		setBoardForm({
+			...boardForm,
+			[e.target.name]: e.target.value
+		})
+	}
+
+	const handleSubmit = async () => {
+		const postData = {
+			reqUserId: user?.userId,
+			reqBoardNm: boardForm.boardNm,
+			reqBoardCntn: boardForm.boardCntn,
+			reqBoardType: type,
+		}
+
+		const res = await axios.post(`${SERVER_BASE_URL}/api/board/save`, postData);
+
+
+		//e.preventDefault();
+		//navigate(-1);
 	};
 
 	return (
@@ -46,32 +99,16 @@ const BoardForm = () => {
 			<div className={styles.boardCard}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.selectRow}>
-						<div className={styles.selectWrapper}>
-							<select
-								className={styles.selectBox}
-								value={boardType}
-								onChange={(e) => setBoardType(e.target.value)}
-							>
-								{boardOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
-								))}
-							</select>
-							<ChevronDown size={14} className={styles.selectIcon} />
-						</div>
-
-						{boardType === "group" && (
+						{type === "group" && (
 							<div className={styles.selectWrapper}>
 								<select
 									className={styles.selectBox}
 									value={groupId}
 									onChange={(e) => setGroupId(e.target.value)}
 								>
-									<option value="" disabled>모임을 선택해주세요</option>
-									{groupOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											{opt.label}
+									{groupList.map((group) => (
+										<option key={group.groupId} value={group.groupId}>
+											{group.groupNm}
 										</option>
 									))}
 								</select>
@@ -82,18 +119,18 @@ const BoardForm = () => {
 
 					<input
 						type="text"
+						name="boardNm"
 						className={styles.inputTitle}
 						placeholder="제목을 입력해주세요."
-						value={title}
-						onChange={(e) => setTitle(e.target.value)}
+						onChange={handleChange}
 						autoFocus
 					/>
 					<div className={styles.divider}></div>
 					<textarea
+						name="boardCntn"
 						className={styles.inputContent}
 						placeholder="내용을 입력해주세요."
-						value={content}
-						onChange={(e) => setContent(e.target.value)}
+						onChange={handleChange}
 					></textarea>
 				</form>
 			</div>

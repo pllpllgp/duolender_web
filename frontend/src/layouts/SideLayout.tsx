@@ -36,7 +36,7 @@ function SideLayout() {
 
 	const handleBoard = (type: string) => {
 		setOpen(false);
-		navigate(`/boardList?type=${type}`);
+		navigate(`/boardList?type=${type}&page=1`);
 	};
 
 	const handleMyPage = () => {
