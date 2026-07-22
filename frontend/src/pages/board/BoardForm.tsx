@@ -31,7 +31,13 @@ interface boardDto {
 const BoardForm = () => {
 	const user = useAuthStore((state) => state.user);
 	const [groupList, setGroupList] = useState<groupDto[]>([])
-	const [boardForm, setBoardForm] = useState<boardDto>()
+	const [boardForm, setBoardForm] = useState<boardDto>({
+		boardId: 0,
+		boardNm: '',
+		boardCntn: '',
+		boardWriteId: '',
+		groupId: 0,
+	})
 
 	const [searchParam] = useSearchParams();
 	const type = searchParam.get("type") ?? "free";
