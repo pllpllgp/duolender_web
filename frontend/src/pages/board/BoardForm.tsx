@@ -24,7 +24,7 @@ interface boardDto {
 	boardId: number;
 	boardNm: string;
 	boardCntn: string;
-	goardWriteId: string;
+	boardWriteId: string;
 	groupId: number;
 }
 
@@ -67,8 +67,8 @@ const BoardForm = () => {
 	const handleSubmit = async () => {
 		const postData = {
 			reqUserId: user?.userId,
-			reqBoardNm: boardForm.boardNm,
-			reqBoardCntn: boardForm.boardCntn,
+			reqBoardNm: boardForm?.boardNm,
+			reqBoardCntn: boardForm?.boardCntn,
 			reqBoardType: type,
 		}
 
