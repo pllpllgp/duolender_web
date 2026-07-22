@@ -15,29 +15,29 @@ public class BoardEntity {
 	private int boardId;
 
 	@Column(nullable = true)
-	private String board_nm;
+	private String boardNm;
 
 	@Column(nullable = true)
-	private String board_cntn;
+	private String boardCntn;
 
 	@Column(nullable = true)
-	private String board_type;
+	private String boardType;
 
 	@Column(nullable = true)
-	private String board_crtn_dtm;
+	private String boardCrtnDtm;
 
 	@Column(nullable = true)
-	private String board_crtn_id;
+	private String boardCrtnId;
 
 	@Column(nullable = true)
-	private String board_chng_dtm;
+	private String boardChng_dtm;
 
 	@Column(nullable = true)
-	private String board_chng_id;
+	private String boardChngId;
 
 	@Column(nullable = true)
-	private String board_write_id;
+	private String boardWriteId;
 
 	@Column(nullable = true)
-	private int group_id;
+	private int groupId;
 }

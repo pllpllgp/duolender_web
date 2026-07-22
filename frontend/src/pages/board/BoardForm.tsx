@@ -83,7 +83,7 @@ const BoardForm = () => {
 					<input
 						type="text"
 						className={styles.inputTitle}
-						placeholder="제목을 입력하세요"
+						placeholder="제목을 입력해주세요."
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
 						autoFocus
@@ -91,7 +91,7 @@ const BoardForm = () => {
 					<div className={styles.divider}></div>
 					<textarea
 						className={styles.inputContent}
-						placeholder="이곳에 내용을 작성해주세요..."
+						placeholder="내용을 입력해주세요."
 						value={content}
 						onChange={(e) => setContent(e.target.value)}
 					></textarea>

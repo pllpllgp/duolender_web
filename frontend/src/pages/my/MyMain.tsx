@@ -77,13 +77,34 @@ const MyMain = () => {
 		groupSecretYn: 'N'
 	});
 
+	useEffect(() => {
+		handleSearchGroup();
+	}, []);
+
+	useEffect(() => {
+		const handleOutsideClick = (e: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+				setSelectColorGroupId(null);
+			}
+
+			if (dropdownPriRef.current && !dropdownPriRef.current.contains(e.target as Node)) {
+				setPriColor("");
+			}
+
+		};
+		document.addEventListener('mousedown', handleOutsideClick);
+		return () => document.removeEventListener('mousedown', handleOutsideClick);
+	}, []);
+
 	const toggleSection = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
 		setter((prev) => !prev);
 	};
 
 	const handleSearchGroup = async () => {
 		try {
-			const postData = { userId: user?.userId }
+			const postData = {
+				userId: user?.userId
+			}
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setGroupList(res.data);
 		} catch (error) {
@@ -291,25 +312,6 @@ const MyMain = () => {
 		}
 	};
 
-	useEffect(() => {
-		handleSearchGroup();
-	}, []);
-
-	useEffect(() => {
-		const handleOutsideClick = (e: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-				setSelectColorGroupId(null);
-			}
-
-			if (dropdownPriRef.current && !dropdownPriRef.current.contains(e.target as Node)) {
-				setPriColor("");
-			}
-
-		};
-		document.addEventListener('mousedown', handleOutsideClick);
-		return () => document.removeEventListener('mousedown', handleOutsideClick);
-	}, []);
-
 	const managerGroups = groupList.filter(g => g.groupAdminGrade === 'A');
 	const joinGroups = groupList.filter(g => g.groupAdminGrade === 'M');
 
@@ -417,8 +419,8 @@ const MyMain = () => {
 													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 														<button className={styles.colorDropdownBtn}
 														        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-                                              <span className={styles.selectedColorCircle}
-                                                    style={{backgroundColor: list.scheduleColor}} />
+															<span className={styles.selectedColorCircle}
+															      style={{backgroundColor: list.scheduleColor}} />
 															<ChevronDown size={14} />
 														</button>
 														{selectColorGroupId === list.groupId && (
@@ -461,8 +463,8 @@ const MyMain = () => {
 													     ref={selectColorGroupId === list.groupId ? dropdownRef : null}>
 														<button className={styles.colorDropdownBtn}
 														        onClick={() => setSelectColorGroupId(selectColorGroupId === list.groupId ? null : list.groupId)}>
-                                              <span className={styles.selectedColorCircle}
-                                                    style={{backgroundColor: list.scheduleColor}} />
+															<span className={styles.selectedColorCircle}
+															      style={{backgroundColor: list.scheduleColor}} />
 															<ChevronDown size={14} />
 														</button>
 														{selectColorGroupId === list.groupId && (

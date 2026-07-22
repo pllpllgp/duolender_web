@@ -75,6 +75,11 @@ const ScheduleMain = () => {
 	//월별 스케쥴
 	const [scheduleMonthList, setScheduleMonthList] = useState<scheduleMonthDto[]>([]);
 
+	useEffect(() => {
+		fetchScheduleMonthList();
+
+	}, [year, month]);
+
 	//월별 스케쥴 API 통신
 	const fetchScheduleMonthList = async () => {
 		try {
@@ -132,12 +137,6 @@ const ScheduleMain = () => {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
 	};
-
-
-	useEffect(() => {
-		fetchScheduleMonthList();
-
-	}, [year, month]);
 
 
 	//특정 날짜 클릭 이벤트

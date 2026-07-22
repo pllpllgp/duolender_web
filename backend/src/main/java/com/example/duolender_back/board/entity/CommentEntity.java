@@ -15,23 +15,23 @@ public class CommentEntity {
 	private int commentId;
 
 	@Column(nullable = true)
-	private int board_id;
+	private int boardId;
 
 	@Column(nullable = true)
-	private String comment_cntn;
+	private String commentCntn;
 
 	@Column(nullable = true)
-	private String comment_crtn_dtm;
+	private String commentCrtnDtm;
 
 	@Column(nullable = true)
-	private String comment_crtn_id;
+	private String commentCrtnId;
 
 	@Column(nullable = true)
-	private String comment_chng_dtm;
+	private String commentChngDtm;
 
 	@Column(nullable = true)
-	private String comment_chng_id;
+	private String commentChngId;
 
 	@Column(nullable = true)
-	private String comment_write_id;
+	private String commentWriteId;
 }

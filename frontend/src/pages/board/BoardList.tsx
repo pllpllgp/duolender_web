@@ -1,8 +1,12 @@
 import {useSearchParams, useNavigate} from "react-router-dom";
 import {PenLine, ChevronDown, LayoutList} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Board.module.css";
+import axios from "../../api/axiosInstance.ts";
+
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 const boardType = [
 	{key: "group", label: "모임 게시판"},
@@ -10,23 +14,88 @@ const boardType = [
 	{key: "suggest", label: "건의 게시판"},
 ];
 
-const joinedGroups = [
-	{value: "all", label: "가입한 모임 전체"},
-	{value: "1", label: "주말 등산 모임"},
-	{value: "2", label: "리액트 스터디"},
-	{value: "3", label: "직장인 배드민턴"},
-];
+interface groupDto {
+	groupId: number;
+	groupNm: string;
+	groupMemo: string;
+	groupMemCnt: number;
+	groupJoinState: string;
+	groupAdminGrade: string;
+	scheduleColor: string;
+	groupSecretYn?: string;
+}
+
+interface boardDto {
+	boardNum: number;
+	boardId: number;
+	boardNm: string;
+	boardWriteNm: string;
+	boardCrtnDtm: string;
+	groupId: number;
+}
 
 const BoardList = () => {
+	const user = useAuthStore((state) => state.user);
+
+	const [groupList, setGroupList] = useState<groupDto[]>([]);
+	const [boardList, setBoardList] = useState<boardDto[]>([]);
+	const [selectGroupId, setSelectGroupId] = useState<number>();
+
 	const [searchParams] = useSearchParams();
 	const type = searchParams.get("type") ?? "free";
 	const current = boardType.find((b) => b.key === type) ?? boardType[1];
 	const navigate = useNavigate();
 
-	const [selectedGroup, setSelectedGroup] = useState("all");
+	useEffect(() => {
+		handleSearchGroup();
+	}, [type]);
+
+	const handleSearchGroup = async () => {
+		try {
+			const postData = {
+				userId: user?.userId,
+			}
+			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
+			setGroupList(res.data);
+
+			if (res.data.length > 0) {
+				const groupId = res.data[0].groupId;
+				setSelectGroupId(groupId);
+				handleBoardList(groupId);
+			}
+
+		} catch (error) {
+			console.error(error);
+
+		}
+	}
+
+	const handleBoardList = async (groupId: number) => {
+		try {
+			let reqGroupId = 0;
+			if(type === 'group') {
+				reqGroupId = groupId;
+			}
+
+			const postData = {
+				reqBoardType: type,
+				reqGroupId: reqGroupId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/board/boardList`, postData);
+			setBoardList(res.data);
+
+		} catch (error) {
+
+		}
+	}
 
 	const handleWrite = () => {
 		navigate('/boardForm');
+	}
+
+	const handleView = () => {
+		navigate('/boardView');
 	}
 
 	return (
@@ -40,14 +109,16 @@ const BoardList = () => {
 						<div className={styles.listFilterWrapper}>
 							<select
 								className={styles.filterSelect}
-								value={selectedGroup}
-								onChange={(e) => setSelectedGroup(e.target.value)}
+								value={selectGroupId}
+								onChange={(e) => setSelectGroupId(Number(e.target.value))}
 							>
-								{joinedGroups.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
+								{groupList.length > 0 ? groupList.map((list) => (
+									<option key={list.groupId} value={list.groupId}>
+										{list.groupNm}
 									</option>
-								))}
+								)) : (
+									<option>참여 중인 모임이 없습니다.</option>
+								)}
 							</select>
 							<ChevronDown size={14} className={styles.filterIcon} />
 						</div>
@@ -60,16 +131,32 @@ const BoardList = () => {
 			</div>
 
 			<div className={styles.boardCard}>
-				<div className={styles.emptyState}>
-					<div className={styles.emptyCircle}>
-						<LayoutList size={32} className={styles.emptyIcon} />
+				{boardList.length > 0 ? (
+					<ul className={styles.postList}>
+						{boardList.map((board) => (
+							<li key={board.boardId}
+							    className={styles.postItem}
+							    onClick={handleView}>
+								<div className={styles.postInfo}>
+									<span className={styles.postCategory}>{board.boardNum}</span>
+									<h3 className={styles.postTitle}>{board.boardNm}</h3>
+								</div>
+								<div className={styles.postMeta}>
+									<span className={styles.postAuthor}>{board.boardWriteNm}</span>
+									<span className={styles.metaDot}>·</span>
+									<span className={styles.postDate}>{board.boardCrtnDtm}</span>
+								</div>
+							</li>
+						))}
+					</ul>
+				) : (
+					<div className={styles.emptyState}>
+						<h3 className={styles.emptyTitle}>등록된 게시글이 없습니다</h3>
+						<button className={styles.outlineBtn} onClick={handleWrite}>
+							게시글 작성하기
+						</button>
 					</div>
-					<h3 className={styles.emptyTitle}>등록된 이야기가 없습니다</h3>
-					<p className={styles.emptyDesc}>새로운 소식을 가장 먼저 나누어 보세요.</p>
-					<button className={styles.outlineBtn} onClick={handleWrite}>
-						첫 게시글 작성하기
-					</button>
-				</div>
+				)}
 			</div>
 		</div>
 	);
