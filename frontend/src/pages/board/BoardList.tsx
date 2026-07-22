@@ -1,5 +1,5 @@
 import {useSearchParams, useNavigate} from "react-router-dom";
-import {PenLine, ChevronDown, LayoutList, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight} from "lucide-react";
+import {PenLine, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useAuthStore} from "../../store/useAuthStore.ts";
 

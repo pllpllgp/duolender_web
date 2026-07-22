@@ -37,8 +37,6 @@ const BoardForm = () => {
 	const type = searchParam.get("type") ?? "free";
 	const navigate = useNavigate();
 	const [groupId, setGroupId] = useState("");
-	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
 
 	useEffect(() => {
 		if(type === 'group') {
@@ -74,7 +72,7 @@ const BoardForm = () => {
 			reqBoardType: type,
 		}
 
-		const res = await axios.post(`${SERVER_BASE_URL}/api/board/save`, postData);
+		await axios.post(`${SERVER_BASE_URL}/api/board/save`, postData);
 
 
 		//e.preventDefault();
