@@ -41,8 +41,9 @@ const BoardForm = () => {
 
 	const [searchParam] = useSearchParams();
 	const type = searchParam.get("type") ?? "free";
+	const cmd = searchParam.get("cmd") ?? "write";
 	const navigate = useNavigate();
-	const [groupId, setGroupId] = useState("");
+	const [groupId, setGroupId] = useState<number>();
 
 	useEffect(() => {
 		if(type === 'group') {
@@ -57,6 +58,9 @@ const BoardForm = () => {
 			}
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setGroupList(res.data);
+			if(res.data.length > 0) {
+				setGroupId(res.data[0].groupId);
+			}
 
 		} catch (error) {
 			console.error(error);
@@ -76,13 +80,13 @@ const BoardForm = () => {
 			reqBoardNm: boardForm?.boardNm,
 			reqBoardCntn: boardForm?.boardCntn,
 			reqBoardType: type,
+			reqCmd: cmd,
+			reqGroupId: groupId === undefined ? 0 : groupId,
 		}
 
 		await axios.post(`${SERVER_BASE_URL}/api/board/save`, postData);
 
-
-		//e.preventDefault();
-		//navigate(-1);
+		navigate(-1);
 	};
 
 	return (

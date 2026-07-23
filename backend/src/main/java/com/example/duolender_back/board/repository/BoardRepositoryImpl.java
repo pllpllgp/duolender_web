@@ -43,12 +43,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 						boardEntity.boardType.eq(dto.getReqBoardType()),
 						dto.getReqBoardType().equals("group") ? boardEntity.groupId.eq(dto.getReqGroupId()) : null
 				)
-				.orderBy(boardEntity.boardChng_dtm.desc())
+				.orderBy(boardEntity.boardCrtnDtm.desc())
 				.offset((dto.getReqPage()-1)*10L)
 				.limit(10)
 				.fetch();
 
-		long totalPage = queryFactory
+		long totalCount = queryFactory
 				.select(
 					boardEntity.boardId.count()
 				)
@@ -59,6 +59,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 				)
 				.fetchOne();
 
-		return new BoardListDto(list, totalPage);
+		return new BoardListDto(list, totalCount);
 	}
 }

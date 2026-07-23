@@ -1,6 +1,7 @@
 package com.example.duolender_back.group.service;
 
 import com.example.duolender_back.auth.entity.AuthEntity;
+import com.example.duolender_back.config.CommonUtil;
 import com.example.duolender_back.group.dto.GroupDetailDto;
 import com.example.duolender_back.group.dto.GroupDto;
 import com.example.duolender_back.group.dto.GroupMemberDto;
@@ -47,13 +48,13 @@ public class GroupService {
 		entity.setGroupNm(dto.getReqGroupNm());
 		entity.setGroupMemo(dto.getReqGroupMemo());
 		entity.setGroupCrtnId(dto.getUserId());
-		entity.setGroupCrtnDtm(toDate());
+		entity.setGroupCrtnDtm(CommonUtil.toDate());
 		entity.setGroupSecretYn(dto.getReqGroupSecretYn());
 
 		groupRepository.save(entity);
 
 		//유저 모임 관계 생성자 데이터 입력
-		userGroupLinkInsert(dto, entity.getGroupId(), "A", toDate(), "Y");
+		userGroupLinkInsert(dto, entity.getGroupId(), "A", "Y");
 
 		return true;
 	}
@@ -63,7 +64,7 @@ public class GroupService {
 	public GroupDto joinReq(ReqGroupDto dto) {
 		//모임 가입 신청
 		if(dto.getReqGroupJoinState() == null) {
-			userGroupLinkInsert(dto, dto.getGroupId(), "M", toDate(), "W");
+			userGroupLinkInsert(dto, dto.getGroupId(), "M", "W");
 
 		//모임 가입 신청 취소
 		} else {
@@ -92,22 +93,13 @@ public class GroupService {
 		return true;
 	}
 
-	//오늘 날짜 구하기
-	public String toDate() {
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-		String toDate = now.format(formatter);
-
-		return toDate;
-	}
-
 	//모임 가입 신청
-	public boolean userGroupLinkInsert(ReqGroupDto dto, int groupId, String grade, String date, String state) {
+	public boolean userGroupLinkInsert(ReqGroupDto dto, int groupId, String grade, String state) {
 		UserGroupLinkEntity entity = new UserGroupLinkEntity();
 		entity.setGroupId(groupId);
 		entity.setUserId(dto.getUserId());
 		entity.setGroupAdminGrade(grade);
-		entity.setGroupJoinCrtnDtm(date);
+		entity.setGroupJoinCrtnDtm(CommonUtil.toDate());
 		entity.setGroupJoinState(state);
 		entity.setScheduleColor("#6b7280");
 

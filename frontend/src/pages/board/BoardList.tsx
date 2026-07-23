@@ -40,7 +40,7 @@ const BoardList = () => {
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
 	const [boardList, setBoardList] = useState<boardDto[]>([]);
 	const [selectGroupId, setSelectGroupId] = useState<number>();
-	const [totalPage, setTotalPage] = useState(0);
+	const [totalCount, setTotalCount] = useState(0);
 
 	const [searchParams, setSearchParams] = useSearchParams();
 	const type = searchParams.get("type") ?? "free";
@@ -49,19 +49,20 @@ const BoardList = () => {
 	const navigate = useNavigate();
 
 	const pageGroupSize = 5;
-	let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize / 2));
-	let endPage = startPage + pageGroupSize - 1;
+	const totalPage = Math.ceil(totalCount/10);
+	let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize/2));
+	let endPage = startPage+pageGroupSize-1;
 
 	if (endPage > totalPage) {
 		endPage = totalPage;
-		startPage = Math.max(1, endPage - pageGroupSize + 1);
+		startPage = Math.max(1, endPage-pageGroupSize+1);
 	}
 
-	const pages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+	const pages = Array.from({length: Math.max(0, endPage-startPage+1)}, (_, i) => startPage+i);
 
 	useEffect(() => {
 		handleSearchGroup();
-	}, [type, currentPage]);
+	}, [type, currentPage, selectGroupId]);
 
 	const handleSearchGroup = async () => {
 		try {
@@ -73,8 +74,10 @@ const BoardList = () => {
 
 			if (res.data.length > 0) {
 				const groupId = res.data[0].groupId;
-				setSelectGroupId(groupId);
-				handleBoardList(groupId);
+				if(selectGroupId === undefined) {
+					setSelectGroupId(groupId);
+				}
+				handleBoardList(selectGroupId);
 			}
 
 		} catch (error) {
@@ -97,7 +100,7 @@ const BoardList = () => {
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/board/boardList`, postData);
 			setBoardList(res.data.list);
-			setTotalPage(res.data.totalPage)
+			setTotalCount(res.data.totalCount);
 
 		} catch (error) {
 
@@ -105,7 +108,7 @@ const BoardList = () => {
 	}
 
 	const handleWrite = () => {
-		navigate(`/boardForm?type=${type}`);
+		navigate(`/boardForm?type=${type}&cmd=write`);
 	}
 
 	const handleView = () => {
@@ -146,7 +149,8 @@ const BoardList = () => {
 						</div>
 					)}
 				</div>
-				<button className={styles.primaryBtn} onClick={handleWrite}>
+				<button className={styles.primaryBtn}
+						onClick={handleWrite}>
 					<PenLine size={16}/>
 					글쓰기
 				</button>
@@ -161,7 +165,7 @@ const BoardList = () => {
 								    className={styles.postItem}
 								    onClick={handleView}>
 									<div className={styles.postInfo}>
-										<span className={styles.postCategory}>{totalPage - (currentPage - 1) * 10 - index}</span>
+										<span className={styles.postCategory}>{totalCount - (currentPage - 1) * 10 - index}</span>
 										<h3 className={styles.postTitle}>{board.boardNm}</h3>
 									</div>
 									<div className={styles.postMeta}>
@@ -176,14 +180,15 @@ const BoardList = () => {
 				) : (
 					<div className={styles.emptyState}>
 						<h3 className={styles.emptyTitle}>등록된 게시글이 없습니다</h3>
-						<button className={styles.outlineBtn} onClick={handleWrite}>
+						<button className={styles.outlineBtn}
+						        onClick={handleWrite}>
 							게시글 작성하기
 						</button>
 					</div>
 				)}
 			</div>
 
-			{totalPage > 0 && (
+			{totalCount > 0 && (
 				<div className={styles.pagination}>
 					<button
 						className={styles.pageIconBtn}

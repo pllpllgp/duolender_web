@@ -26,12 +26,12 @@ public class BoardController {
 	@PostMapping("/boardList")
 	public BoardListDto boardList(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
 		dto.setReqUserId(userDetails.getUsername());
-
 		return boardService.boardList(dto);
 	}
 
 	@PostMapping("/save")
 	public void boardSave(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
 		dto.setReqUserId(userDetails.getUsername());
+		boardService.boardSave(dto);
 	}
 }

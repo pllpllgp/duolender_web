@@ -30,7 +30,7 @@ public class BoardEntity {
 	private String boardCrtnId;
 
 	@Column(nullable = true)
-	private String boardChng_dtm;
+	private String boardChngDtm;
 
 	@Column(nullable = true)
 	private String boardChngId;

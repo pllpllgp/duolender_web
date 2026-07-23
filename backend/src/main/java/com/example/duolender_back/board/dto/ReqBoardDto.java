@@ -14,5 +14,6 @@ public class ReqBoardDto {
 	private String reqWriteId;
 	private int reqGroupId;
 	private int reqPage;
+	private String reqCmd;
 
 }

@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class BoardListDto {
 	private List<BoardDto> list;
-	private long totalPage;
+	private long totalCount;
 
 }
