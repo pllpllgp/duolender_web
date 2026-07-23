@@ -34,4 +34,9 @@ public class BoardController {
 		dto.setReqUserId(userDetails.getUsername());
 		boardService.boardSave(dto);
 	}
+
+	@PostMapping("/view")
+	public BoardDto boardView(@RequestBody ReqBoardDto dto) {
+		return boardService.boardView(dto);
+	}
 }

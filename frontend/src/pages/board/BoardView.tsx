@@ -1,10 +1,55 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {ArrowLeft} from "lucide-react";
+import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Board.module.css";
+import {useEffect, useState} from "react";
+import axios from "../../api/axiosInstance.ts";
+import {formatDateTime} from "../../util/commonUtil.ts";
+
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
+
+interface boardDto {
+	boardId: number;
+	boardNm: string;
+	boardCntn: string;
+	boardWriteId: string;
+	boardWriteNm: string;
+	boardCrtnDtm: string;
+	groupId: number;
+}
 
 const BoardView = () => {
+	const user = useAuthStore((state) => state.user);
 	const navigate = useNavigate();
+
+	const [searchParams, setSearchParams] = useSearchParams();
+	const boardId = searchParams.get("boardId") ?? 0;
+
+	const [boardForm, setBoardForm] = useState<boardDto>({
+		boardId: 0,
+		boardNm: '',
+		boardCntn: '',
+		boardWriteId: '',
+		boardWriteNm: '',
+		boardCrtnDtm: '',
+		groupId: 0,
+	});
+
+	useEffect(() => {
+		const boardView = async () => {
+			const postData = {
+				reqBoardId: boardId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/board/view`, postData);
+
+			setBoardForm(res.data);
+
+		}
+
+		boardView();
+	}, []);
 
 	return (
 		<div className={styles.container}>
@@ -15,31 +60,27 @@ const BoardView = () => {
 					</button>
 					<div className={styles.categoryBadge}>건의 게시판</div>
 				</div>
-				<div className={styles.actionGroup}>
-					<button className={styles.textBtn}>수정</button>
-					<button className={styles.textBtnDanger}>삭제</button>
-				</div>
+				{user?.userId === boardForm.boardWriteId &&
+					<div className={styles.actionGroup}>
+						<button className={styles.textBtn}>수정</button>
+						<button className={styles.textBtnDanger}>삭제</button>
+					</div>
+				}
 			</div>
 
 			<div className={styles.boardCard}>
 				<div className={styles.viewHeader}>
-					<h2 className={styles.viewTitle}>새로운 모임 활동에 대한 건의사항이 있습니다.</h2>
+					<h2 className={styles.viewTitle}>{boardForm.boardNm}</h2>
 					<div className={styles.viewMeta}>
 						<div className={styles.authorInfo}>
-							<div className={styles.avatar}>홍</div>
-							<span className={styles.authorName}>홍길동</span>
+							<span className={styles.authorName}>{boardForm.boardWriteNm}</span>
 						</div>
 						<span className={styles.metaDot}>·</span>
-						<span className={styles.dateText}>2026. 07. 21 15:30</span>
+						<span className={styles.dateText}>{formatDateTime(boardForm.boardCrtnDtm)}</span>
 					</div>
 				</div>
 				<div className={styles.divider}></div>
-				<div className={styles.viewBody}>
-					이번 모임에서 진행할 프로그램에 대해 몇 가지 제안을 드리고 싶습니다.<br /><br />
-					첫째, 참석자 모두가 참여할 수 있는 아이스브레이킹 세션이 필요해 보입니다.<br />
-					둘째, 장소 선정 시 대중교통 접근성을 조금 더 고려해주셨으면 합니다.<br /><br />
-					다른 분들의 의견도 궁금합니다. 댓글로 남겨주시면 감사하겠습니다.
-				</div>
+				<div className={styles.viewBody}>{boardForm.boardCntn}</div>
 			</div>
 		</div>
 	);

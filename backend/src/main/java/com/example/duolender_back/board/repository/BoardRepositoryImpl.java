@@ -5,7 +5,9 @@ import com.example.duolender_back.board.dto.BoardDto;
 import com.example.duolender_back.board.dto.BoardListDto;
 import com.example.duolender_back.board.dto.QBoardDto;
 import com.example.duolender_back.board.dto.ReqBoardDto;
+import com.example.duolender_back.board.entity.BoardEntity;
 import com.example.duolender_back.board.entity.QBoardEntity;
+import com.example.duolender_back.group.dto.GroupDto;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -24,20 +26,26 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 	QBoardEntity boardEntity = QBoardEntity.boardEntity;
 	QAuthEntity authEntity = QAuthEntity.authEntity;
 
+	public QBoardDto boardDtoPro() {
+		return new QBoardDto(
+				boardEntity.boardId,
+				boardEntity.boardNm,
+				boardEntity.boardCntn,
+				boardEntity.boardType,
+				boardEntity.boardCrtnDtm,
+				boardEntity.boardWriteId,
+				JPAExpressions
+						.select(authEntity.userNick)
+						.from(authEntity)
+						.where(boardEntity.boardWriteId.eq(authEntity.userId)),
+				boardEntity.groupId
+		);
+	}
+
 	@Override
 	public BoardListDto boardList(ReqBoardDto dto) {
 		List<BoardDto> list = queryFactory
-				.select(new QBoardDto(
-						boardEntity.boardId,
-						boardEntity.boardNm,
-						boardEntity.boardCntn,
-						boardEntity.boardType,
-						boardEntity.boardCrtnDtm,
-						JPAExpressions
-							.select(authEntity.userNick)
-							.from(authEntity)
-							.where(boardEntity.boardWriteId.eq(authEntity.userId)),
-						boardEntity.groupId))
+				.select(boardDtoPro())
 				.from(boardEntity)
 				.where(
 						boardEntity.boardType.eq(dto.getReqBoardType()),
@@ -60,5 +68,19 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 				.fetchOne();
 
 		return new BoardListDto(list, totalCount);
+	}
+
+	@Override
+	public BoardDto boardView(ReqBoardDto dto) {
+		JPAQuery<BoardDto> query;
+
+		query = queryFactory
+				.select(boardDtoPro())
+				.from(boardEntity)
+				.where(boardEntity.boardId.eq(dto.getReqBoardId()));
+
+		BoardDto boardDto = query.fetchOne();
+
+		return boardDto;
 	}
 }

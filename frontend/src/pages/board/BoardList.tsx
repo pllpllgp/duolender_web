@@ -5,6 +5,7 @@ import {useAuthStore} from "../../store/useAuthStore.ts";
 
 import styles from "../../css/Board.module.css";
 import axios from "../../api/axiosInstance.ts";
+import {formatDateTime} from "../../util/commonUtil.ts";
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -107,14 +108,6 @@ const BoardList = () => {
 		}
 	}
 
-	const handleWrite = () => {
-		navigate(`/boardForm?type=${type}&cmd=write`);
-	}
-
-	const handleView = () => {
-		navigate('/boardView');
-	}
-
 	const goPage = (page: number) => {
 		setSearchParams(prev => {
 			const next = new URLSearchParams(prev);
@@ -150,7 +143,7 @@ const BoardList = () => {
 					)}
 				</div>
 				<button className={styles.primaryBtn}
-						onClick={handleWrite}>
+						onClick={() => navigate(`/boardForm?type=${type}&cmd=write`)}>
 					<PenLine size={16}/>
 					글쓰기
 				</button>
@@ -163,7 +156,7 @@ const BoardList = () => {
 							{boardList.map((board, index) => (
 								<li key={board.boardId}
 								    className={styles.postItem}
-								    onClick={handleView}>
+								    onClick={() => navigate('/boardView?boardId='+board.boardId)}>
 									<div className={styles.postInfo}>
 										<span className={styles.postCategory}>{totalCount - (currentPage - 1) * 10 - index}</span>
 										<h3 className={styles.postTitle}>{board.boardNm}</h3>
@@ -171,7 +164,7 @@ const BoardList = () => {
 									<div className={styles.postMeta}>
 										<span className={styles.postAuthor}>{board.boardWriteNm}</span>
 										<span className={styles.metaDot}>·</span>
-										<span className={styles.postDate}>{board.boardCrtnDtm}</span>
+										<span className={styles.postDate}>{formatDateTime(board.boardCrtnDtm)}</span>
 									</div>
 								</li>
 							))}
@@ -181,7 +174,7 @@ const BoardList = () => {
 					<div className={styles.emptyState}>
 						<h3 className={styles.emptyTitle}>등록된 게시글이 없습니다</h3>
 						<button className={styles.outlineBtn}
-						        onClick={handleWrite}>
+						        onClick={() => navigate(`/boardForm?type=${type}&cmd=write`)}>
 							게시글 작성하기
 						</button>
 					</div>

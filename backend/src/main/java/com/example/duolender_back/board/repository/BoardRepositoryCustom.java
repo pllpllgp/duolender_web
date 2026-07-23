@@ -9,4 +9,6 @@ import java.util.List;
 public interface BoardRepositoryCustom {
 
 	BoardListDto boardList(ReqBoardDto dto);
+
+	BoardDto boardView(ReqBoardDto dto);
 }
