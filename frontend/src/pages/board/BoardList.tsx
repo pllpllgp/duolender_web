@@ -40,12 +40,12 @@ const BoardList = () => {
 
 	const [groupList, setGroupList] = useState<groupDto[]>([]);
 	const [boardList, setBoardList] = useState<boardDto[]>([]);
-	const [selectGroupId, setSelectGroupId] = useState<number>();
 	const [totalCount, setTotalCount] = useState(0);
 
 	const [searchParams, setSearchParams] = useSearchParams();
 	const type = searchParams.get("type") ?? "free";
 	const currentPage = Number(searchParams.get("page") ?? 1);
+	const selectGroupId = searchParams.get("groupId") ? Number(searchParams.get("groupId")) : undefined;
 	const current = boardType.find((b) => b.key === type) ?? boardType[1];
 	const navigate = useNavigate();
 
@@ -76,7 +76,7 @@ const BoardList = () => {
 			if (res.data.length > 0) {
 				const groupId = res.data[0].groupId;
 				if(selectGroupId === undefined) {
-					setSelectGroupId(groupId);
+					changeGroup(groupId);
 				}
 				handleBoardList(selectGroupId ?? groupId);
 			}
@@ -116,6 +116,14 @@ const BoardList = () => {
 		})
 	}
 
+	const changeGroup = (groupId: number) => {
+		setSearchParams(prev => {
+			const next = new URLSearchParams(prev);
+			next.set("groupId", String(groupId));
+			return next;
+		})
+	}
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.header}>
@@ -128,7 +136,7 @@ const BoardList = () => {
 							<select
 								className={styles.filterSelect}
 								value={selectGroupId}
-								onChange={(e) => setSelectGroupId(Number(e.target.value))}
+								onChange={(e) => changeGroup(Number(e.target.value))}
 							>
 								{groupList.length > 0 ? groupList.map((list) => (
 									<option key={list.groupId} value={list.groupId}>
@@ -143,7 +151,7 @@ const BoardList = () => {
 					)}
 				</div>
 				<button className={styles.primaryBtn}
-						onClick={() => navigate(`/boardForm?type=${type}&cmd=write`)}>
+						onClick={() => navigate(`/boardForm?type=${type}&cmd=write&groupId=${selectGroupId}`)}>
 					<PenLine size={16}/>
 					글쓰기
 				</button>
@@ -156,7 +164,7 @@ const BoardList = () => {
 							{boardList.map((board, index) => (
 								<li key={board.boardId}
 								    className={styles.postItem}
-								    onClick={() => navigate('/boardView?boardId='+board.boardId)}>
+								    onClick={() => navigate(`/boardView?type=${type}&boardId=${board.boardId}&selectGroupId=${selectGroupId}`)}>
 									<div className={styles.postInfo}>
 										<span className={styles.postCategory}>{totalCount - (currentPage - 1) * 10 - index}</span>
 										<h3 className={styles.postTitle}>{board.boardNm}</h3>
@@ -174,7 +182,7 @@ const BoardList = () => {
 					<div className={styles.emptyState}>
 						<h3 className={styles.emptyTitle}>등록된 게시글이 없습니다</h3>
 						<button className={styles.outlineBtn}
-						        onClick={() => navigate(`/boardForm?type=${type}&cmd=write`)}>
+						        onClick={() => navigate(`/boardForm?cmd=write&type=${type}`)}>
 							게시글 작성하기
 						</button>
 					</div>

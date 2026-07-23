@@ -24,6 +24,7 @@ const BoardView = () => {
 	const navigate = useNavigate();
 
 	const [searchParams] = useSearchParams();
+	const type = searchParams.get("type") ?? "free";
 	const boardId = searchParams.get("boardId") ?? 0;
 
 	const [boardForm, setBoardForm] = useState<boardDto>({
@@ -51,10 +52,6 @@ const BoardView = () => {
 		boardView();
 	}, []);
 
-	const handleModify = async () => {
-
-	}
-
 	const handleDelete = async () => {
 		if(window.confirm('게시글을 삭제하시겠습니까?')) {
 			const postData = {
@@ -80,7 +77,7 @@ const BoardView = () => {
 				{user?.userId === boardForm.boardWriteId &&
 					<div className={styles.actionGroup}>
 						<button className={styles.textBtn}
-						        onClick={handleModify}>수정</button>
+						        onClick={() => navigate(`/boardForm?cmd=modify&type=${type}&boardId=${boardId}`)}>수정</button>
 						<button className={styles.textBtnDanger}
 						        onClick={handleDelete}>삭제</button>
 					</div>

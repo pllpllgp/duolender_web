@@ -341,10 +341,9 @@ const ScheduleMain = () => {
 										)}
 										<input className={styles.inputField}
 										       name='scheduleDtm'
-										       value={ scheduleForm.scheduleDtm
+										       value={scheduleForm.scheduleDtm
 											       ? `${scheduleForm.scheduleDtm.slice(0,4)}-${scheduleForm.scheduleDtm.slice(4,6)}-${scheduleForm.scheduleDtm.slice(6,8)}`
-											       : ''
-										       }
+											       : ''}
 										       onChange={handleDateChange}
 										       type='date'/>
 										<input className={styles.inputField}

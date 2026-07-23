@@ -24,7 +24,7 @@ public class BoardService {
 	}
 
 	@Transactional
-	public String boardSave(ReqBoardDto dto) {
+	public boolean boardSave(ReqBoardDto dto) {
 		if(dto.getReqCmd().equals("write")) {
 			BoardEntity entity = new BoardEntity();
 			entity.setBoardNm(dto.getReqBoardNm());
@@ -41,11 +41,20 @@ public class BoardService {
 			boardRepository.save(entity);
 
 		} else if(dto.getReqCmd().equals("modify")) {
+			Optional<BoardEntity> boardOpt = boardRepository.findBoardEntityByBoardId(dto.getReqBoardId());
 
+			if(boardOpt.isEmpty()) {
+				return false;
+			}
+
+			BoardEntity entity = boardOpt.get();
+			entity.setBoardNm(dto.getReqBoardNm());
+			entity.setBoardCntn(dto.getReqBoardCntn());
+			entity.setBoardChngDtm(CommonUtil.toDate());
+			entity.setBoardChngId(dto.getReqUserId());
 		}
 
-
-		return null;
+		return true;
 	}
 
 	public BoardDto boardView(ReqBoardDto dto) {

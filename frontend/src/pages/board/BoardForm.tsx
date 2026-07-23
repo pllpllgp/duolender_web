@@ -42,10 +42,26 @@ const BoardForm = () => {
 	const [searchParam] = useSearchParams();
 	const type = searchParam.get("type") ?? "free";
 	const cmd = searchParam.get("cmd") ?? "write";
+	const boardId = searchParam.get("boardId") ?? 0;
+	const [groupId, setGroupId] = useState<number>(Number(searchParam.get("groupId") ?? 0));
 	const navigate = useNavigate();
-	const [groupId, setGroupId] = useState<number>();
 
 	useEffect(() => {
+		const boardView = async () => {
+			const postData = {
+				reqBoardId: boardId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/board/view`, postData);
+
+			setBoardForm(res.data);
+
+		}
+
+		if(cmd === 'modify') {
+			boardView();
+		}
+
 		if(type === 'group') {
 			handleSearchGroup();
 		}
@@ -58,9 +74,6 @@ const BoardForm = () => {
 			}
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setGroupList(res.data);
-			if(res.data.length > 0) {
-				setGroupId(res.data[0].groupId);
-			}
 
 		} catch (error) {
 			console.error(error);
@@ -77,6 +90,7 @@ const BoardForm = () => {
 	const handleSubmit = async () => {
 		const postData = {
 			reqUserId: user?.userId,
+			reqBoardId: boardForm?.boardId,
 			reqBoardNm: boardForm?.boardNm,
 			reqBoardCntn: boardForm?.boardCntn,
 			reqBoardType: type,
@@ -86,7 +100,7 @@ const BoardForm = () => {
 
 		await axios.post(`${SERVER_BASE_URL}/api/board/save`, postData);
 
-		navigate(-1);
+		navigate(`/boardList?type=${type}&page=1&groupId=${groupId}`);
 	};
 
 	return (
@@ -107,13 +121,12 @@ const BoardForm = () => {
 			<div className={styles.boardCard}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<div className={styles.selectRow}>
-						{type === "group" && (
+						{cmd === 'write' && type === 'group' && (
 							<div className={styles.selectWrapper}>
 								<select
 									className={styles.selectBox}
 									value={groupId}
-									onChange={(e) => setGroupId(Number(e.target.value))}
-								>
+									onChange={(e) => setGroupId(Number(e.target.value))}>
 									{groupList.map((group) => (
 										<option key={group.groupId} value={group.groupId}>
 											{group.groupNm}
@@ -125,21 +138,19 @@ const BoardForm = () => {
 						)}
 					</div>
 
-					<input
-						type="text"
-						name="boardNm"
-						className={styles.inputTitle}
-						placeholder="제목을 입력해주세요."
-						onChange={handleChange}
-						autoFocus
-					/>
+					<input type="text"
+						   name="boardNm"
+						   className={styles.inputTitle}
+						   placeholder="제목을 입력해주세요."
+						   onChange={handleChange}
+						   autoFocus
+					       value={boardForm.boardNm} />
 					<div className={styles.divider}></div>
-					<textarea
-						name="boardCntn"
-						className={styles.inputContent}
-						placeholder="내용을 입력해주세요."
-						onChange={handleChange}
-					></textarea>
+					<textarea name="boardCntn"
+							  className={styles.inputContent}
+							  placeholder="내용을 입력해주세요."
+							  onChange={handleChange}
+					          value={boardForm.boardCntn} />
 				</form>
 			</div>
 		</div>
