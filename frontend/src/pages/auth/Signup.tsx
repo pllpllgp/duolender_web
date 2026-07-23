@@ -52,7 +52,7 @@ const Signup = () => {
 				setIdDupleMessage('이미 사용중인 아이디 입니다.');
 			}
 
-		} catch (error) {
+		} catch(error) {
 			console.log('아이디 중복 확인 에러 발생: ', error);
 		}
 
@@ -92,7 +92,7 @@ const Signup = () => {
 			}
 
 
-		} catch (error) {
+		} catch(error) {
 			console.log('회원가입 에러 발생: ', error);
 		}
 	};

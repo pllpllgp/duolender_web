@@ -49,6 +49,7 @@ const ScheduleMain = () => {
 	//스케쥴 상태 값 세팅
 	const [scheduleStatus, setScheduleStatus] = useState('');
 
+	//내 그룹 목록
 	const [myGroupList, setMyGroupList] = useState<groupDto[]>([]);
 
 	//스케쥴 상세 값 세팅
@@ -98,7 +99,7 @@ const ScheduleMain = () => {
 			const res = await axios.post(`${SERVER_BASE_URL}/api/schedule/list`, postData);
 			setScheduleMonthList(res.data);
 
-		} catch (error) {
+		} catch(error) {
 			console.error('월별 스케쥴 로딩 실패:', error);
 		}
 	};
@@ -133,7 +134,7 @@ const ScheduleMain = () => {
 			const resMyGroup = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setMyGroupList(resMyGroup.data);
 
-		} catch (error) {
+		} catch(error) {
 			console.error('일별 스케쥴 로딩 실패:', error);
 		}
 	};
@@ -160,7 +161,7 @@ const ScheduleMain = () => {
 			setScheduleForm(res.data);
 			setScheduleType(res.data.scheduleType);
 
-		} catch (error) {
+		} catch(error) {
 			console.error('스케쥴 로딩 실패:', error);
 		}
 
@@ -210,7 +211,7 @@ const ScheduleMain = () => {
 			fetchScheduleMonthList();
 			setIsPopupOpen(false);
 
-		} catch (error) {
+		} catch(error) {
 			console.error('스케쥴 저장 실패:', error);
 		}
 	};

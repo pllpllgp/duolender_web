@@ -49,7 +49,7 @@ const Login = () => {
 				alert('아이디 또는 비밀번호가 일치하지 않습니다.');
 			}
 
-		} catch (error) {
+		} catch(error) {
 			console.log('로그인 중 에러 발생: ', error);
 			alert('통신 중 에러 발생');
 

@@ -107,7 +107,7 @@ const MyMain = () => {
 			}
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/myGroupSearch`, postData);
 			setGroupList(res.data);
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};
@@ -137,7 +137,7 @@ const MyMain = () => {
 				setNickDupleCheck(false);
 				setMsg("이미 사용 중인 닉네임입니다.");
 			}
-		} catch (error) {
+		} catch(error) {
 			setMsg("닉네임 중복 확인에 실패했습니다.");
 		}
 	};
@@ -154,7 +154,7 @@ const MyMain = () => {
 			updateUser({userNick: modifyForm.userNick});
 			setNickEditing(false);
 			setMsg("");
-		} catch (error) {
+		} catch(error) {
 			setMsg("수정에 실패했습니다.");
 		}
 	};
@@ -172,7 +172,7 @@ const MyMain = () => {
 			updateUser({scheduleColor: color});
 			setPriColor("");
 
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};
@@ -205,8 +205,8 @@ const MyMain = () => {
 
 			setSelectColorGroupId(null);
 
-		} catch (error) {
-			console.error(error);
+		} catch(error) {
+			console.error("색상 변경 에러:::"+error);
 		}
 	};
 
@@ -222,8 +222,8 @@ const MyMain = () => {
 			setJoinMembers(members.filter(m => m.groupJoinState === 'Y'));
 			setReqMembers(members.filter(m => m.groupJoinState === 'W'));
 
-		} catch (error) {
-			console.error(error);
+		} catch(error) {
+			console.error("멤버 조회 에러:::"+error);
 		}
 	};
 
@@ -246,8 +246,8 @@ const MyMain = () => {
 			handleFetchMemberList(groupId);
 			handleSearchGroup();
 
-		} catch (error) {
-			console.error(error);
+		} catch(error) {
+			console.error("멤버 승인 처리 에러:::"+error);
 		}
 	};
 
@@ -263,8 +263,8 @@ const MyMain = () => {
 
 				handleSearchGroup();
 
-			} catch (error) {
-				console.error(error);
+			} catch(error) {
+				console.error("모임 탈퇴 에러:::"+error);
 			}
 		}
 	};
@@ -275,16 +275,20 @@ const MyMain = () => {
 				userId: user?.userId,
 				groupId: groupId,
 			}
+
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
+
 			setEditGroupForm({
 				groupId: res.data.groupId,
 				groupNm: res.data.groupNm,
 				groupMemo: res.data.groupMemo,
 				groupSecretYn: res.data.groupSecretYn || 'N'
 			});
+
 			setEditPopupOpen(true);
-		} catch (error) {
-			console.error(error);
+
+		} catch(error) {
+			console.error("모임 오픈 여부 변경 에러:::"+error);
 		}
 	};
 
@@ -304,11 +308,14 @@ const MyMain = () => {
 				reqGroupMemo: editGroupForm.groupMemo,
 				reqGroupSecretYn: editGroupForm.groupSecretYn,
 			}
+
 			await axios.post(`${SERVER_BASE_URL}/api/group/update`, postData);
+
 			setEditPopupOpen(false);
 			handleSearchGroup();
-		} catch (error) {
-			console.error(error);
+
+		} catch(error) {
+			console.error("모임 변경 에러:::"+error);
 		}
 	};
 

@@ -52,7 +52,7 @@ const GroupMain = () => {
 
 			await axios.post(`${SERVER_BASE_URL}/api/group/register`, postData);
 			setGroupPopup('');
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};
@@ -84,7 +84,7 @@ const GroupMain = () => {
 
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/search`, postData);
 			setGroupList(res.data);
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};
@@ -102,7 +102,7 @@ const GroupMain = () => {
 			}
 			const res = await axios.post(`${SERVER_BASE_URL}/api/group/detail`, postData);
 			setGroupForm(res.data);
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};
@@ -116,7 +116,7 @@ const GroupMain = () => {
 			}
 			await axios.post(`${SERVER_BASE_URL}/api/group/joinReq`, postData);
 			setGroupPopup('');
-		} catch (error) {
+		} catch(error) {
 			console.error(error);
 		}
 	};

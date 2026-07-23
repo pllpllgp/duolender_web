@@ -133,11 +133,9 @@ const BoardList = () => {
 
 					{current.key === "group" && (
 						<div className={styles.listFilterWrapper}>
-							<select
-								className={styles.filterSelect}
-								value={selectGroupId}
-								onChange={(e) => changeGroup(Number(e.target.value))}
-							>
+							<select className={styles.filterSelect}
+									value={selectGroupId}
+									onChange={(e) => changeGroup(Number(e.target.value))}>
 								{groupList.length > 0 ? groupList.map((list) => (
 									<option key={list.groupId} value={list.groupId}>
 										{list.groupNm}
@@ -191,18 +189,14 @@ const BoardList = () => {
 
 			{totalCount > 0 && (
 				<div className={styles.pagination}>
-					<button
-						className={styles.pageIconBtn}
-						onClick={() => goPage(1)}
-						disabled={currentPage === 1}
-					>
+					<button className={styles.pageIconBtn}
+							onClick={() => goPage(1)}
+							disabled={currentPage === 1}>
 						<ChevronsLeft size={16}/>
 					</button>
-					<button
-						className={styles.pageIconBtn}
-						onClick={() => goPage(currentPage-1)}
-						disabled={currentPage === 1}
-					>
+					<button className={styles.pageIconBtn}
+							onClick={() => goPage(currentPage-1)}
+							disabled={currentPage === 1}>
 						<ChevronLeft size={16}/>
 					</button>
 
@@ -210,25 +204,20 @@ const BoardList = () => {
 						{pages.map(page => (
 							<button key={page}
 							        className={`${styles.pageBtn} ${currentPage === page ? styles.pageBtnActive : ''}`}
-							        onClick={() => goPage(page)}
-							>
+							        onClick={() => goPage(page)}>
 								{page}
 							</button>
 						))}
 					</div>
 
-					<button
-						className={styles.pageIconBtn}
-						onClick={() => goPage(currentPage+1)}
-						disabled={currentPage === totalPage}
-					>
+					<button className={styles.pageIconBtn}
+							onClick={() => goPage(currentPage+1)}
+							disabled={currentPage === totalPage}>
 						<ChevronRight size={16}/>
 					</button>
-					<button
-						className={styles.pageIconBtn}
-						onClick={() => goPage(totalPage)}
-						disabled={currentPage === totalPage}
-					>
+					<button className={styles.pageIconBtn}
+							onClick={() => goPage(totalPage)}
+							disabled={currentPage === totalPage}>
 						<ChevronsRight size={16}/>
 					</button>
 				</div>

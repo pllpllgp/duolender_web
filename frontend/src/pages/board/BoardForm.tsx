@@ -48,13 +48,18 @@ const BoardForm = () => {
 
 	useEffect(() => {
 		const boardView = async () => {
-			const postData = {
-				reqBoardId: boardId,
+			try {
+				const postData = {
+					reqBoardId: boardId,
+				}
+
+				const res = await axios.post(`${SERVER_BASE_URL}/api/board/view`, postData);
+
+				setBoardForm(res.data);
+
+			} catch(error) {
+				console.error(error);
 			}
-
-			const res = await axios.post(`${SERVER_BASE_URL}/api/board/view`, postData);
-
-			setBoardForm(res.data);
 
 		}
 
@@ -123,10 +128,9 @@ const BoardForm = () => {
 					<div className={styles.selectRow}>
 						{cmd === 'write' && type === 'group' && (
 							<div className={styles.selectWrapper}>
-								<select
-									className={styles.selectBox}
-									value={groupId}
-									onChange={(e) => setGroupId(Number(e.target.value))}>
+								<select className={styles.selectBox}
+										value={groupId}
+										onChange={(e) => setGroupId(Number(e.target.value))}>
 									{groupList.map((group) => (
 										<option key={group.groupId} value={group.groupId}>
 											{group.groupNm}
