@@ -56,6 +56,15 @@ const BoardView = () => {
 	}
 
 	const handleDelete = async () => {
+		if(window.confirm('게시글을 삭제하시겠습니까?')) {
+			const postData = {
+				reqBoardId: boardId,
+			}
+
+			const res = await axios.post(`${SERVER_BASE_URL}/api/board/delete`, postData);
+			navigate(-1);
+
+		}
 
 	}
 

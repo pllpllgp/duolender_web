@@ -49,8 +49,14 @@ public class BoardService {
 	}
 
 	public BoardDto boardView(ReqBoardDto dto) {
-		BoardDto test = boardRepository.boardView(dto);
-
 		return boardRepository.boardView(dto);
+	}
+
+	@Transactional
+	public void boardDelete(ReqBoardDto dto) {
+		BoardEntity entity = new BoardEntity();
+		entity.setBoardId(dto.getReqBoardId());
+
+		boardRepository.delete(entity);
 	}
 }

@@ -39,4 +39,9 @@ public class BoardController {
 	public BoardDto boardView(@RequestBody ReqBoardDto dto) {
 		return boardService.boardView(dto);
 	}
+
+	@PostMapping("/delete")
+	public void boardDelete(@RequestBody ReqBoardDto dto) {
+		boardService.boardDelete(dto);
+	}
 }
