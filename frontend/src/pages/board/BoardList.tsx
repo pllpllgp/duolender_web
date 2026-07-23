@@ -78,7 +78,7 @@ const BoardList = () => {
 				if(selectGroupId === undefined) {
 					setSelectGroupId(groupId);
 				}
-				handleBoardList(selectGroupId);
+				handleBoardList(selectGroupId ?? groupId);
 			}
 
 		} catch (error) {

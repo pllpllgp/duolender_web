@@ -23,7 +23,7 @@ const BoardView = () => {
 	const user = useAuthStore((state) => state.user);
 	const navigate = useNavigate();
 
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 	const boardId = searchParams.get("boardId") ?? 0;
 
 	const [boardForm, setBoardForm] = useState<boardDto>({
@@ -51,6 +51,14 @@ const BoardView = () => {
 		boardView();
 	}, []);
 
+	const handleModify = async () => {
+
+	}
+
+	const handleDelete = async () => {
+
+	}
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.header}>
@@ -62,8 +70,10 @@ const BoardView = () => {
 				</div>
 				{user?.userId === boardForm.boardWriteId &&
 					<div className={styles.actionGroup}>
-						<button className={styles.textBtn}>수정</button>
-						<button className={styles.textBtnDanger}>삭제</button>
+						<button className={styles.textBtn}
+						        onClick={handleModify}>수정</button>
+						<button className={styles.textBtnDanger}
+						        onClick={handleDelete}>삭제</button>
 					</div>
 				}
 			</div>
