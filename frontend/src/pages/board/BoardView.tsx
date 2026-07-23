@@ -61,7 +61,7 @@ const BoardView = () => {
 				reqBoardId: boardId,
 			}
 
-			const res = await axios.post(`${SERVER_BASE_URL}/api/board/delete`, postData);
+			await axios.post(`${SERVER_BASE_URL}/api/board/delete`, postData);
 			navigate(-1);
 
 		}
