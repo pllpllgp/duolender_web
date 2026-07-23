@@ -112,7 +112,7 @@ const BoardForm = () => {
 								<select
 									className={styles.selectBox}
 									value={groupId}
-									onChange={(e) => setGroupId(e.target.value)}
+									onChange={(e) => setGroupId(Number(e.target.value))}
 								>
 									{groupList.map((group) => (
 										<option key={group.groupId} value={group.groupId}>
