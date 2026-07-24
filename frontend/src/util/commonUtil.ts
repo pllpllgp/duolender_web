@@ -10,5 +10,5 @@ export const formatDateTime = (raw?: string) => {
 	const minute = raw.substring(10, 12);
 	const second = raw.substring(12, 14);
 
-	return `${year}.${month}.${day} ${hour}:${minute}:${second}`;
+	return `${year}.${month}.${day}`;
 };
