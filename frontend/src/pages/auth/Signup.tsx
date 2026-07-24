@@ -25,12 +25,17 @@ const Signup = () => {
 			: '비밀번호가 일치하지 않습니다.';
 
 	const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+		const {name, value} = e.target;
+		const filteredValue = name === 'userId'
+			? value.replace(/[^a-zA-Z0-9]/g, '')
+			: value;
+
 		setSignupForm({
 			...signupForm,
-			[e.target.name]: e.target.value,
+			[name]: filteredValue,
 		})
 
-		if (e.target.name === 'userId') {
+		if (name === 'userId') {
 			setIdDupleCheck(false);
 			setIdDupleMessage('');
 		}
@@ -109,6 +114,7 @@ const Signup = () => {
 						       name="userId"
 						       placeholder="아이디"
 						       className={styles.inputField}
+						       value={signupForm.userId}
 						       onChange={handleChange}
 						/>
 						<button
