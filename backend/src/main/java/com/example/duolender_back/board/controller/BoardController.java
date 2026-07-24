@@ -1,8 +1,6 @@
 package com.example.duolender_back.board.controller;
 
-import com.example.duolender_back.board.dto.BoardDto;
-import com.example.duolender_back.board.dto.BoardListDto;
-import com.example.duolender_back.board.dto.ReqBoardDto;
+import com.example.duolender_back.board.dto.*;
 import com.example.duolender_back.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,26 @@ public class BoardController {
 	}
 
 	@PostMapping("/delete")
-	public void boardDelete(@RequestBody ReqBoardDto dto) {
+	public void boardDelete(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setReqUserId(userDetails.getUsername());
 		boardService.boardDelete(dto);
+	}
+
+	@PostMapping("/commentList")
+	public List<CommentDto> commentList(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setReqUserId(userDetails.getUsername());
+		return boardService.commentList(dto);
+	}
+
+	@PostMapping("/commentSave")
+	public void commentSave(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setReqUserId(userDetails.getUsername());
+		boardService.commentSave(dto);
+	}
+
+	@PostMapping("/commentDelete")
+	public void commentDelete(@RequestBody ReqBoardDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+		dto.setReqUserId(userDetails.getUsername());
+		boardService.commentDelete(dto);
 	}
 }

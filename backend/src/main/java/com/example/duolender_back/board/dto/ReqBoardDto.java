@@ -16,4 +16,7 @@ public class ReqBoardDto {
 	private int reqPage;
 	private String reqCmd;
 
+	private int reqCommentId;
+	private String reqCommentCntn;
+
 }

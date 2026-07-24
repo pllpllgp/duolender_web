@@ -6,7 +6,7 @@ import styles from "../css/Layout.module.css";
 
 function SideLayout() {
 	const [open, setOpen] = useState(false);
-	const [dev] = useState(false);
+	const [dev] = useState(true);
 	const logout = useAuthStore((state) => state.logout);
 	const navigate = useNavigate();
 	const location = useLocation();

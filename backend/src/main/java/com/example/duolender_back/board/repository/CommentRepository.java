@@ -3,5 +3,8 @@ package com.example.duolender_back.board.repository;
 import com.example.duolender_back.board.entity.CommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
+import java.util.Optional;
+
+public interface CommentRepository extends JpaRepository<CommentEntity, Integer>, CommentRepositoryCustom {
+	Optional<CommentEntity> findCommentEntityByCommentId(int boardId);
 }

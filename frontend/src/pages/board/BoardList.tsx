@@ -50,7 +50,7 @@ const BoardList = () => {
 	const navigate = useNavigate();
 
 	const pageGroupSize = 5;
-	const totalPage = Math.ceil(totalCount/10);
+	const totalPage = Math.ceil(totalCount/7);
 	let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize/2));
 	let endPage = startPage+pageGroupSize-1;
 
@@ -164,7 +164,7 @@ const BoardList = () => {
 								    className={styles.postItem}
 								    onClick={() => navigate(`/boardView?type=${type}&boardId=${board.boardId}&selectGroupId=${selectGroupId}`)}>
 									<div className={styles.postInfo}>
-										<span className={styles.postCategory}>{totalCount - (currentPage - 1) * 10 - index}</span>
+										<span className={styles.postCategory}>{totalCount-(currentPage-1)*7-index}</span>
 										<h3 className={styles.postTitle}>{board.boardNm}</h3>
 									</div>
 									<div className={styles.postMeta}>

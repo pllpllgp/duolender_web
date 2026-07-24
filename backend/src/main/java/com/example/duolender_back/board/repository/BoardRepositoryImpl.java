@@ -52,8 +52,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 						dto.getReqBoardType().equals("group") ? boardEntity.groupId.eq(dto.getReqGroupId()) : null
 				)
 				.orderBy(boardEntity.boardCrtnDtm.desc())
-				.offset((dto.getReqPage()-1)*10L)
-				.limit(10)
+				.offset((dto.getReqPage()-1)*7L)
+				.limit(7)
 				.fetch();
 
 		long totalCount = queryFactory

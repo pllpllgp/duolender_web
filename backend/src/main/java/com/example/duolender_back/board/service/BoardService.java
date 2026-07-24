@@ -1,10 +1,10 @@
 package com.example.duolender_back.board.service;
 
-import com.example.duolender_back.board.dto.BoardDto;
-import com.example.duolender_back.board.dto.BoardListDto;
-import com.example.duolender_back.board.dto.ReqBoardDto;
+import com.example.duolender_back.board.dto.*;
 import com.example.duolender_back.board.entity.BoardEntity;
+import com.example.duolender_back.board.entity.CommentEntity;
 import com.example.duolender_back.board.repository.BoardRepository;
+import com.example.duolender_back.board.repository.CommentRepository;
 import com.example.duolender_back.config.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,9 @@ public class BoardService {
 
 	@Autowired
 	private BoardRepository boardRepository;
+
+	@Autowired
+	private CommentRepository commentRepository;
 
 	public BoardListDto boardList(ReqBoardDto dto) {
 		return boardRepository.boardList(dto);
@@ -65,7 +68,49 @@ public class BoardService {
 	public void boardDelete(ReqBoardDto dto) {
 		BoardEntity entity = new BoardEntity();
 		entity.setBoardId(dto.getReqBoardId());
+		entity.setBoardWriteId(dto.getReqUserId());
 
 		boardRepository.delete(entity);
+	}
+
+	public List<CommentDto> commentList(ReqBoardDto dto) {
+		return commentRepository.commentList(dto);
+	}
+
+	@Transactional
+	public boolean commentSave(ReqBoardDto dto) {
+		if(dto.getReqCmd().equals("write")) {
+			CommentEntity entity = new CommentEntity();
+			entity.setBoardId(dto.getReqBoardId());
+			entity.setCommentCntn(dto.getReqCommentCntn());
+			entity.setCommentCrtnDtm(CommonUtil.toDate());
+			entity.setCommentCrtnId(dto.getReqUserId());
+			entity.setCommentWriteId(dto.getReqUserId());
+
+			commentRepository.save(entity);
+
+		} else if(dto.getReqCmd().equals("modify")) {
+			Optional<CommentEntity> commentOpt = commentRepository.findCommentEntityByCommentId(dto.getReqCommentId());
+
+			if(commentOpt.isEmpty()) {
+				return false;
+			}
+
+			CommentEntity entity = commentOpt.get();
+			entity.setCommentCntn(dto.getReqBoardCntn());
+			entity.setCommentChngDtm(CommonUtil.toDate());
+			entity.setCommentChngId(dto.getReqUserId());
+		}
+
+		return true;
+	}
+
+	@Transactional
+	public void commentDelete(ReqBoardDto dto) {
+		CommentEntity entity = new CommentEntity();
+		entity.setCommentId(dto.getReqCommentId());
+		entity.setCommentWriteId(dto.getReqUserId());
+
+		commentRepository.delete(entity);
 	}
 }
