@@ -8,6 +8,7 @@ const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
 	const token = useAuthStore((state) => state.token);
 
 	if(!isLoggedIn || !token || isTokenExpired(token)) {
+		alert("세션이 만료되어 로그인화면으로 이동합니다.");
 		return <Navigate to="/login" replace />;
 	}
 
