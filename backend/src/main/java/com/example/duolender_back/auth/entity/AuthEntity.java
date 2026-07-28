@@ -42,4 +42,7 @@ public class AuthEntity {
 	@Column(nullable = true)
 	private String userNick;
 
+	@Column(nullable = true)
+	private String userLastLoginDtm;
+
 }

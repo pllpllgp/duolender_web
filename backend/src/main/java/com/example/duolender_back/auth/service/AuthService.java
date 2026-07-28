@@ -96,7 +96,7 @@ public class AuthService {
 				authEntity.setScheduleColor(dto.getScheduleColor());
 
 			} else if(dto.getUserToken().equals("LOGIN")) {
-				authEntity.setUserChngDtm(CommonUtil.toDate());
+				authEntity.setUserLastLoginDtm(CommonUtil.toDate());
 
 			}
 

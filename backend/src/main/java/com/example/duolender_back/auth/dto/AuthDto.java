@@ -20,6 +20,7 @@ public class AuthDto {
 	private String userIdDupleCheck;
 	private String dupleState;
 	private String scheduleColor;
+	private String userLastLoginDtm;
 
 	private String reqUpdate;
 
