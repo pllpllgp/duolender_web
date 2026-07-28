@@ -91,6 +91,8 @@ public class AuthController {
 			authDto.setScheduleColor(authInfo.getScheduleColor());
 			authDto.setUserToken(jwtUtil.generateToken(authInfo.getUserId()));
 
+			dto.setReqUpdate("LOGIN");
+			authService.update(dto);
 		}
 
 		return authDto;

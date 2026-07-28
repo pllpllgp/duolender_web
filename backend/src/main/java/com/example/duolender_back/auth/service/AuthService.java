@@ -3,6 +3,7 @@ package com.example.duolender_back.auth.service;
 import com.example.duolender_back.auth.dto.AuthDto;
 import com.example.duolender_back.auth.entity.AuthEntity;
 import com.example.duolender_back.auth.repository.AuthRepository;
+import com.example.duolender_back.config.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,9 @@ public class AuthService {
 
 			} else if(dto.getReqUpdate().equals("COLOR")) {
 				authEntity.setScheduleColor(dto.getScheduleColor());
+
+			} else if(dto.getUserToken().equals("LOGIN")) {
+				authEntity.setUserChngDtm(CommonUtil.toDate());
 
 			}
 
