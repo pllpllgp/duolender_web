@@ -25,9 +25,9 @@ export const useAuthStore = create<AuthState>() (
 			isLoggedIn: false,
 			isLogout: false,
 
-			login: (userData, userToken) => set({user: userData, token: userToken, isLoggedIn: true}),
+			login: (userData, userToken) => set({user: userData, token: userToken, isLoggedIn: true, isLogout: false}),
 
-			logout: () => set({user: null, token: null, isLoggedIn: false, inLogout: true}),
+			logout: () => set({user: null, token: null, isLoggedIn: false, isLogout: true}),
 
 			updateUser: (partial) => set((state) => ({
 				user: state.user ? {...state.user, ...partial} : state.user
