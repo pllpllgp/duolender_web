@@ -93,6 +93,8 @@ const BoardForm = () => {
 	}
 
 	const handleSubmit = async () => {
+		alert("groupId:::"+groupId);
+
 		const postData = {
 			reqUserId: user?.userId,
 			reqBoardId: boardForm?.boardId,
